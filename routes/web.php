@@ -14,10 +14,6 @@ Route::get('/language/{locale}', function ($locale) {
     return redirect()->back();
 })->name('change.language');
 
-Route::get('/', function () {
-    return view('frontend.pages.home');
-});
-
 Route::get('/investing', function () {
     return view('frontend.pages.investing');
 });
@@ -74,33 +70,22 @@ Route::get('/detail-invest', function () {
     return view('frontend.pages.detail_inves');
 });
 
-// Route::get('/login', [LoginController::class, 'login'])->name('login');
-// Route::post('/login', [LoginController::class, 'post_login'])->name('post_login');
-// Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// Route::get('/register', [RegisterController::class, 'register'])->name('register');
-// Route::post('/register', [RegisterController::class, 'post_register'])->name('post_register');
-
-// Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-//     ->middleware('auth', 'role:1')
-//     ->name('admin.dashboard');
-
 Route::get('/', function () {
     return view('frontend.pages.home');
 });
 
 // Login & Logout Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('post_login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::prefix('login')->as('login.')->group(function () {
+    Route::get('/login', [LoginController::class, 'index'])->name('index');
+    Route::post('/login', [LoginController::class, 'postLogin'])->name('postLogin');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});
 
-// Middleware untuk user yang sudah login
 Route::middleware(['auth'])->group(function () {
-
-    // Middleware untuk admin (id_role = 1)
     Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard.index');
-        Route::get('/dashboard', [AuthController::class, 'index'])->name('dashboard.index');
+        // Dashboard
+        Route::prefix('dashboard')->as('dashboard.')->group(function () {
+            Route::get('/', [DashboardController::class, 'index'])->name('index');
+        });
     });
-
 });

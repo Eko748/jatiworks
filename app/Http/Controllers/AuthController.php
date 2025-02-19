@@ -40,13 +40,6 @@ class AuthController extends Controller
         ], 401);
     }
 
-    public function dashboard()
-    {
-        $title = 'Dashboard';
-
-        return view('admin.dashboard.index', compact('title'));
-    }
-
     public function logout(Request $request)
     {
         Auth::logout();
@@ -59,8 +52,7 @@ class AuthController extends Controller
 
     public function index(Request $request)
     {
-        $menu = ['Dashboard'];
-        $user = Auth::user();
-        return view('dashboard', compact('menu', 'user'));
+        $title = 'Dashboard';
+        return view('admin.dashboard.index', compact('title'));
     }
 }
