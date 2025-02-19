@@ -85,12 +85,12 @@ Route::get('/detail-invest', function () {
 //     ->middleware('auth', 'role:1')
 //     ->name('admin.dashboard');
 
-// Route::get('/', function () {
-//     return view('welcome');
-// })->name('home');
+Route::get('/', function () {
+    return view('frontend.pages.home');
+});
 
 Route::middleware(['tamu'])->group(function () {
-    Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('post_login');
 });
 
