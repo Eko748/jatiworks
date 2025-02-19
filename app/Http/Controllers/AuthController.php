@@ -20,34 +20,30 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
+            // Update IP login dan last activity
             $user->update([
                 'ip_login' => $request->ip(),
                 'last_activity' => Carbon::now(),
             ]);
 
-            $route = '';
-            if ($user->id_role == 1) {
-                $route = route('dashboard.index');
-            } elseif ($user->role_name == 'petugas') {
-                $route = redirect('/petugas/dashboard');
-            } else {
-                $route = route('dashboard.index');
-            }
+            // Tentukan route tujuan berdasarkan id_role
+            $route = $user->id_role == 1 ? route('admin.dashboard') : url('/');
+
             return response()->json([
                 'status_code'   => 200,
                 'error'         => false,
-                'message'       => "Successfully",
-                'data'          => array(
-                    'route_redirect'    => $route
-                )
+                'message'       => "Successfully logged in",
+                'data'          => [
+                    'route_redirect' => $route
+                ]
             ], 200);
-        } else {
-            return response()->json([
-                'status_code'   => 300,
-                'error'         => true,
-                'message'       => "Terjadi Kesalahan",
-            ], 300);
         }
+
+        return response()->json([
+            'status_code'   => 401,
+            'error'         => true,
+            'message'       => "Email atau password salah",
+        ], 401);
     }
 
     public function dashboard()

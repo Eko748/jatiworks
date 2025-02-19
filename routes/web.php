@@ -89,15 +89,17 @@ Route::get('/', function () {
     return view('frontend.pages.home');
 });
 
+// Login & Logout Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('post_login');
-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Middleware untuk user yang sudah login
 Route::middleware(['auth'])->group(function () {
 
-    Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard.index');
-        Route::get('/dashboard', [AuthController::class, 'index'])->name('dashboard.index');
+    // Middleware untuk admin (id_role = 1)
+    Route::middleware(['role:1'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     });
+
 });
