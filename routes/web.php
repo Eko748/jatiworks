@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -78,3 +79,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/register', [RegisterController::class, 'register'])->name('register');
 Route::post('/register', [RegisterController::class, 'post_register'])->name('post_register');
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth', 'role:1')
+    ->name('admin.dashboard');
+
+Route::get('/', function () {
+    return view('welcome'); // Bisa diganti dengan halaman kosong
+})->name('home');
