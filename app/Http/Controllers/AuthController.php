@@ -26,9 +26,9 @@ class AuthController extends Controller
             ]);
 
             $route = '';
-            if ($user->id_level == 1) {
+            if ($user->id_role == 1) {
                 $route = route('dashboard.index');
-            } elseif ($user->nama_level == 'petugas') {
+            } elseif ($user->role_name == 'petugas') {
                 $route = redirect('/petugas/dashboard');
             } else {
                 $route = route('dashboard.index');
@@ -54,7 +54,7 @@ class AuthController extends Controller
     {
         $title = 'Dashboard';
 
-        return view('admin.dashboard.index', compact('title', 'toko'));
+        return view('admin.dashboard.index', compact('title',));
     }
 
     public function logout(Request $request)
