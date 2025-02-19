@@ -89,7 +89,7 @@ Route::get('/', function () {
     return view('frontend.pages.home');
 });
 
-Route::middleware(['tamu'])->group(function () {
+Route::middleware(['buyer'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('post_login');
 });
