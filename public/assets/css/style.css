@@ -1,0 +1,368 @@
+.hero {
+    position: relative;
+    background-image: url("/assets/img/city.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    min-height: 100vh;
+    color: #f5f5f5;
+    display: flex;
+    align-items: center;
+}
+.left-section {
+    background: url("/assets/img/bg-auth.png") no-repeat center center/cover;
+    position: relative;
+}
+
+/* Overlay for the left section */
+.left-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.left-section h1 {
+    position: relative;
+    z-index: 2; /* Memastikan konten berada di atas overlay */
+}
+
+.hero-bg {
+    position: relative;
+    background-color: #013c5a;
+    /* background-image: url('/assets/img/hero2.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; */
+    min-height: 100vh;
+    color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.bg-glass {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 767px) {
+    .hero-bg {
+        margin: 0 !important;
+        border-radius: 0px;
+    }
+    .offset-top {
+        position: relative;
+        z-index: 1;
+        margin-top: -10rem;
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+    .gradient-card {
+        background: linear-gradient(
+            to bottom,
+            rgba(2, 128, 192, 0.05) 10%,
+            #013c5a 90%
+        ) !important;
+    }
+}
+.detail-hero {
+    position: relative;
+    background-color: white;
+    min-height: 100vh;
+    color: #eaeae3;
+    display: flex;
+    align-items: center;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
+
+.hero > * {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.hero-description {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    line-height: 1.6;
+    margin: 0 auto 2.5rem;
+    max-width: 720px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-hero {
+    min-width: 200px;
+    padding: 1rem 1.5rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #013c5a;
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-hero:hover {
+    background-color: #013c5a;
+    text-decoration: none;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(29, 42, 93, 0.15);
+}
+
+.pulse {
+    position: relative;
+    overflow: hidden; /* Mencegah elemen melampaui batas button */
+}
+
+.pulse::before {
+    content: "";
+    position: absolute;
+    top: 50%; /* Memulai dari tengah */
+    left: 50%; /* Memulai dari tengah */
+    width: 40%; /* Ukuran awal kecil */
+    height: 30px; /* Ukuran awal kecil */
+    background: rgba(1, 60, 90, 0.6); /* Warna dengan transparansi */
+    transform: translate(-50%, -50%) scale(1); /* Memusatkan animasi */
+    animation: pulseInside 1.2s infinite; /* Memulai animasi */
+    z-index: 0; /* Di belakang konten button */
+}
+
+@keyframes pulseInside {
+    0% {
+        opacity: 0.8; /* Awal terlihat */
+        transform: translate(-50%, -50%) scale(1); /* Ukuran awal */
+    }
+    100% {
+        opacity: 0; /* Menghilang sepenuhnya */
+        transform: translate(-50%, -50%) scale(3); /* Membesar bertahap */
+    }
+}
+
+/* Konten button tetap terlihat */
+.pulse span {
+    position: relative;
+    z-index: 1;
+}
+
+#ai {
+    background: linear-gradient(45deg, #4a90e2, #013c5a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+    margin-left: -1px;
+    margin-right: 1px;
+    /* margin-bottom: 1px; */
+}
+.btn-hero:hover {
+    color: white !important;
+}
+
+.circle-btn {
+    width: 62px;
+    height: 62px;
+    border-radius: 50% !important;
+    background-color: none;
+    color: #013c5a;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    justify-content: center;
+    border: 2px solid #013c5a;
+}
+
+.circle-btn:hover {
+    background-color: #013c5a;
+    color: white !important;
+    cursor: pointer;
+}
+.lime {
+    background-color: #deee7a !important;
+}
+.blue {
+    background-color: #deeaf5 !important;
+}
+.purple {
+    background-color: #dfd3f8 !important;
+}
+.cyan {
+    background-color: #b6f3f3 !important;
+}
+.green {
+    background-color: #c7f1d8 !important;
+}
+
+.section-underline {
+    width: 80px;
+    height: 4px;
+    background: #013c5a;
+    margin: 0 auto;
+}
+.btn-floating {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: 0;
+    z-index: 9999;
+    color: white;
+    background-color: #013c5a;
+    transition: 0.2s;
+}
+
+.btn-floating:hover {
+    width: auto;
+    background-color: #013c5a;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+.btn-floating p {
+    font-size: 16px;
+    margin-left: 5px;
+    transition: 0.2s;
+    line-height: 0;
+    display: none;
+}
+
+.btn-floating:hover p {
+    display: inline-block;
+}
+
+.btn-floating:hover span {
+    margin-bottom: -3px;
+}
+button.pulse-button {
+    animation: borderPulse 1000ms infinite ease-out,
+        colorShift 10000ms infinite ease-in;
+}
+
+/* Animasi Pergantian Warna */
+@keyframes colorShift {
+    0%,
+    100% {
+        background: #013c5a; /* Hijau cerah */
+    }
+    33% {
+        background: #013c5a; /* SeaGreen */
+    }
+    66% {
+        background: #013c5a; /* Jade */
+    }
+}
+
+/* Animasi Pulse Efek Border */
+@keyframes borderPulse {
+    0% {
+        box-shadow: inset 0px 0px 0px 4px rgba(255, 255, 255, 0.5),
+            /* Efek awal lebih lembut */ 0px 0px 0px 0px rgba(39, 173, 39, 0.6); /* Warna shadow hijau */
+    }
+    100% {
+        box-shadow: inset 0px 0px 0px 3px rgba(255, 255, 255, 0.2),
+            0px 0px 0px 8px rgba(39, 173, 39, 0); /* Transisi ke transparan */
+    }
+}
+
+.card-radius {
+    border-radius: 10px !important;
+}
+.img-radius {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.shadow-smooth {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+.scrollable-cards {
+    max-width: 100%; /* Ensure it doesn't overflow the container */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical scrollbar if unnecessary */
+    margin: 0 auto; /* Center the container if needed */
+    display: flex; /* Flex display for the card container */
+    flex-wrap: nowrap; /* Prevent cards from wrapping */
+    padding: 16px 0; /* Add vertical padding around the cards */
+    scrollbar-width: thin; /* Set a thinner scrollbar for Firefox */
+    scrollbar-color: #013c5a #f1f1f1;
+}
+
+.scrollable-cards::-webkit-scrollbar {
+    height: 12px; /* Ensure scrollbar is always visible */
+}
+
+.scrollable-cards::-webkit-scrollbar-thumb {
+    background-color: #888; /* Thumb color */
+    border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+.scrollable-cards::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Track color */
+}
+
+/* Default width for large screens */
+.card-w {
+    width: 30.5rem; /* 400px */
+}
+
+/* Medium screens (tablets) */
+@media (max-width: 991.98px) {
+    .card-w {
+        width: 22rem; /* 320px */
+    }
+}
+
+/* Small screens (mobile) */
+@media (max-width: 767.98px) {
+    .scrollable-cards {
+        overflow-x: scroll; /* Enable horizontal scrolling */
+        overflow-y: hidden; /* Hide vertical scrollbar if unnecessary */
+    }
+    .card-w {
+        width: 18rem; /* Full width for smaller screens */
+    }
+}
+
+

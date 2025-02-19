@@ -1,0 +1,362 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import url("https://fonts.bunny.net/css?family=Figtree");
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "@splidejs/splide/css";
+
+body {
+    font-family: "Figtree", sans-serif;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    color: #013c5a !important;
+}
+.border-old-blue {
+    --bs-border-opacity: 1;
+    border-color: #013c5a !important;
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23013c5a' stroke-linecap='round' stroke-miterlimit='10' stroke-width='4' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.bg-lemon-primary {
+    background-color: #cbec79 !important;
+}
+.bg-old-blue-pri {
+    background-color: #013c5a !important;
+}
+.bg-old-blue-sec {
+    background-color: #e6f0f8 !important;
+}
+.bg-old-blue-tri {
+    background-color: #d8ecf8 !important;
+}
+.text-old-blue {
+    color: #013c5a !important;
+}
+
+#share.dropdown-toggle::after {
+    display: none;
+}
+
+.bg-glass {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.section-dark {
+    position: relative;
+    background-image: url('/public/assets/img/building.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 60vh;
+    overflow: hidden; /* Menghindari overlay keluar dari batas elemen */
+}
+
+.section-dark::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Overlay gelap */
+    z-index: 1; /* Overlay berada di bawah konten */
+    pointer-events: none; /* Menghindari overlay memengaruhi interaksi */
+}
+
+.section-dark .container {
+    position: relative;
+    z-index: 2; /* Memastikan konten berada di atas overlay */
+}
+
+
+.btn-old-blue {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #013c5a;
+    --bs-btn-border-color: #013c5a;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #005a76;
+    --bs-btn-hover-border-color: #005a76;
+    --bs-btn-focus-shadow-rgb: 66, 70, 73;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #005a76;
+    --bs-btn-active-border-color: #005a76;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #013c5a;
+    --bs-btn-disabled-border-color: #013c5a;
+}
+
+.btn-outline-old-blue {
+    --bs-btn-color: #013c5a;
+    --bs-btn-border-color: #013c5a;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #013c5a;
+    --bs-btn-hover-border-color: #013c5a;
+    --bs-btn-focus-shadow-rgb: 33, 37, 41;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #013c5a;
+    --bs-btn-active-border-color: #013c5a;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #013c5a;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #013c5a;
+    --bs-gradient: none;
+}
+
+.nav-pills .nav-link {
+    color: #000000 !important; /* Warna teks untuk link tidak aktif */
+    background-color: #ffffff !important; /* Background putih untuk link tidak aktif */
+}
+.nav-pills .nav-link.active {
+    color: #ffffff !important; /* Warna teks untuk link tidak aktif */
+    background-color: #013c5a !important; /* Background putih untuk link tidak aktif */
+}
+
+.ribbon {
+    width: 120px; /* Adjusted width */
+    height: 120px; /* Adjusted height */
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.ribbon::before,
+.ribbon::after {
+    position: absolute;
+    /* z-index: -1; */
+    content: "";
+    display: block;
+    border: 4px solid #2980b9; /* Adjusted border thickness */
+}
+
+.ribbon span {
+    position: absolute;
+    display: block;
+    width: 180px; /* Adjusted width */
+    padding: 10px 0; /* Adjusted padding */
+    background-color: #3498db;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font: 700 12px/1 "Lato", sans-serif;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.ribbon-top-right {
+    top: -8px; /* Adjusted position */
+    right: -8px; /* Adjusted position */
+}
+
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+
+.ribbon-top-right::before {
+    top: 0;
+    left: 6px;
+}
+
+.ribbon-top-right::after {
+    bottom: 6px;
+    right: 0;
+}
+
+.ribbon-top-right span {
+    left: -20px; /* Adjusted position */
+    top: 25px; /* Adjusted position */
+    transform: rotate(45deg);
+}
+
+.image-container {
+    position: relative;
+}
+
+/* Ikon accordion default */
+.accordion-button::after {
+    --bs-accordion-btn-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'><path d='M8 2v12M2 8h12'/></svg>");
+    content: "";
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'><path d='M8 2v12M2 8h12'/></svg>");
+    background-color: #f0f0f0;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-left: auto;
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+}
+
+/* Ikon accordion saat aktif */
+.accordion-button:not(.collapsed)::after {
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'><path d='M2 8h12'/></svg>");
+    background-color: #013c5a;
+    transition: transform 0.2s ease;
+}
+
+/* Fokus tombol accordion */
+.accordion-button:focus {
+    box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+    color: #000000;
+    background-color: #ffffff;
+    box-shadow: none;
+}
+
+.accordion-button {
+    border-radius: 10px !important;
+}
+
+/* Gaya untuk slide yang aktif */
+/* .splide__slide.is-active {
+    transition: transform 0.2s ease-in-out;
+} */
+
+/* Gaya untuk slide non-active */
+.splide__slide img{
+    filter: grayscale(100%);
+}
+
+.splide__slide.is-active img{
+    filter: grayscale(0%);
+}
+
+.grayscale img {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.grayscale img:hover {
+    filter: grayscale(0%);
+}
+.timeline {
+    position: relative;
+    /* max-width: 1200px; */
+    margin: 0 auto;
+}
+
+/* The actual timeline (the vertical line) */
+.timeline::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    background-color: #013c5a;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Box around content */
+.box {
+    padding: 15px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
+}
+
+/* Circles on the timeline */
+.box::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #013c5a;
+    top: 0;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* Place the box to the left */
+.left {
+    left: 0;
+    padding-left: 0;
+}
+
+.left::after {
+    right: -10px;
+}
+
+/* Place the box to the right */
+.right {
+    left: 50%;
+}
+
+.right::after {
+    left: -10px;
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 600px) {
+    .timeline::after {
+        left: 31px;
+    }
+
+    .box {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+
+    .left::after,
+    .right::after {
+        left: 20px;
+    }
+
+    .right {
+        left: 0;
+    }
+}
+.navbar-nav .nav-link {
+    position: relative;
+    color: #FFFFFF;
+    outline: none;
+    transition: .3s;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #013c5a;
+}
+
+.navbar-nav .nav-link::before {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 2px;
+    bottom: -1.1rem; /* Garis tepat di bawah elemen */
+    left: 50%;
+    border-radius: 10px;
+    background: #013c5a;
+    transition: .3s;
+}
+
+.navbar-nav .nav-link:hover::before,
+.navbar-nav .nav-link.active::before {
+    width: 100%;
+    left: 0;
+}
+
+@media (max-width: 992px) {
+    .navbar-nav .nav-link {
+        color: #FFFFFF;
+        position: static; /* Mengembalikan posisi default */
+        transition: none; /* Menonaktifkan animasi */
+    }
+
+    .navbar-nav .nav-link::before {
+        content: none; /* Menghapus garis bawah */
+    }
+}
