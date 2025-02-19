@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <style>
         body {
             background: #e0e5ec;
@@ -229,7 +231,6 @@
             </div>
         </header>
 
-
         <main id="main-content" class="flex-grow-1 p-4 position-relative">
             <div class="row g-3">
                 <div class="col-md-4">
@@ -254,17 +255,45 @@
         </main>
     </div>
 
+    <script src="{{ asset('assets/js/axios.js') }}"></script>
+    <script src="{{ asset('assets/js/restAPI.js') }}"></script>
+    <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
+    <!-- Notyf CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
     <script>
+        // Inisialisasi Notyf
+        const notyf = new Notyf({
+            duration: 3000, // Notifikasi hilang dalam 3 detik
+            position: {
+                x: 'middle',
+                y: 'top'
+            }
+        });
+
         function toggleSidebar() {
             let sidebar = document.getElementById('sidebar');
-
-            // Jika di mobile, pastikan sidebar muncul penuh
             if (window.innerWidth < 768) {
                 sidebar.classList.toggle('d-none');
             }
-
-            // Tambahkan atau hapus class 'sidebar-collapsed' untuk mode desktop
             sidebar.classList.toggle('sidebar-collapsed');
+        }
+
+        async function logout() {
+            try {
+                let response = await renderAPI('POST', '{{ route('login.logout') }}');
+
+                if (response.status === 200) {
+                    notyf.success('Logout berhasil, mengarahkan...');
+                    setTimeout(() => {
+                        window.location.href = "{{ route('login.index') }}"; // Redirect setelah logout
+                    }, 1500);
+                }
+            } catch (error) {
+                let resp = error.response;
+                notyf.error(resp?.data?.message || 'Terjadi Kesalahan');
+            }
         }
     </script>
 </body>
