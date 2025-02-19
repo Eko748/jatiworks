@@ -54,7 +54,7 @@ class AuthController extends Controller
     {
         $title = 'Dashboard';
 
-        return view('admin.dashboard.index', compact('title', 'toko'));
+        return view('admin.dashboard.index', compact('title',));
     }
 
     public function logout(Request $request)
