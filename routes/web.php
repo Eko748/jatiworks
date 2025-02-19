@@ -98,8 +98,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
 
     // Middleware untuk admin (id_role = 1)
-    Route::middleware(['role:1'])->prefix('admin')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard.index');
+        Route::get('/dashboard', [AuthController::class, 'index'])->name('dashboard.index');
     });
 
 });

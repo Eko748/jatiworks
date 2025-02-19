@@ -20,14 +20,8 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
-            // Update IP login dan last activity
-            $user->update([
-                'ip_login' => $request->ip(),
-                'last_activity' => Carbon::now(),
-            ]);
-
             // Tentukan route tujuan berdasarkan id_role
-            $route = $user->id_role == 1 ? route('admin.dashboard') : url('/');
+            $route = $user->id_role == 1 ? route('admin.dashboard.index') : url('/');
 
             return response()->json([
                 'status_code'   => 200,
