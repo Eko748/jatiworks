@@ -27,6 +27,8 @@
             @yield('content')
         </main>
     </div>
+    @yield('asset_js')
+    @yield('js')
 </body>
 
 </html>

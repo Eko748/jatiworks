@@ -22,7 +22,6 @@ class RoleMiddleware
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Cek apakah user memiliki role yang sesuai
         if (Auth::user()->role !== $role) {
             return abort(403, 'Akses ditolak.');
         }
