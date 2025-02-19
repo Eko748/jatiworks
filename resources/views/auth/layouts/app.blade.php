@@ -15,8 +15,7 @@
     {{-- <link href="https://fonts.bunny.net/css?family=Plus+Jakarta+Sans" rel="stylesheet"> --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-
-
+    @yield('assets_css')
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -27,8 +26,13 @@
             @yield('content')
         </main>
     </div>
-    @yield('asset_js')
+    @yield('assets_js')
     @yield('js')
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            await initPageLoad();
+        });
+    </script>
 </body>
 
 </html>

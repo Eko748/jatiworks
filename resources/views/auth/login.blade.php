@@ -1,5 +1,9 @@
 @extends('auth.layouts.app')
 
+@section('assets_css')
+    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.css') }}" />
+@endsection
+
 @section('content')
     <div class="container-fluid vh-100">
         <div class="row h-100">
@@ -41,9 +45,16 @@
     </div>
 @endsection
 
+@section('assets_js')
+    <script src="{{ asset('assets/js/axios.js') }}"></script>
+    <script src="{{ asset('assets/js/restAPI.js') }}"></script>
+    <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
+    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
+@endsection
+
 @section('js')
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        async function submitLogin() {
             const loginForm = document.querySelector("form");
 
             loginForm.addEventListener("submit", async function(event) {
@@ -51,40 +62,40 @@
 
                 const email = document.querySelector("input[type='email']").value.trim();
                 const password = document.querySelector("input[type='password']").value.trim();
-                // const rememberMe = document.querySelector("#rememberMe").checked;
 
                 if (!email || !password) {
-                    alert("Email dan password harus diisi!");
+                    toastr.error('Harap Diisi', 'Error');
                     return;
                 }
 
-                try {
-                    const response = await fetch("{{ route('post_login') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                        },
-                        body: JSON.stringify({
-                            email: email,
-                            password: password,
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        alert("Login berhasil! Mengalihkan...");
-                        window.location.href = result.redirect_url || "/";
-                    } else {
-                        alert(result.message ||
-                        "Login gagal, periksa kembali email dan password Anda.");
+                let getDataRest = await renderAPI(
+                    'POST',
+                    '{{ route('post_login') }}', {
+                        email: email,
+                        password: password
                     }
-                } catch (error) {
-                    console.error("Terjadi kesalahan:", error);
-                    alert("Terjadi kesalahan, coba lagi nanti.");
+                ).then(function(response) {
+                    return response;
+                }).catch(function(error) {
+                    let resp = error.response;
+                    toastr.error(resp.data.message, 'Error');
+                    return resp;
+                });
+
+                if (getDataRest.status == 200) {
+                    let rest_data = getDataRest.data.data;
+                    toastr.success('Login berhasil, mengarahkan...', 'Success');
+                    setTimeout(function() {
+                        window.location.href = rest_data.route_redirect;
+                    }, 500);
                 }
             });
-        });
+        }
+
+        async function initPageLoad() {
+            await Promise.all([
+                submitLogin()
+            ])
+        }
     </script>
 @endsection
