@@ -87,7 +87,7 @@
                     toastr.success('Login berhasil, mengarahkan...', 'Success');
                     setTimeout(function() {
                         window.location.href = rest_data.route_redirect;
-                    }, 500);
+                    }, 1000);
                 }
             });
         }
