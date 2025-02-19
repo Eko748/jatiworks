@@ -42,9 +42,11 @@ class LoginController extends Controller
         ], 401);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        // dd($request);
         Auth::logout();
-        return redirect('/auth.login');
+        $request->session()->invalidate();
+        return redirect()->route('login.index');
     }
 }

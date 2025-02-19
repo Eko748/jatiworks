@@ -222,9 +222,12 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                         <li>
-                            <button class="dropdown-item" onclick="logout()">
-                                <i class="fas fa-sign-out-alt me-1"></i>Logout
-                            </button>
+                            <form method="POST" action="{{route('login.logout')}}">
+                                @csrf
+                                <button type="submit" class="dropdown-item" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -280,21 +283,21 @@
             sidebar.classList.toggle('sidebar-collapsed');
         }
 
-        async function logout() {
-            try {
-                let response = await renderAPI('POST', '{{ route('login.logout') }}');
+        // async function logout() {
+        //     try {
+        //         let response = await renderAPI('POST', '{{ route('login.logout') }}');
 
-                if (response.status === 200) {
-                    notyf.success('Logout berhasil, mengarahkan...');
-                    setTimeout(() => {
-                        window.location.href = "{{ route('login.index') }}"; // Redirect setelah logout
-                    }, 1500);
-                }
-            } catch (error) {
-                let resp = error.response;
-                notyf.error(resp?.data?.message || 'Terjadi Kesalahan');
-            }
-        }
+        //         if (response.status === 200) {
+        //             notyf.success('Logout berhasil, mengarahkan...');
+        //             setTimeout(() => {
+        //                 window.location.href = "{{ route('login.index') }}"; // Redirect setelah logout
+        //             }, 1500);
+        //         }
+        //     } catch (error) {
+        //         let resp = error.response;
+        //         notyf.error(resp?.data?.message || 'Terjadi Kesalahan');
+        //     }
+        // }
     </script>
 </body>
 

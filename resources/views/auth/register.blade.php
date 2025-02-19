@@ -14,31 +14,28 @@
             <div class="col-md-4 d-flex align-items-center justify-content-center">
                 <div class="login-form w-75">
                     <h2 class="fw-bold mb-4 text-dark text-center">Welcome Back</h2>
-                    <form>
+                    <form method="POST" action="{{ route('register.postregister')}}">
+                        @csrf
                         <!-- Name Input -->
                         <div class="mb-3">
                             <label for="" class="form-label text-dark fw-bold">Name</label>
-                            <input type="text" class="form-control form-control-lg fs-6" placeholder="Enter your name"
+                            <input type="text" name="name" value="{{old('name')}}" class="form-control form-control-lg fs-6" placeholder="Enter your name"
                                 required>
                         </div>
                         <!-- Email Input -->
                         <div class="mb-3">
                             <label for="" class="form-label text-dark fw-bold">Email</label>
-                            <input type="email" class="form-control form-control-lg fs-6" placeholder="Enter your email"
+                            <input type="email" name="email" value="{{old('email')}}"  class="form-control form-control-lg fs-6" placeholder="Enter your email"
                                 required>
                         </div>
                         <!-- Password Input -->
                         <div class="mb-3">
                             <label for="" class="form-label text-dark fw-bold">Password</label>
-                            <input type="password" class="form-control form-control-lg fs-6"
+                            <input type="password" name="password" class="form-control form-control-lg fs-6"
                                 placeholder="Enter your password" required>
                         </div>
                         <!-- Confirm Password Input -->
-                        <div class="mb-3">
-                            <label for="" class="form-label text-dark fw-bold">Password Confirmation</label>
-                            <input type="password" class="form-control form-control-lg fs-6"
-                                placeholder="Confirm your password" required>
-                        </div>
+
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="agree">
                             <label class="form-check-label text-dark" for="rememberMe">I have read and agree to the <a

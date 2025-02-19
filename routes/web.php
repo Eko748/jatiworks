@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -85,7 +86,7 @@ Route::prefix('register')->as('register.')->group(function () {
     Route::post('/post-register', [RegisterController::class, 'postregister'])->name('postregister');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', IsAdmin::class])->group(function () {
     Route::prefix('admin')->group(function () {
         // Dashboard
         Route::prefix('dashboard')->as('dashboard.')->group(function () {

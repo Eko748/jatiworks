@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IsAdmin
@@ -13,8 +14,14 @@ class IsAdmin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        // Pastikan user sudah login dan memiliki id_role = 1
+        if (Auth::check() && Auth::user()->id_role == 1) {
+            return $next($request);
+        }
+
+        // Redirect jika bukan admin
+        return redirect('/')->with('error', 'Access denied.');
     }
 }
