@@ -89,10 +89,8 @@ Route::get('/', function () {
     return view('frontend.pages.home');
 });
 
-Route::middleware(['buyer'])->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('post_login');
-});
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('post_login');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
