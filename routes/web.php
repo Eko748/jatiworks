@@ -80,6 +80,11 @@ Route::prefix('login')->as('login.')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
+Route::prefix('register')->as('register.')->group(function () {
+    Route::get('/', [RegisterController::class, 'register'])->name('index');
+    Route::post('/post-register', [RegisterController::class, 'postregister'])->name('postregister');
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->group(function () {
         // Dashboard
