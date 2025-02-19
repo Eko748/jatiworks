@@ -21,7 +21,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // Tentukan route tujuan berdasarkan id_role
-            $route = $user->id_role == 1 ? route('admin.dashboard.index') : url('/');
+            $route = $user->id_role == 1 ? route('dashboard.index') : url('/');
 
             return response()->json([
                 'status_code'   => 200,
@@ -44,7 +44,7 @@ class AuthController extends Controller
     {
         $title = 'Dashboard';
 
-        return view('admin.dashboard.index', compact('title',));
+        return view('admin.dashboard.index', compact('title'));
     }
 
     public function logout(Request $request)
