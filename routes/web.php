@@ -76,7 +76,7 @@ Route::get('/', function () {
 
 // Login & Logout Routes
 Route::prefix('login')->as('login.')->group(function () {
-    Route::get('/login', [LoginController::class, 'index'])->name('index');
+    Route::get('/', [LoginController::class, 'index'])->name('index');
     Route::post('/login', [LoginController::class, 'postLogin'])->name('postLogin');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
