@@ -15,21 +15,25 @@ class LoginController extends Controller
     }
 
     public function post_login(Request $request)
-    {
-        if (Auth::attempt(["email" => $request->email, "password" => $request->password])) {
-            $user = Auth::user();
-            Log::info('User logged in: ' . $user->email);
+{
+    $credentials = $request->only('email', 'password');
 
-            if ($user->role == 1) {
-                return redirect()->route('admin.dashboard')->with('message', 'Login Success');
-            } else {
-                return redirect('/')->with('message', 'Welcome');
-            }
-        } else {
-            Log::error('Login failed for email: ' . $request->email);
-            return back()->with('error', 'Login failed');
-        }
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
+        Log::info('User logged in: ' . $user->email);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login berhasil!',
+            'redirect_url' => $user->role == 1 ? route('admin.dashboard') : url('/')
+        ]);
     }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Email atau password salah.'
+    ], 401);
+}
 
     public function logout()
     {

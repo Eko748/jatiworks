@@ -22,7 +22,8 @@ class RoleMiddleware
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        if (Auth::user()->role !== $role) {
+        // Konversi parameter $role ke integer untuk memastikan tipe data cocok
+        if (Auth::user()->role != (int) $role) {
             return abort(403, 'Akses ditolak.');
         }
 

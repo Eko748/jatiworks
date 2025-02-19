@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -73,17 +74,32 @@ Route::get('/detail-invest', function () {
     return view('frontend.pages.detail_inves');
 });
 
-Route::get('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/login', [LoginController::class, 'post_login'])->name('post_login');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+// Route::get('/login', [LoginController::class, 'login'])->name('login');
+// Route::post('/login', [LoginController::class, 'post_login'])->name('post_login');
+// Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/register', [RegisterController::class, 'register'])->name('register');
-Route::post('/register', [RegisterController::class, 'post_register'])->name('post_register');
+// Route::get('/register', [RegisterController::class, 'register'])->name('register');
+// Route::post('/register', [RegisterController::class, 'post_register'])->name('post_register');
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth', 'role:1')
-    ->name('admin.dashboard');
+// Route::get('/admin/dashboard', [DashboardController::class, 'index'])
+//     ->middleware('auth', 'role:1')
+//     ->name('admin.dashboard');
 
-Route::get('/', function () {
-    return view('welcome'); // Bisa diganti dengan halaman kosong
-})->name('home');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('home');
+
+Route::middleware(['tamu'])->group(function () {
+    Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('post_login');
+});
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard.index');
+        Route::get('/dashboard', [AuthController::class, 'index'])->name('dashboard.index');
+    });
+});
