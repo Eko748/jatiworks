@@ -87,8 +87,8 @@ Route::prefix('login')->as('login.')->group(function () {
 
 // Register Routes
 Route::prefix('register')->as('register.')->group(function () {
-    Route::get('/', [RegisterController::class, 'index'])->name('index');
-    Route::post('/post-register', [RegisterController::class, 'postRegister'])->name('postRegister');
+    Route::get('/', [RegisterController::class, 'register'])->name('register');
+    Route::post('/postregister', [RegisterController::class, 'post_register'])->name('postregister');
 });
 
 // Admin Routes (admin only)
