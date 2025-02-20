@@ -4,8 +4,10 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsBuyer;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -76,25 +78,33 @@ Route::get('/', function () {
     return view('frontend.pages.home');
 });
 
+// Login Routes
 Route::prefix('login')->as('login.')->group(function () {
     Route::get('/', [LoginController::class, 'index'])->name('index');
     Route::post('/post-login', [LoginController::class, 'postLogin'])->name('postLogin');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
+// Register Routes
 Route::prefix('register')->as('register.')->group(function () {
-    Route::get('/', [RegisterController::class, 'register'])->name('index');
-    Route::post('/post-register', [RegisterController::class, 'postregister'])->name('postregister');
+    Route::get('/', [RegisterController::class, 'index'])->name('index');
+    Route::post('/post-register', [RegisterController::class, 'postRegister'])->name('postRegister');
 });
 
-Route::middleware(['auth', IsAdmin::class])->group(function () {
-    Route::prefix('admin')->group(function () {
-        // Dashboard
-        Route::prefix('dashboard')->as('dashboard.')->group(function () {
-            Route::get('/', [DashboardController::class, 'index'])->name('index');
-        });
-        // User Controller
-        Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
-        Route::get('/getdatauser', [UserController::class, 'getdatauser'])->name('getdatauser');
+// Admin Routes (admin only)
+Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () {
+    // Dashboard
+    Route::prefix('dashboard')->as('dashboard.')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
     });
+
+    // User Management
+    Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
+    Route::get('/getdatauser', [UserController::class, 'getdatauser'])->name('getdatauser');
+});
+
+// Buyer Routes (buyer only)
+Route::middleware(['auth', IsBuyer::class])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
