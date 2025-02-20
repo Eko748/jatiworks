@@ -15,10 +15,13 @@ class LogLastLogin
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Perbarui last_login_at tanpa mengubah updated_at
+            // Perbarui last_login_at dan status menjadi online
             DB::table('users')
                 ->where('id', $user->id)
-                ->update(['last_login_at' => now()]);
+                ->update([
+                    'last_login_at' => now(),
+                    'status' => 'Online'
+                ]);
 
             Log::info("User {$user->email} login pada " . now());
         }

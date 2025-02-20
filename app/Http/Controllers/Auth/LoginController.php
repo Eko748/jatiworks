@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
@@ -44,9 +45,19 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        // dd($request);
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            // Ubah status menjadi offline saat logout
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['status' => 'Offline']);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
-        return redirect()->route('login.index')->with('message', 'Anda telah berhasil logout.');
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login.index')->with('message', 'Anda telah logout.');
     }
 }
