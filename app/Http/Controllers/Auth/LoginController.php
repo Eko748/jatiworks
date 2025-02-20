@@ -47,6 +47,6 @@ class LoginController extends Controller
         // dd($request);
         Auth::logout();
         $request->session()->invalidate();
-        return redirect()->route('login.index');
+        return redirect()->route('login.index')->with('message', 'Anda telah berhasil logout.');
     }
 }
