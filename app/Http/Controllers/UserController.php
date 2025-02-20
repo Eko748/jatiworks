@@ -92,7 +92,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $title = [$this->title[0]];
+        $title = $this->title[0];
 
         return view('admin.user.index', compact('title'));
     }
