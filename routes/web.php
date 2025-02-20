@@ -19,63 +19,63 @@ Route::get('/language/{locale}', function ($locale) {
 })->name('change.language');
 
 Route::get('/investing', function () {
-    return view('frontend.pages.investing');
+    return view('buyer.layouts.pages.investing');
 });
 
 Route::get('/publishing', function () {
-    return view('frontend.pages.publishing');
+    return view('buyer.layouts.pages.publishing');
 });
 
 Route::get('/trading', function () {
-    return view('frontend.pages.trading');
+    return view('buyer.layouts.pages.trading');
 });
 
 Route::get('/about-us', function () {
-    return view('frontend.pages.aboutus');
+    return view('buyer.layouts.pages.aboutus');
 });
 
 Route::get('/articles', function () {
-    return view('frontend.pages.articles');
+    return view('buyer.layouts.pages.articles');
 });
 
 Route::get('/information-disclosure', function () {
-    return view('frontend.pages.information');
+    return view('buyer.layouts.pages.information');
 });
 
 Route::get('/manual-user', function () {
-    return view('frontend.pages.manualguide');
+    return view('buyer.layouts.pages.manualguide');
 });
 
 Route::get('/faq', function () {
-    return view('frontend.pages.faq');
+    return view('buyer.layouts.pages.faq');
 });
 
 Route::get('/contact-us', function () {
-    return view('frontend.pages.contactus');
+    return view('buyer.layouts.pages.contactus');
 });
 
 Route::get('/privacy-policy', function () {
-    return view('frontend.pages.privacypolicy');
+    return view('buyer.layouts.pages.privacypolicy');
 });
 
 Route::get('/term-of-service', function () {
-    return view('frontend.pages.term-condition');
+    return view('buyer.layouts.pages.term-condition');
 });
 
 Route::get('/detail-article', function () {
-    return view('frontend.pages.detail_article');
+    return view('buyer.layouts.pages.detail_article');
 });
 
 Route::get('/detail-solution', function () {
-    return view('frontend.pages.detail_solution');
+    return view('buyer.layouts.pages.detail_solution');
 });
 
 Route::get('/detail-invest', function () {
-    return view('frontend.pages.detail_inves');
+    return view('buyer.layouts.pages.detail_inves');
 });
 
 Route::get('/', function () {
-    return view('frontend.pages.home');
+    return view('buyer.pages.home.index');
 });
 
 // Login Routes

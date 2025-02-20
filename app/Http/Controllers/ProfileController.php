@@ -12,7 +12,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profile = Profile::where('id_user', $user->id)->first();
-        return view('profile.index', compact('user', 'profile'));
+        return view('buyer.pages.profile.index', compact('user', 'profile'));
     }
 
     public function update(Request $request)
