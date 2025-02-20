@@ -20,7 +20,20 @@ class RegisterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
+        ], [
+            'name.required' => 'Nama tidak boleh Kosong',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.unique' => 'Email sudah terpakai',
+            'email.email' => 'Gunakan Format email yang sesuai',
+            'password.min' => 'Password minimal 8 karakter',
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar, 1 angka, dan 1 simbol unik',
+
         ]);
 
         // Simpan user ke database
