@@ -7,24 +7,33 @@
     <hr>
     <nav>
         <ul class="list-unstyled">
-            <li class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
-                <a href="{{ route('dashboard.index') }}" class="d-flex align-items-center gap-2 text-decoration-none">
-                    <i class="fas fa-home"></i>
-                    <span class="sidebar-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="mb-3 neumorphic-card sidebar-item">
-                <a href="{{ route('admin.user.index') }}" class="d-flex align-items-center gap-2 text-decoration-none">
-                    <i class="fas fa-users"></i>
-                    <span class="sidebar-text">User</span>
-                </a>
-            </li>
-            <li class="mb-3 neumorphic-card sidebar-item">
-                <a href="{{ route('dashboard.index') }}" class="d-flex align-items-center gap-2 text-decoration-none">
-                    <i class="fas fa-cogs"></i>
-                    <span class="sidebar-text">Setting</span>
-                </a>
-            </li>
+            <a href="{{ route('dashboard.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
+                    <div class="d-flex align-items-center neu-text gap-2">
+                        <i class="fas fa-home"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </div>
+                </li>
+            </a>
+            <a href="{{ route('admin.user.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">
+                    <div class="d-flex align-items-center neu-text gap-2">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">User</span>
+                    </div>
+                </li>
+            </a>
+            <a href="{{ route('admin.user.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item ">
+                    <div class="d-flex align-items-center neu-text gap-2">
+                        <i class="fas fa-cogs"></i>
+                        <span class="sidebar-text">Pengaturan</span>
+                    </div>
+                </li>
+            </a>
         </ul>
     </nav>
 </aside>

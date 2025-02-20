@@ -1,6 +1,7 @@
 :root {
     --bg-color: #e0e5ec;
     --bg-color-btn: #1a1a1a;
+    --bg-color-green: #32CD32;
     --shadow-dark: #b8bcc4;
     --shadow-light: #ffffff;
     --text-color: #333;
@@ -11,11 +12,27 @@
 .dark-mode {
     --bg-color: #2c2c2c;
     --bg-color-btn: #e0e5ec;
+    --bg-color-green: #32CD32;
     --shadow-dark: #1a1a1a;
     --shadow-light: #3a3a3a;
     --text-color: #f0f0f0;
     --sidebar-bg: #222;
     --sidebar-active: #32CD32;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: #f0f0f0;
+    opacity: 1;
+}
+
+.dark-mode select {
+    color: #f0f0f0;
+    background-color: var(--bg-color);
+}
+
+.dark-mode select option:disabled {
+    color: #aaa;
 }
 
 body {
@@ -37,6 +54,14 @@ body {
 .neumorphic-button {
     color: var(--bg-color-btn);
     background: var(--bg-color);
+    box-shadow: 8px 8px 15px var(--shadow-dark), -4px -8px 15px var(--shadow-light);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.neumorphic-btn-green {
+    color: var(--bg-color-btn);
+    background: var(--bg-color-green);
     box-shadow: 8px 8px 15px var(--shadow-dark), -4px -8px 15px var(--shadow-light);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
@@ -76,7 +101,8 @@ body {
 }
 
 .sidebar {
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     display: flex;
     flex-direction: column;
     transition: width 0.3s ease-in-out;
@@ -97,6 +123,9 @@ body {
     font-size: 1.2rem;
 }
 
+.neu-text {
+    color: var(--text-color);
+}
 
 @media (min-width: 768px) {
     .sidebar-collapsed {

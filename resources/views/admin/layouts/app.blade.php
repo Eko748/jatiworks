@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/notyf.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/admin/index.css') }}">
+    @yield('assets_css')
+    @yield('css')
 </head>
 
 <body class="d-flex">
@@ -22,7 +24,7 @@
     </div>
 
     @include('admin.layouts.scripts')
-
+    @yield('assets_js')
     @yield('js')
     <script>
         document.addEventListener("DOMContentLoaded", async function() {

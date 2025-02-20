@@ -1,5 +1,5 @@
 async function renderAPI(method,url,body) {
-    const auth_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const auth_token = '{{ crsf_token }}';
     let header;
     if(auth_token == null) {
         header = {
