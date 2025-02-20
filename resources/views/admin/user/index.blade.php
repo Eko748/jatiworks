@@ -74,7 +74,7 @@
 
             let getDataRest = await renderAPI(
                 'GET',
-                '{{ route('master.getdatauser') }}', {
+                '/api/getdatauser', {
                     page: page,
                     limit: limit,
                     ascending: ascending,

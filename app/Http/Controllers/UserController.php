@@ -35,9 +35,6 @@ class UserController extends Controller
                 $query->orWhereRaw("LOWER(name) LIKE ?", ["%$searchTerm%"]);
                 $query->orWhereRaw("LOWER(email) LIKE ?", ["%$searchTerm%"]);
 
-                // $query->orWhereHas('role', function ($subquery) use ($searchTerm) {
-                //     $subquery->whereRaw("LOWER(role_name) LIKE ?", ["%$searchTerm%"]);
-                // });
             });
         }
 
