@@ -74,6 +74,7 @@ class UserController extends Controller
                 'name' => $item->name,
                 'role_name' => $item['role']->role_name,
                 'email' => $item->email,
+                'status' => $item->status,
                 'last_login_at' => $item->last_login_at,
             ];
         });
