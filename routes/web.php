@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -91,6 +92,9 @@ Route::middleware(['auth', IsAdmin::class])->group(function () {
         // Dashboard
         Route::prefix('dashboard')->as('dashboard.')->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('index');
+
+            // User Controller
+            Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
         });
     });
 });
