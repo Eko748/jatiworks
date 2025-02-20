@@ -27,12 +27,12 @@ class RegisterController extends Controller
                 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
             ],
         ], [
-            'name.required' => 'Nama tidak boleh Kosong',
-            'email.required' => 'Email tidak boleh kosong',
-            'email.unique' => 'Email sudah terpakai',
-            'email.email' => 'Gunakan Format email yang sesuai',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.regex' => 'Password harus mengandung minimal 1 huruf besar, 1 angka, dan 1 simbol unik',
+            'name.required' => 'Name can not be empty',
+            'email.required' => 'Email can not be empty',
+            'email.unique' => 'Email already taken',
+            'email.email' => 'Use the correct email format',
+            'password.min' => 'Password atleast 8 character',
+            'password.regex' => 'The password must contain at least 1 uppercase letter, 1 number, and 1 unique symbol',
 
         ]);
 

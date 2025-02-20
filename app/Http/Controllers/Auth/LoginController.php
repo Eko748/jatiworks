@@ -39,7 +39,7 @@ class LoginController extends Controller
         return response()->json([
             'status_code'   => 401,
             'error'         => true,
-            'message'       => "Email atau password salah",
+            'message'       => "Email or Password Wrong, Please Check it again !",
         ], 401);
     }
 
@@ -58,6 +58,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login.index')->with('message', 'Anda telah logout.');
+        return redirect()->route('login.index')->with('message', 'Youre Logouted.');
     }
 }
