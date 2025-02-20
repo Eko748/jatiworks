@@ -92,9 +92,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $menu = [$this->title[0]];
-        $user = User::all();
+        $title = [$this->title[0]];
 
-        return view('admin.user.index', compact('menu','user'));
+        return view('admin.user.index', compact('title'));
     }
 }

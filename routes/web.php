@@ -92,9 +92,8 @@ Route::middleware(['auth', IsAdmin::class])->group(function () {
         // Dashboard
         Route::prefix('dashboard')->as('dashboard.')->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('index');
-
-            // User Controller
-            Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
         });
+        // User Controller
+        Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
     });
 });
