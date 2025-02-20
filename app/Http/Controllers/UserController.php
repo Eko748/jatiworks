@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    private array $menu = [];
+    private array $title = [];
+
+    public function __construct()
+    {
+        $this->menu;
+        $this->title = [
+            'Data User',
+        ];
+    }
 
     public function getdatauser(Request $request)
     {
@@ -67,6 +77,7 @@ class UserController extends Controller
                 'name' => $item->name,
                 'role_name' => $item['role']->role_name,
                 'email' => $item->email,
+                'last_login_at' => $item->last_login_at,
             ];
         });
 
@@ -81,8 +92,9 @@ class UserController extends Controller
 
     public function index()
     {
+        $menu = [$this->title[0]];
         $user = User::all();
 
-        return view('admin.user.index', compact('user'));
+        return view('admin.user.index', compact('menu','user'));
     }
 }
