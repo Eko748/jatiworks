@@ -3,7 +3,7 @@ function renderPagination() {
 
     if (currentPage > 1) {
         paginationHtml += `
-            <button class="paginate-btn prev-btn btn btn-sm btn-outline-primary mx-1" data-page="${currentPage - 1}">
+            <button class="paginate-btn prev-btn btn btn-sm neumorphic-btn-green mx-1" data-page="${currentPage - 1}">
                 <i class="fa fa-circle-chevron-left"></i>
             </button>`;
     }
@@ -12,10 +12,10 @@ function renderPagination() {
     let endPage = Math.min(totalPage, currentPage + 2);
 
     if (startPage > 1) {
-        paginationHtml += `<button class="paginate-btn page-btn btn btn-sm neumorphic-btn-green" data-page="1">1</button>`;
+        paginationHtml += `<button class="paginate-btn page-btn btn btn-sm neumorphic-btn-green mx-1" data-page="1">1</button>`;
         if (startPage > 2) {
             paginationHtml += `
-                <button class="btn btn-sm neumorphic-btn-green" style="pointer-events: none;">
+                <button class="btn btn-sm neumorphic-btn-green mx-1" style="pointer-events: none;">
                     <i class="fa fa-ellipsis"></i>
                 </button>`;
         }
@@ -23,7 +23,7 @@ function renderPagination() {
 
     for (let i = startPage; i <= endPage; i++) {
         paginationHtml += `
-            <button class="paginate-btn page-btn btn btn-sm neumorphic-btn-green ${i === currentPage ? 'active' : ''}" data-page="${i}">
+            <button class="paginate-btn page-btn btn btn-sm neumorphic-btn-green mx-1 ${i === currentPage ? 'active' : ''}" data-page="${i}">
                 ${i}
             </button>`;
     }
@@ -31,19 +31,19 @@ function renderPagination() {
     if (endPage < totalPage) {
         if (endPage < totalPage - 1) {
             paginationHtml += `
-                <button class="btn btn-sm neumorphic-btn-green" style="pointer-events: none;">
+                <button class="btn btn-sm neumorphic-btn-green mx-1" style="pointer-events: none;">
                     <i class="fa fa-ellipsis"></i>
                 </button>`;
         }
         paginationHtml += `
-            <button class="paginate-btn page-btn btn btn-sm neumorphic-btn-green" data-page="${totalPage}">
+            <button class="paginate-btn page-btn btn btn-sm neumorphic-btn-green mx-1" data-page="${totalPage}">
                 ${totalPage}
             </button>`;
     }
 
     if (currentPage < totalPage) {
         paginationHtml += `
-            <button class="paginate-btn next-btn btn btn-sm btn-outline-primary mx-1" data-page="${currentPage + 1}">
+            <button class="paginate-btn next-btn btn btn-sm neumorphic-btn-green mx-1" data-page="${currentPage + 1}">
                 <i class="fa fa-circle-chevron-right"></i>
             </button>`;
     }

@@ -2,9 +2,11 @@
     --bg-color: #e0e5ec;
     --bg-color-btn: #1a1a1a;
     --bg-color-green: #32CD32;
+    --bg-color-hover: #e0e5ec;
     --shadow-dark: #b8bcc4;
     --shadow-light: #ffffff;
     --text-color: #333;
+    --text-color-reverse: #f0f0f0;
     --sidebar-bg: #e0e5ec;
     --sidebar-active: #32CD32;
 }
@@ -13,9 +15,11 @@
     --bg-color: #2c2c2c;
     --bg-color-btn: #e0e5ec;
     --bg-color-green: #32CD32;
+    --bg-color-hover: #2c2c2c;
     --shadow-dark: #1a1a1a;
     --shadow-light: #3a3a3a;
     --text-color: #f0f0f0;
+    --text-color-reverse: #333;
     --sidebar-bg: #222;
     --sidebar-active: #32CD32;
 }
@@ -60,7 +64,7 @@ body {
 }
 
 .neumorphic-btn-green {
-    color: var(--bg-color-btn);
+    color: var(--text-color);
     background: var(--bg-color-green);
     box-shadow: 8px 8px 15px var(--shadow-dark), -4px -8px 15px var(--shadow-light);
     border-radius: 12px;
@@ -168,7 +172,7 @@ body {
     transition: background 0.3s ease-in-out;
 }
 
-.sidebar-item:hover a {
+.sidebar-button:hover {
     color: white;
 }
 
@@ -178,12 +182,16 @@ body {
     color: white;
 }
 
-.sidebar-item a {
+.sidebar-item {
     color: var(--text-color);
 }
 
-.sidebar-item.active a {
+.sidebar-item.active {
     font-weight: bold;
+    color: white;
+}
+
+.sidebar-button.active {
     color: white;
 }
 
@@ -244,4 +252,77 @@ body {
         height: 100vh;
         z-index: 1050;
     }
+}
+
+.neumorphic-inset {
+    background: var(--bg-color);
+    border-radius: 10px;
+    box-shadow: inset 5px 5px 10px var(--shadow-dark),
+        inset -5px -5px 10px var(--shadow-light);
+    padding: 10px;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 5px 5px 10px var(--shadow-dark),
+        -5px -5px 10px var(--shadow-light);
+}
+
+.table thead th {
+    color: var(--text-color);
+    background: var(--bg-color);
+    padding: 12px;
+    text-align: left;
+    box-shadow: inset 2px 2px 4px var(--shadow-dark),
+        inset -2px -2px 4px var(--shadow-light);
+    border: none;
+}
+
+.table tbody td {
+    color: var(--text-color);
+    background: var(--bg-color);
+    padding: 12px;
+    box-shadow: inset 2px 2px 4px var(--shadow-dark),
+        inset -2px -2px 4px var(--shadow-light);
+    border: none;
+}
+
+.table tbody tr {
+    transition: background 0.3s, transform 0.2s;
+}
+
+.table tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 2px 2px 5px var(--shadow-dark),
+        -2px -2px 5px var(--shadow-light);
+}
+
+.table tbody tr:hover td {
+    color: var(--bg-color-hover);
+    background: var(--bg-color-btn);
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-color);
+    pointer-events: none;
+}
+
+.select-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-color);
+    pointer-events: none;
 }

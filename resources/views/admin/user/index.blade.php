@@ -5,39 +5,6 @@
 @endsection
 
 @section('css')
-    <style>
-        .neumorphic-inset {
-            background: #e0e5ec;
-            border-radius: 10px;
-            box-shadow: inset 5px 5px 10px #b8baba, inset -5px -5px 10px #ffffff;
-        }
-
-        .table thead th {
-            background: #e0e5ec;
-            box-shadow: inset 3px 3px 6px #b8baba, inset -3px -3px 6px #ffffff;
-            border: none;
-        }
-
-        .table tbody td {
-            background: #e0e5ec;
-            border: none;
-        }
-
-        .table tbody tr:hover {
-            background: #d1d9e6;
-        }
-
-        .pagination .page-item .page-link {
-            background: #e0e5ec;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 3px 3px 6px #b8baba, -3px -3px 6px #ffffff;
-        }
-
-        .pagination .page-item .page-link:hover {
-            background: #d1d9e6;
-        }
-    </style>
 @endsection
 
 @section('content')
@@ -45,16 +12,23 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="d-flex align-items-center mb-3 gap-3">
-                    <input id="tb-search" class="tb-search form-control neumorphic-card mb-2 mb-lg-0" type="search"
-                        name="search" placeholder="Search Data" aria-label="search" style="width: 200px;">
-                    <select name="limitPage" id="limitPage" class="form-control neumorphic-card" style="width: auto;">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                    </select>
+                    <div class="position-relative">
+                        <input id="tb-search" class="tb-search form-control neumorphic-card ps-3 pe-5" type="search"
+                            name="search" placeholder="Search Data" aria-label="search" style="width: 200px;">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <div class="position-relative">
+                        <select name="limitPage" id="limitPage" class="form-control neumorphic-card pe-5">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="1">1</option>
+                        </select>
+                        <i class="fas fa-list select-icon"></i>
+                    </div>
                 </div>
                 <div class="table-responsive neumorphic-card p-3 mb-3">
-                    <table class="table table-striped m-0">
+                    <table class="table m-0">
                         <thead>
                             <tr class="tb-head">
                                 <th class="text-center text-wrap align-top">No</th>
@@ -124,11 +98,18 @@
                 )
                 await setListData(handleDataArray, getDataRest.data.pagination)
             } else {
-                let errorMessage = getDataRest?.data?.message || 'Data gagal dimuat'
-                let errorRow = `
-                <tr class="text-dark">
-                    <th class="text-center" colspan="${$('.tb-head th').length}"> ${errorMessage} </th>
-                </tr>`
+                let errorMessage = "Data gagal dimuat";
+                if (getDataRest && getDataRest.data && getDataRest.data.message) {
+                    errorMessage = getDataRest.data.message;
+                }
+
+                let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
+                let thCount = thElements.length;
+
+                let errorRow = '<tr class="neumorphic-tr">' +
+                    '<td class="text-center fw-bold" colspan="' + thCount + '"><i class="fas fa-circle-exclamation me-2"></i>' + errorMessage + '</td>' +
+                    '</tr>';
+
                 document.getElementById('listData').innerHTML = errorRow;
                 document.getElementById('countPage').textContent = "0 - 0";
                 document.getElementById('totalPage').textContent = "0";
@@ -146,23 +127,22 @@
         }
 
         async function setListData(dataList, pagination) {
-            totalPage = pagination.total_pages
-            currentPage = pagination.current_page
-            let display_from = ((defaultLimitPage * (currentPage - 1)) + 1)
-            let display_to = Math.min(display_from + dataList.length - 1, pagination.total)
+            totalPage = pagination.total_pages;
+            currentPage = pagination.current_page;
+            let display_from = (defaultLimitPage * (currentPage - 1)) + 1;
+            let display_to = Math.min(display_from + dataList.length - 1, pagination.total);
 
-            let getDataTable = ''
-            let classCol = 'align-center text-dark text-wrap'
+            let getDataTable = '';
             dataList.forEach((element, index) => {
                 getDataTable += `
-                    <tr class="text-dark">
-                        <td class="${classCol} text-center">${display_from + index}.</td>
-                        <td class="${classCol}">${element.name}</td>
-                        <td class="${classCol}">${element.role_name}</td>
-                        <td class="${classCol}">${element.email}</td>
-                        <td class="${classCol}">${element.last_login_at}</td>
-                    </tr>`
-            })
+            <tr class="neumorphic-tr">
+                <td class="text-center">${display_from + index}.</td>
+                <td>${element.name}</td>
+                <td>${element.role_name}</td>
+                <td>${element.email}</td>
+                <td>${element.last_login_at}</td>
+            </tr>`;
+            });
 
             document.getElementById('listData').innerHTML = getDataTable;
             document.getElementById('totalPage').textContent = pagination.total;
@@ -172,12 +152,13 @@
                 new bootstrap.Tooltip(el);
             });
 
-            renderPagination()
+            renderPagination();
         }
 
         async function initPageLoad() {
             await Promise.all([
-                getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter)
+                getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
+                searchList()
             ])
         }
     </script>
