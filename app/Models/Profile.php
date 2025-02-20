@@ -9,6 +9,7 @@ class Profile extends Model
 {
     use HasFactory;
 
+    protected $table = 'profile';
     protected $guarded = [];
 
     public function user()
