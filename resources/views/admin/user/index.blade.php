@@ -22,7 +22,6 @@
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="30">30</option>
-                            <option value="1">1</option>
                         </select>
                         <i class="fas fa-list select-icon"></i>
                     </div>
@@ -33,8 +32,9 @@
                             <tr class="tb-head">
                                 <th class="text-center text-wrap align-top">No</th>
                                 <th class="text-wrap align-top">Name</th>
-                                <th class="text-wrap align-top">Role</th>
                                 <th class="text-wrap align-top">Email</th>
+                                <th class="text-wrap align-top">Role</th>
+                                <th class="text-wrap align-top">Status Login</th>
                                 <th class="text-wrap align-top">Last Login</th>
                             </tr>
                         </thead>
@@ -117,12 +117,20 @@
         }
 
         async function handleData(data) {
+            let status = ''
+            if (data.status === 'Online') {
+                status = `text-success`
+            } else {
+                status = `text-danger`
+            }
             return {
                 id: data?.id ?? '-',
                 name: data?.name ?? '-',
                 role_name: data?.role_name ?? '-',
                 email: data?.email ?? '-',
                 last_login_at: data?.last_login_at ?? '-',
+                status: data?.status ?? '-',
+                status_class: status
             }
         }
 
@@ -135,13 +143,14 @@
             let getDataTable = '';
             dataList.forEach((element, index) => {
                 getDataTable += `
-            <tr class="neumorphic-tr">
-                <td class="text-center">${display_from + index}.</td>
-                <td>${element.name}</td>
-                <td>${element.role_name}</td>
-                <td>${element.email}</td>
-                <td>${element.last_login_at}</td>
-            </tr>`;
+                <tr class="neumorphic-tr">
+                    <td class="text-center">${display_from + index}.</td>
+                    <td>${element.name}</td>
+                    <td>${element.email}</td>
+                    <td>${element.role_name}</td>
+                    <td class="${element.status_class}">${element.status}</td>
+                    <td>${element.last_login_at}</td>
+                </tr>`;
             });
 
             document.getElementById('listData').innerHTML = getDataTable;

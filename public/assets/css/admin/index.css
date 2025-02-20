@@ -39,6 +39,19 @@
     color: #aaa;
 }
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.d-flex.flex-column.flex-grow-1 {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+
 body {
     background: var(--bg-color);
     color: var(--text-color);
@@ -197,6 +210,10 @@ body {
 
 .bg-green {
     background: #32CD32;
+}
+
+.text-green {
+    color: #32CD32;
 }
 
 .popup-btn {
