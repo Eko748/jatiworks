@@ -95,5 +95,6 @@ Route::middleware(['auth', IsAdmin::class])->group(function () {
         });
         // User Controller
         Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
+        Route::get('/getdatauser', [UserController::class, 'getdatauser'])->name('getdatauser');
     });
 });
