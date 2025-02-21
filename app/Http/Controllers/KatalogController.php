@@ -78,6 +78,7 @@ class KatalogController extends Controller
                 'length'     => $item->length,
                 'width'      => $item->width,
                 'height'     => $item->height,
+                'unit'       => $item->unit,
                 'desc'       => $item->desc,
                 'category' => $item->category->map(function ($category) {
                     return [
@@ -113,6 +114,7 @@ class KatalogController extends Controller
                 'width'      => 'nullable|numeric',
                 'height'     => 'nullable|numeric',
                 'desc'       => 'nullable|string',
+                'unit'       => 'string',
                 'category' => 'required|array',
                 'category.*' => 'exists:category,id',
                 'file'      => 'nullable|array',
@@ -128,6 +130,7 @@ class KatalogController extends Controller
                 'width'     => $request->width,
                 'height'    => $request->height,
                 'desc'      => $request->desc,
+                'unit'      => $request->unit,
             ]);
 
             $katalog->category()->sync($request->category);
