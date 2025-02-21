@@ -12,6 +12,7 @@
     <!-- Fonts -->
     {{-- <link href="https://fonts.bunny.net/css?family=Plus+Jakarta+Sans" rel="stylesheet"> --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/notyf.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     @yield('assets_css')
     <!-- Scripts -->
@@ -24,6 +25,7 @@
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('assets/js/notyf.min.js') }}"></script>
     @yield('assets_js')
     @yield('js')
     <script>

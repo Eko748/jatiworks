@@ -1,7 +1,6 @@
 @extends('auth.layouts.app')
 
 @section('assets_css')
-    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.css') }}" />
 @endsection
 
 @section('content')
@@ -48,14 +47,20 @@
 @section('assets_js')
     <script src="{{ asset('assets/js/axios.js') }}"></script>
     <script src="{{ asset('assets/js/restAPI.js') }}"></script>
-    <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 @endsection
 
 @section('js')
     <script>
         async function submitLogin() {
             const loginForm = document.querySelector("form");
+            const notyf = new Notyf({
+                duration: 3000,
+                position: {
+                    x: 'right',
+                    y: 'top'
+                },
+                dismissible: true
+            });
 
             loginForm.addEventListener("submit", async function(event) {
                 event.preventDefault();
@@ -64,7 +69,7 @@
                 const password = document.querySelector("input[type='password']").value.trim();
 
                 if (!email || !password) {
-                    toastr.error('Harap Diisi', 'Error');
+                    notyf.error('Email and Password required');
                     return;
                 }
 
@@ -78,13 +83,13 @@
                     return response;
                 }).catch(function(error) {
                     let resp = error.response;
-                    toastr.error(resp.data.message, 'Error');
+                    notyf.error(resp.data.message);
                     return resp;
                 });
 
                 if (getDataRest.status == 200) {
                     let rest_data = getDataRest.data.data;
-                    toastr.success('Login berhasil, mengarahkan...', 'Success');
+                    notyf.success('Login berhasil, mengarahkan...');
                     setTimeout(function() {
                         window.location.href = rest_data.route_redirect;
                     }, 1000);
