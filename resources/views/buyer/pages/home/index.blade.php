@@ -286,7 +286,7 @@
                                     Upskilling for Global Standards
                                 </h6>
                                 <p>
-                                    Training artisans to enhance their craftsmanship and meet international quality
+                                    Training craftsmen to enhance their craftsmanship and meet international quality
                                     standards.
                                 </p>
                             </div>
