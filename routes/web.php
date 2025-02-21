@@ -90,7 +90,7 @@ Route::prefix('login')->as('login.')->group(function () {
 
 // Register Routes
 Route::prefix('register')->as('register.')->group(function () {
-    Route::get('/', [RegisterController::class, 'register'])->name('register');
+    Route::get('/', [RegisterController::class, 'register'])->name('index');
     Route::post('/postregister', [RegisterController::class, 'post_register'])->name('postregister');
 });
 

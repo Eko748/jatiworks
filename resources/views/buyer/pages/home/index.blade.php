@@ -5,23 +5,30 @@
         <div class="container d-flex align-items-center pt-3 pt-md-5 pb-5">
             <div class="row align-items-center mb-5 h-100">
                 <div class="col-md-6 order-last order-md-first" style="position: relative;margin-right:-80px;flex: 1;">
-                    <div class="card shadow-smooth bg-old-blue-pri card-radius offset-top">
+                    <div class="card shadow-smooth bg-green-old card-radius offset-top">
                         <div class="card-body p-4">
-                            <h1 class="mb-3 fw-bold text-white">{{ __('localization.home-content.section-one.title') }}</h1>
-                            <h6 class="mb-4 text-white">{{ __('localization.home-content.section-one.subtitle') }}
-                            </h6>
+                            <h3 class="mb-3 fw-bold text-white">
+                                Streamlining the furniture supply chain by
+                                connecting skilled small-scale Indonesian craftsmen
+                                with global markets through technology
+                            </h3>
+                            {{-- <h6 class="mb-4 text-white">
+                                Best Value for Money - Get premium furniture
+                                at highly competitive prices without compromising on quality
+                            </h6> --}}
                             <div class="row mt-auto">
                                 <div class="d-grid col-md-6 mb-3">
                                     <a href="https://wa.me/6282111780074?text=Hello,%20I%20am%20interested%20in%20investing.%20Please%20provide%20more%20information."
-                                        target="_blank" class="btn btn-light fw-bold text-old-blue fs-6 py-2">
-                                        {{ __('localization.startinves') }}
+                                        target="_blank" class="btn btn-light fw-bold text-old-blue fs-6 py-2 pulse">
+                                        <i class="bi bi-play-circle"></i>
+                                        'What is <span id="land">Jatiworks?</span>
                                     </a>
                                 </div>
                                 <div class="d-grid col-md-6 mb-3">
-                                    <a href="https://youtu.be/nqqZ4lUkMYM?si=U099j8UC0MUT3n5j"
-                                        class="btn btn-light fw-bold text-old-blue fs-6 py-2 pulse">
-                                        <i class="bi bi-play-circle "></i>
-                                        {!! __('localization.whatis') !!}
+                                    <a href="{{ route('login.index') }}"
+                                        class="btn btn-light fw-bold text-old-blue fs-6 py-2">
+                                        <i class="fas fa-sign-in"></i>
+                                        Login
                                     </a>
                                 </div>
                             </div>
@@ -29,13 +36,13 @@
                     </div>
                 </div>
                 <div class="col-md-6 order-first order-md-last mb-3">
-                    <img src="{{ asset('assets/img/sec2.png') }}" alt="" class="img-fluid card-radius float-end">
+                    <img src="{{ asset('assets/img/buyer/home.png') }}" alt=""
+                        class="img-fluid card-radius float-end">
                 </div>
             </div>
-
         </div>
     </section>
-    <section class="bg-old-blue-sec">
+    {{-- <section class="bg-old-blue-sec">
         <div class="container pb-5">
             <h4 class="fw-bold mb-3 text-old-blue text-center">{{ __('localization.partner') }}</h4>
             <div id="splide-3" class="splide grayscale">
@@ -66,64 +73,77 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
     <section id="features" class="bg-old-blue-tri">
         <div class="container pt-5 pb-5">
-            <h3 class="fw-bold">{{ __('localization.home-content.section-two.title') }}</h3>
-            <h6 class="subtitle h6 mb-5">{{ __('localization.home-content.section-two.subtitle') }}</h6>
-
+            <h3 class="fw-bold">Our Features</h3>
+            <h6 class="subtitle h6 mb-5">Delivering Quality and Customization in Every Piece</h6>
             <div class="row g-4">
-                <!-- Feature Card 1 -->
-                <div class="col-12 col-md-4">
-                    <div class="card shadow-smooth bg-old-blue-pri card-radius h-100 transition-hover">
+                <div class="col-12 col-md-3">
+                    <div class="card shadow-smooth bg-green-old card-radius h-100 transition-hover">
                         <div class="card-body p-4 d-flex flex-column">
                             <div class="d-flex">
-                                <i class="bi bi-geo-fill h4 me-2 text-white"></i>
-                                <h4 class="fw-bold text-white">{{ __('localization.home-content.section-two.card-one.title') }}</h4>
+                                <i class="bi bi-headset h4 me-2 text-white"></i>
+                                <h6 class="fw-bold text-white">End-to-End Support</h6>
                             </div>
-                            <p class="h6 mb-5 text-white">{!! __('localization.home-content.section-two.card-one.content') !!}</p>
-                            <div class="mt-auto">
-                                <a href="/detail-solution" class="btn btn-light text-old-blue fw-bold float-end">{{ __('localization.readmore') }}
-                                    <i class="bi bi-arrow-right"></i></a>
-                            </div>
+                            <p class="mb-5 text-white">
+                                From concept and material selection to production and delivery, we provide comprehensive
+                                support throughout the entire furniture manufacturing process. Our team ensures a seamless
+                                experience from start to finish.
+                            </p>
                         </div>
                     </div>
                 </div>
-                <!-- Feature Card 2 -->
-                <div class="col-12 col-md-4">
-                    <div class="card shadow-smooth bg-old-blue-pri card-radius h-100 transition-hover">
+                <div class="col-12 col-md-3">
+                    <div class="card shadow-smooth bg-green-old card-radius h-100 transition-hover">
                         <div class="card-body p-4 d-flex flex-column">
                             <div class="d-flex">
-                                <i class="bi bi-bank h4 me-2 text-white"></i>
-                                <h4 class="fw-bold text-white">{{ __('localization.home-content.section-two.card-two.title') }}</h4>
+                                <i class="bi bi-check2-circle h4 me-2 text-white"></i>
+                                <h6 class="fw-bold text-white">Sourcing & Quality Assurance</h6>
                             </div>
-                            <p class="h6 mb-5 text-white">{!! __('localization.home-content.section-two.card-two.content') !!}</p>
-                            <div class="mt-auto">
-                                <a href="/detail-solution" class="btn btn-light text-old-blue fw-bold float-end">{{ __('localization.readmore') }}
-                                    <i class="bi bi-arrow-right"></i></a>
-                            </div>
+                            <p class="mb-5 text-white">
+                                We carefully source premium materials from trusted suppliers and maintain strict quality
+                                control at every stage of production. Our commitment to excellence ensures durable, stylish,
+                                and functional furniture.
+                            </p>
                         </div>
                     </div>
                 </div>
-                <!-- Feature Card 3 -->
-                <div class="col-12 col-md-4">
-                    <div class="card shadow-smooth bg-old-blue-pri card-radius h-100 transition-hover">
+                <div class="col-12 col-md-3">
+                    <div class="card shadow-smooth bg-green-old card-radius h-100 transition-hover">
                         <div class="card-body p-4 d-flex flex-column">
                             <div class="d-flex">
-                                <i class="bi bi-bar-chart-line-fill h4 me-2 text-white"></i>
-                                <h4 class="fw-bold text-white">{{ __('localization.home-content.section-two.card-three.title') }}</h4>
+                                <i class="bi bi-brush h4 me-2 text-white"></i>
+                                <h6 class="fw-bold text-white">Custom Design</h6>
                             </div>
-                            <p class="h6 mb-5 text-white">{!! __('localization.home-content.section-two.card-three.content') !!}</p>
-                            <div class="mt-auto">
-                                <a href="/detail-solution" class="btn btn-light text-old-blue fw-bold float-end">{{ __('localization.readmore') }}
-                                    <i class="bi bi-arrow-right"></i></a>
+                            <p class="mb-5 text-white">
+                                We offer fully customizable furniture designs tailored to your unique style and space.
+                                Whether you need modern, classic, or minimalist pieces, we bring your vision to life with
+                                precision craftsmanship.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="card shadow-smooth bg-green-old card-radius h-100 transition-hover">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex">
+                                <i class="bi bi-boxes h4 me-2 text-white"></i>
+                                <h6 class="fw-bold text-white">Flexible MOQ</h6>
                             </div>
+                            <p class="mb-5 text-white">
+                                Our flexible Minimum Order Quantity (MOQ) ensures that businesses of all sizes can access
+                                high-quality furniture. Whether you need a single prototype or bulk orders, we accommodate
+                                your needs with competitive pricing.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+
     <section id="investments-section" class="bg-old-blue-sec">
         <div class="container pt-5 pb-5">
             <h3 class="heading fw-bold">{{ __('localization.home-content.section-three.title') }}</h3>
@@ -134,8 +154,8 @@
                         <div class="card-body d-flex flex-column">
                             <div class="image-container position-relative">
                                 <div class="ribbon ribbon-top-right"><span>{{ __('localization.new') }}</span></div>
-                                <img class="card-img-top card-radius mb-3"
-                                    src="{{ asset('assets/img/cigede-group.png') }}" alt="Land Image">
+                                <img class="card-img-top card-radius mb-3" src="{{ asset('assets/img/cigede-group.png') }}"
+                                    alt="Land Image">
                             </div>
                             <h5 class="fw-bold text-white">PT CIGEDE GRIYA PERMAI </h5>
                             <div class="d-flex align-items-center">
@@ -148,14 +168,15 @@
                                         80.000.000.000</span>
                                 </p>
                             </div>
-                            <div class="progress mb-5" role="progressbar" aria-label="Example with label"
-                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress mb-5" role="progressbar" aria-label="Example with label" aria-valuenow="50"
+                                aria-valuemin="0" aria-valuemax="100">
                                 <div class="progress-bar" style="width: 50%">50%</div>
                             </div>
                             <div class="d-flex justify-content-between mt-auto text-white">
                                 <span class="time">Time Remaining<br><span style="font-weight: 600;">14 -
                                         Day</span></span>
-                                <a href="/detail-invest" class="btn btn-light fw-bold text-old-blue">{{ __('localization.moredetails') }}</a>
+                                <a href="/detail-invest"
+                                    class="btn btn-light fw-bold text-old-blue">{{ __('localization.moredetails') }}</a>
                             </div>
                         </div>
                     </div>
@@ -163,8 +184,8 @@
                         <div class="card-body d-flex flex-column">
                             <div class="image-container position-relative">
                                 <div class="ribbon ribbon-top-right"><span>{{ __('localization.new') }}</span></div>
-                                <img class="card-img-top card-radius mb-3"
-                                    src="{{ asset('assets/img/cigede-group.png') }}" alt="Land Image">
+                                <img class="card-img-top card-radius mb-3" src="{{ asset('assets/img/cigede-group.png') }}"
+                                    alt="Land Image">
                             </div>
                             <h5 class="fw-bold text-white">PT Fajri</h5>
                             <div class="d-flex align-items-center">
@@ -184,7 +205,8 @@
                             <div class="d-flex justify-content-between mt-auto text-white">
                                 <span class="time">Time Remaining<br><span style="font-weight: 600;">10 -
                                         Day</span></span>
-                                <a href="/detail-invest" class="btn btn-light fw-bold text-old-blue">{{ __('localization.moredetails') }}</a>
+                                <a href="/detail-invest"
+                                    class="btn btn-light fw-bold text-old-blue">{{ __('localization.moredetails') }}</a>
                             </div>
                         </div>
                     </div>
@@ -204,10 +226,12 @@
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
                                 <span class="bi bi-shield-check h2 text-old-blue" data-icon="uiw:safety"></span>
-                                <h5 class="fw-bold text-old-blue mb-2 ms-2">{{ __('localization.home-content.section-four.card-one.title') }}</h>
+                                <h5 class="fw-bold text-old-blue mb-2 ms-2">
+                                    {{ __('localization.home-content.section-four.card-one.title') }}</h>
                             </div>
                             <div class="feature-content">
-                                <p class="h6 text-old-blue">{{ __('localization.home-content.section-four.card-one.content') }}
+                                <p class="h6 text-old-blue">
+                                    {{ __('localization.home-content.section-four.card-one.content') }}
                                 </p>
                             </div>
                         </div>
@@ -218,10 +242,12 @@
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
                                 <span class="bi bi-people h2 text-old-blue" data-icon="uiw:safety"></span>
-                                <h5 class="fw-bold text-old-blue mb-2 ms-2">{{ __('localization.home-content.section-four.card-two.title') }}</h>
+                                <h5 class="fw-bold text-old-blue mb-2 ms-2">
+                                    {{ __('localization.home-content.section-four.card-two.title') }}</h>
                             </div>
                             <div class="feature-content">
-                                <p class="h6 text-old-blue">{{ __('localization.home-content.section-four.card-two.content') }}
+                                <p class="h6 text-old-blue">
+                                    {{ __('localization.home-content.section-four.card-two.content') }}
                                 </p>
                             </div>
                         </div>
@@ -232,10 +258,12 @@
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
                                 <span class="bi bi-cpu h2 text-old-blue" data-icon="uiw:safety"></span>
-                                <h5 class="fw-bold text-old-blue mb-2 ms-2">{{ __('localization.home-content.section-four.card-three.title') }}</h>
+                                <h5 class="fw-bold text-old-blue mb-2 ms-2">
+                                    {{ __('localization.home-content.section-four.card-three.title') }}</h>
                             </div>
                             <div class="feature-content">
-                                <p class="h6 text-old-blue">{{ __('localization.home-content.section-four.card-three.content') }}
+                                <p class="h6 text-old-blue">
+                                    {{ __('localization.home-content.section-four.card-three.content') }}
                                 </p>
                             </div>
                         </div>
@@ -246,10 +274,12 @@
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
                                 <span class="bi bi-hdd-network h2 text-old-blue" data-icon="uiw:safety"></span>
-                                <h5 class="fw-bold text-old-blue mb-2 ms-2">{{ __('localization.home-content.section-four.card-four.title') }}</h>
+                                <h5 class="fw-bold text-old-blue mb-2 ms-2">
+                                    {{ __('localization.home-content.section-four.card-four.title') }}</h>
                             </div>
                             <div class="feature-content">
-                                <p class="h6 text-old-blue">{{ __('localization.home-content.section-four.card-four.content') }}
+                                <p class="h6 text-old-blue">
+                                    {{ __('localization.home-content.section-four.card-four.content') }}
                                 </p>
                             </div>
                         </div>
@@ -260,10 +290,12 @@
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
                                 <span class="bi bi-person-gear h2 text-old-blue" data-icon="uiw:safety"></span>
-                                <h5 class="fw-bold text-old-blue mb-2 ms-2">{{ __('localization.home-content.section-four.card-five.title') }}</h>
+                                <h5 class="fw-bold text-old-blue mb-2 ms-2">
+                                    {{ __('localization.home-content.section-four.card-five.title') }}</h>
                             </div>
                             <div class="feature-content">
-                                <p class="h6 text-old-blue">{{ __('localization.home-content.section-four.card-five.content') }}
+                                <p class="h6 text-old-blue">
+                                    {{ __('localization.home-content.section-four.card-five.content') }}
                                 </p>
                             </div>
                         </div>
@@ -434,13 +466,16 @@
                                     <h6 class="fw-bold text-old-blue">{{ __('localization.article') }}</h6>
                                     <div class="d-flex align-items-center">
                                         <span class="bi bi-calendar-range h6 me-2 text-old-blue"></span>
-                                        <h6 class="fw-bold text-old-blue">{{ \Carbon\Carbon::parse('2025-01-05')->translatedFormat(__('j F Y')) }}</h6>
+                                        <h6 class="fw-bold text-old-blue">
+                                            {{ \Carbon\Carbon::parse('2025-01-05')->translatedFormat(__('j F Y')) }}</h6>
                                     </div>
                                 </div>
                                 <h6 class="fw-bold text-old-blue">Investing in Land: A Guide for Beginners</h2>
                                     <div class="mt-auto pt-3">
                                         <a href="/detail-article" class="fw-bold text-decoration-none h6 text-old-blue">
-                                            <span class="border-bottom border-old-blue">{{ __('localization.read') }}</span> {{ __('localization.more') }}
+                                            <span
+                                                class="border-bottom border-old-blue">{{ __('localization.read') }}</span>
+                                            {{ __('localization.more') }}
                                         </a>
                                     </div>
                             </div>
@@ -454,14 +489,17 @@
                                     <h6 class="fw-bold text-old-blue">{{ __('localization.article') }}</h6>
                                     <div class="d-flex align-items-center">
                                         <span class="bi bi-calendar-range h6 me-2 text-old-blue"></span>
-                                        <h6 class="fw-bold text-old-blue">{{ \Carbon\Carbon::parse('2025-01-03')->translatedFormat(__('j F Y')) }}</h6>
+                                        <h6 class="fw-bold text-old-blue">
+                                            {{ \Carbon\Carbon::parse('2025-01-03')->translatedFormat(__('j F Y')) }}</h6>
                                     </div>
                                 </div>
                                 <h6 class="fw-bold text-old-blue">Unlocking Profits in Land Investment: Smart Tips and
                                     Tricks for 2025</h2>
                                     <div class="mt-auto pt-3">
                                         <a href="/detail-article" class="fw-bold text-decoration-none h6 text-old-blue">
-                                            <span class="border-bottom border-old-blue">{{ __('localization.read') }}</span> {{ __('localization.more') }}
+                                            <span
+                                                class="border-bottom border-old-blue">{{ __('localization.read') }}</span>
+                                            {{ __('localization.more') }}
                                         </a>
                                     </div>
                             </div>
@@ -475,14 +513,17 @@
                                     <h6 class="fw-bold text-old-blue">{{ __('localization.article') }}</h6>
                                     <div class="d-flex align-items-center">
                                         <span class="bi bi-calendar-range h6 me-2 text-old-blue"></span>
-                                        <h6 class="fw-bold text-old-blue">{{ \Carbon\Carbon::parse('2025-01-01')->translatedFormat(__('j F Y')) }}</h6>
+                                        <h6 class="fw-bold text-old-blue">
+                                            {{ \Carbon\Carbon::parse('2025-01-01')->translatedFormat(__('j F Y')) }}</h6>
                                     </div>
                                 </div>
                                 <h6 class="fw-bold text-old-blue">Comparing Land Investment vs. Other Property Investments:
                                     Which is More Profitable?</h2>
                                     <div class="mt-auto pt-3">
                                         <a href="/detail-article" class="fw-bold text-decoration-none h6 text-old-blue">
-                                            <span class="border-bottom border-old-blue">{{ __('localization.read') }}</span> {{ __('localization.more') }}
+                                            <span
+                                                class="border-bottom border-old-blue">{{ __('localization.read') }}</span>
+                                            {{ __('localization.more') }}
                                         </a>
                                     </div>
                             </div>
@@ -838,13 +879,16 @@
                 <div class="col-md-6">
                     <form action="">
                         <div class="form-group mb-3">
-                            <input type="text" class="form-control form-control-lg" placeholder="{{ __('localization.name') }}">
+                            <input type="text" class="form-control form-control-lg"
+                                placeholder="{{ __('localization.name') }}">
                         </div>
                         <div class="form-group mb-3">
-                            <input type="email" class="form-control form-control-lg" placeholder="{{ __('localization.email.title') }}">
+                            <input type="email" class="form-control form-control-lg"
+                                placeholder="{{ __('localization.email.title') }}">
                         </div>
                         <div class="form-group float-end">
-                            <button class="btn btn-light btn-lg fw-bold text-old-blue">{{ __('localization.submit') }}</button>
+                            <button
+                                class="btn btn-light btn-lg fw-bold text-old-blue">{{ __('localization.submit') }}</button>
                         </div>
                     </form>
                 </div>

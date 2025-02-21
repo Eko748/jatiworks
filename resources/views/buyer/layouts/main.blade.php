@@ -4,6 +4,15 @@
 <head>
     @include('buyer.layouts.script.topscript')
     <link rel="stylesheet" href="{{ asset('assets/css/notyf.min.css') }}">
+    <style>
+        .bg-green-gradient {
+            background: radial-gradient(circle at 50% 50%, #95efb1, #055940);
+        }
+
+        .bg-green-old {
+            background: #055940;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,7 +32,7 @@
     <script src="{{ asset('assets/js/restAPI.js') }}"></script>
     <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/notyf.min.js') }}"></script>
-        <script>
+    <script>
         const notyf = new Notyf({
             position: {
                 x: 'center',

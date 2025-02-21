@@ -35,14 +35,14 @@
             </ul>
             <div class="d-flex" role="search">
                 <div class="dropdown-center">
-                    <a class="btn border-0 fw-bold dropdown-toggle me-2 py-2" href="#" role="button"
+                    {{-- <a class="btn border-0 fw-bold dropdown-toggle me-2 py-2" href="#" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         @if (App::getLocale() == 'id')
                             <img src="{{ asset('assets/img/lang/ID.png') }}" alt="">
                         @else
                             <img src="{{ asset('assets/img/lang/GB.png') }}" alt="">
                         @endif
-                    </a>
+                    </a> --}}
                     <ul class="dropdown-menu" style="min-width: auto">
                         <li>
                             <a class="dropdown-item fw-bold text-old-blue"

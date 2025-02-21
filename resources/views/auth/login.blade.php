@@ -33,7 +33,7 @@
                         </div>
                         <button type="submit" class="btn btn-dark w-100 mb-4 btn-lg fs-6 fw-bold">Sign In</button>
                     </form>
-                    <p class="text-muted text-center">Don't have an account? <a href="/register"
+                    <p class="text-muted text-center">Don't have an account? <a href="{{ route('register.index') }}"
                             class="text-decoration-none fw-bold">Sign Up</a></p>
                     <p class=" fw-bold text-muted mt-5 text-center">© {{ now()->year }} JATIWORKS <br> All rights
                         reserved.</p>
