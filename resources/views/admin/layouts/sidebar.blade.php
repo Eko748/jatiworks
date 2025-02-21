@@ -25,12 +25,12 @@
                     </div>
                 </li>
             </a>
-            <a href="{{ route('admin.user.index') }}" class="text-decoration-none">
+            <a href="{{ route('admin.katalog.index') }}" class="text-decoration-none">
                 <li
-                    class="mb-3 neumorphic-card sidebar-item ">
-                    <div class="d-flex align-items-center neu-text gap-2 sidebar-button">
-                        <i class="fas fa-cogs"></i>
-                        <span class="sidebar-text">Pengaturan</span>
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.katalog.index') ? 'active' : '' }}">
+                    <div class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.katalog.index') ? 'active' : '' }}">
+                        <i class="fas fa-folder"></i>
+                        <span class="sidebar-text">Catalog</span>
                     </div>
                 </li>
             </a>

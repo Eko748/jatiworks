@@ -143,7 +143,6 @@
         </div>
     </section>
 
-
     <section id="investments-section" class="bg-old-blue-sec">
         <div class="container pt-5 pb-5">
             <h3 class="heading fw-bold">{{ __('localization.home-content.section-three.title') }}</h3>
@@ -217,21 +216,21 @@
     <section id="why-ailand" class=" bg-old-blue-tri">
         <div class="container pt-5 pb-5">
             <div class="section-header">
-                <h3 class="fw-bold text-old-blue mb-5">{!! __('localization.home-content.section-four.title') !!}</h3>
-                {{-- <div class="section-underline mb-4"></div> --}}
+                <h3 class="fw-bold text-old-blue mb-5">Why Jatiworks is The Best Choice for furniture supply chain ?</h3>
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-smooth bg-old-blue-sec border-0" style="border-radius: 15px">
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
-                                <span class="bi bi-shield-check h2 text-old-blue" data-icon="uiw:safety"></span>
+                                <span class="bi bi-headset h2 text-old-blue" data-icon="uiw:safety"></span>
                                 <h5 class="fw-bold text-old-blue mb-2 ms-2">
-                                    {{ __('localization.home-content.section-four.card-one.title') }}</h>
+                                    End-to-End Support
+                                </h5>
                             </div>
                             <div class="feature-content">
                                 <p class="h6 text-old-blue">
-                                    {{ __('localization.home-content.section-four.card-one.content') }}
+                                    Jatiworks handles ordering, production, and delivery for buyers.
                                 </p>
                             </div>
                         </div>
@@ -241,13 +240,14 @@
                     <div class="card h-100 shadow-smooth  bg-old-blue-sec border-0" style="border-radius: 15px">
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
-                                <span class="bi bi-people h2 text-old-blue" data-icon="uiw:safety"></span>
+                                <span class="bi bi-check2-circle h2 text-old-blue" data-icon="uiw:safety"></span>
                                 <h5 class="fw-bold text-old-blue mb-2 ms-2">
-                                    {{ __('localization.home-content.section-four.card-two.title') }}</h>
+                                    Sourcing & Quality Assurance
+                                </h5>
                             </div>
                             <div class="feature-content">
                                 <p class="h6 text-old-blue">
-                                    {{ __('localization.home-content.section-four.card-two.content') }}
+                                    Guaranteed high-quality materials with strict quality control.
                                 </p>
                             </div>
                         </div>
@@ -257,13 +257,14 @@
                     <div class="card h-100 shadow-smooth  bg-old-blue-sec border-0" style="border-radius: 15px">
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
-                                <span class="bi bi-cpu h2 text-old-blue" data-icon="uiw:safety"></span>
+                                <span class="bi bi-brush h2 text-old-blue" data-icon="uiw:safety"></span>
                                 <h5 class="fw-bold text-old-blue mb-2 ms-2">
-                                    {{ __('localization.home-content.section-four.card-three.title') }}</h>
+                                    Custom Design
+                                </h5>
                             </div>
                             <div class="feature-content">
                                 <p class="h6 text-old-blue">
-                                    {{ __('localization.home-content.section-four.card-three.content') }}
+                                    Buyers can order furniture designs tailored to their project needs.
                                 </p>
                             </div>
                         </div>
@@ -273,29 +274,14 @@
                     <div class="card h-100 shadow-smooth  bg-old-blue-sec border-0" style="border-radius: 15px">
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
-                                <span class="bi bi-hdd-network h2 text-old-blue" data-icon="uiw:safety"></span>
+                                <span class="bi bi-boxes h2 text-old-blue" data-icon="uiw:safety"></span>
                                 <h5 class="fw-bold text-old-blue mb-2 ms-2">
-                                    {{ __('localization.home-content.section-four.card-four.title') }}</h>
+                                    Flexible MOQ
+                                </h5>
                             </div>
                             <div class="feature-content">
                                 <p class="h6 text-old-blue">
-                                    {{ __('localization.home-content.section-four.card-four.content') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-smooth  bg-old-blue-sec border-0" style="border-radius: 15px">
-                        <div class="card-body p-4">
-                            <div class="feature-icon d-flex align-items-center">
-                                <span class="bi bi-person-gear h2 text-old-blue" data-icon="uiw:safety"></span>
-                                <h5 class="fw-bold text-old-blue mb-2 ms-2">
-                                    {{ __('localization.home-content.section-four.card-five.title') }}</h>
-                            </div>
-                            <div class="feature-content">
-                                <p class="h6 text-old-blue">
-                                    {{ __('localization.home-content.section-four.card-five.content') }}
+                                    Orders can be placed in small or large quantities as needed.
                                 </p>
                             </div>
                         </div>

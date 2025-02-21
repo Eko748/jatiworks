@@ -107,7 +107,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
 
     // Katalog Management
     Route::get('/katalog', [KatalogController::class, 'index'])->name('admin.katalog.index');
-    Route::get('/katalog-store', [KatalogController::class, 'store'])->name('admin.katalog.index');
+    Route::get('/katalog-store', [KatalogController::class, 'store'])->name('admin.katalog.store');
     Route::get('/getdatakatalog', [KatalogController::class, 'getdatakatalog'])->name('getdatakatalog');
 });
 
