@@ -13,7 +13,7 @@
             </div>
             <div class="col-md-4 d-flex align-items-center justify-content-center">
                 <div class="login-form w-75">
-                    <h2 class="fw-bold mb-4 text-dark text-center">Welcome Back</h2>
+                    <h2 class="fw-bold mb-4 text-dark text-center">Login Your Account</h2>
                     <form>
                         <div class="mb-3">
                             <label for="" class="form-label fw-bold text-dark">Email</label>
@@ -30,13 +30,12 @@
                                 <input class="form-check-input" type="checkbox" id="rememberMe">
                                 <label class="form-check-label text-dark" for="rememberMe">Remember Me</label>
                             </div>
-                            <a href="#" class="text-decoration-none">Forgot Password?</a>
                         </div>
                         <button type="submit" class="btn btn-dark w-100 mb-4 btn-lg fs-6 fw-bold">Sign In</button>
                     </form>
                     <p class="text-muted text-center">Don't have an account? <a href="/register"
                             class="text-decoration-none fw-bold">Sign Up</a></p>
-                    <p class=" fw-bold text-muted mt-5 text-center">© 2025 PT AILAND GLOBAL INVESTMENTS <br> All rights
+                    <p class=" fw-bold text-muted mt-5 text-center">© {{ now()->year }} JATIWORKS <br> All rights
                         reserved.</p>
                 </div>
             </div>

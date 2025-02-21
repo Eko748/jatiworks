@@ -43,9 +43,9 @@
                         </div>
                         <button type="submit" class="btn btn-dark btn-lg fs-6 w-100 mb-4 fw-bold">Sign Up</button>
                     </form>
-                    <p class="text-muted text-center">Already have an account? <a href="/login"
+                    <p class="text-muted text-center">Already have an account? <a href="{{ route('login.index') }}"
                             class="text-decoration-none fw-bold">Sign In</a></p>
-                    <p class="fw-bold text-muted mt-5 text-center">© {{ now()->year }} Jatiworks <br> All rights
+                    <p class="fw-bold text-muted mt-5 text-center">© {{ now()->year }} JATIWORKS <br> All rights
                         reserved.</p>
                 </div>
             </div>
