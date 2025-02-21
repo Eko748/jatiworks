@@ -31,7 +31,7 @@ class KatalogController extends Controller
         $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
         $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
 
-        $query = Katalog::with(['category'])
+        $query = Katalog::with(['category', 'file'])
             ->orderBy('id', $meta['orderBy']);
 
         if (!empty($request['search'])) {
@@ -66,9 +66,15 @@ class KatalogController extends Controller
                 'category' => $item->category->map(function ($category) {
                     return [
                         'id_category' => $category->id,
-                        'name_category'        => $category->name_category,
+                        'name'        => $category->name,
                     ];
                 }),
+                'file' => $item->file->map(function ($file) {
+                    return [
+                        'id'        => $file->id,
+                        'file_name' => $file->file_name,
+                    ];
+                })
             ];
         });
 

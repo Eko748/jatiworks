@@ -16,4 +16,9 @@ class Katalog extends Model
     {
         return $this->belongsToMany(Category::class, 'post_category', 'id_katalog', 'id_category');
     }
+
+    public function file()
+    {
+        return $this->hasMany(File::class, 'id_katalog', 'id');
+    }
 }
