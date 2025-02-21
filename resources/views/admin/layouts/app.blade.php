@@ -20,7 +20,9 @@
     <div class="d-flex flex-column flex-grow-1">
         @include('admin.layouts.header')
         @include('admin.layouts.navbar')
-        @yield('content')
+        <main id="main-content" class="flex-grow-1 p-3 position-relative">
+            @yield('content')
+        </main>
         @include('admin.layouts.footer')
     </div>
 

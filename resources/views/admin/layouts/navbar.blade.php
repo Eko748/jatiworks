@@ -1,5 +1,5 @@
 <nav aria-label="breadcrumb"
-    class="p-3 neumorphic-breadcrumb mt-4 mx-4 d-flex justify-content-between align-items-center">
+    class="p-3 neumorphic-breadcrumb mt-3 mx-3 d-flex justify-content-between align-items-center">
     <div class="breadcrumb-container">
         <a href="{{ route('dashboard.index') }}" class="breadcrumb-text text-decoration-none fw-bold">
             <i class="fas fa-home"></i>

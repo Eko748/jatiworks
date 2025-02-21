@@ -1,4 +1,4 @@
-<header class="p-4 position-relative neumorphic-header">
+<header class="p-3 position-relative neumorphic-header">
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-2">
             <button id="mobileToggle" onclick="toggleSidebar()" class="toggle-btn neumorphic-card d-block d-md-none">

@@ -317,7 +317,7 @@ body {
 } */
 
 .table tbody tr:hover {
-    transform: scale(1.01);
+    /* transform: scale(1.01); */
     box-shadow: 2px 2px 5px var(--shadow-dark),
         -2px -2px 5px var(--shadow-light);
 }
@@ -333,7 +333,6 @@ body {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 14px;
     color: var(--text-color);
     pointer-events: none;
 }
@@ -343,7 +342,6 @@ body {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 14px;
     color: var(--text-color);
     pointer-events: none;
 }

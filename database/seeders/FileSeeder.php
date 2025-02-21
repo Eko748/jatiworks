@@ -20,18 +20,18 @@ class FileSeeder extends Seeder
         ]);
         DB::table('file')->insert([
             'id_katalog' => 2,
-            'file_name'  => 'desain_1.jpg'
+            'file_name'  => 'desain_2.jpg'
         ]);
         DB::table('file')->insert([
             'id_katalog' => 3,
-            'file_name'  => 'desain_1.jpg'
+            'file_name'  => 'desain_2.jpg'
         ]);
         DB::table('file')->insert([
             'id_katalog' => 1,
-            'file_name'  => 'desain_1.jpg'
+            'file_name'  => 'desain_2.jpg'
         ]);
         DB::table('file')->insert([
-            'id_katalog' => 1,
+            'id_katalog' => 3,
             'file_name'  => 'desain_1.jpg'
         ]);
     }
