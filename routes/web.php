@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
@@ -80,6 +81,8 @@ Route::get('/', function () {
     return view('buyer.pages.home.index');
 });
 
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 
 // Login Routes
@@ -111,10 +114,15 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::post('/category-store', [CategoryController::class, 'store'])->name('admin.category.store');
     Route::get('/getdatacategory', [CategoryController::class, 'getdatacategory'])->name('getdatacategory');
 
-    // Katalog Management
+    // Catalogue Management
     Route::get('/katalog', [KatalogController::class, 'index'])->name('admin.katalog.index');
     Route::post('/katalog-store', [KatalogController::class, 'store'])->name('admin.katalog.store');
     Route::get('/getdatakatalog', [KatalogController::class, 'getdatakatalog'])->name('getdatakatalog');
+
+    // Article Management
+    Route::get('/article', [ArticleController::class, 'index'])->name('admin.article.index');
+    Route::post('/article-store', [ArticleController::class, 'store'])->name('admin.article.store');
+    Route::get('/getdataarticle', [ArticleController::class, 'getdataarticle'])->name('getdataarticle');
 });
 
 // Buyer Routes (buyer only)

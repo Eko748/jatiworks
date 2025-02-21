@@ -57,7 +57,20 @@ class KatalogController extends Controller
             'total_pages'  => $data->lastPage()
         ];
 
-        $mappedData = $data->map(function ($item) {
+        $data = [
+            'data' => $data->items(),
+            'meta' => $paginationMeta
+        ];
+
+        if (empty($data['data'])) {
+            return response()->json([
+                'status_code' => 400,
+                'errors' => true,
+                'message' => 'Tidak ada data'
+            ], 400);
+        }
+
+        $mappedData = collect($data['data'])->map(function ($item) {
             return [
                 'id'         => $item->id,
                 'item_name'  => $item->item_name,
@@ -81,20 +94,12 @@ class KatalogController extends Controller
             ];
         });
 
-        if ($mappedData->isEmpty()) {
-            return response()->json([
-                'status_code' => 400,
-                'errors'      => true,
-                'message'     => 'Empty Data'
-            ], 400);
-        }
-
         return response()->json([
             'data'       => $mappedData,
             'status_code' => 200,
-            'errors'     => false,
+            'errors'     => true,
             'message'    => 'Success',
-            'pagination' => $paginationMeta
+            'pagination' => $data['meta']
         ], 200);
     }
 

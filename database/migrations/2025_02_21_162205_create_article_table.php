@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('katalog', function (Blueprint $table) {
+        Schema::create('article', function (Blueprint $table) {
             $table->id();
-            $table->string('item_name');
-            $table->string('material');
-            $table->decimal('length');
-            $table->decimal('width');
-            $table->decimal('height');
-            $table->text('desc');
+            $table->string('file_name');
+            $table->string('title');
+            $table->string('desc');
+            $table->enum('status',['Yes','No'])->nullable();
+            $table->dateTime('startDate')->nullable();
+            $table->dateTime('endDate')->nullable();
             $table->timestamps();
-            $table->enum('unit',['mm', 'm', 'cm']);
             $table->softDeletes();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('design');
+        Schema::dropIfExists('article');
     }
 };
