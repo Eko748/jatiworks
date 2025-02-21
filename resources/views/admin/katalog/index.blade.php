@@ -11,23 +11,29 @@
     <main id="main-content" class="flex-grow-1 p-4 position-relative">
         <div class="row">
             <div class="col-md-12">
-                <div class="d-flex align-items-center mb-3 gap-3">
-                    <div class="position-relative">
-                        <input id="tb-search" class="tb-search form-control neumorphic-card ps-3 pe-5" type="search"
-                            name="search" placeholder="Search Data" aria-label="search" style="width: 200px;">
-                        <i class="fas fa-search search-icon"></i>
-                    </div>
-                    <div class="position-relative">
-                        <select name="limitPage" id="limitPage" class="form-control neumorphic-card pe-5">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                        </select>
-                        <i class="fas fa-list select-icon"></i>
-                    </div>
-                    <button type="button" class="add-data neumorphic-button btn btn-md ms-auto">
+                <div class="d-flex align-items-center mb-3 gap-1 flex-wrap">
+                    <button type="button" class="add-data neumorphic-button btn btn-md">
                         <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
                     </button>
+                    <button type="button" class="filter-data neumorphic-button btn btn-md">
+                        <i class="fas fa-filter"></i><span class="d-none d-sm-inline ms-1">Filter</span>
+                    </button>
+                    <div class="d-flex align-items-center gap-1 ms-auto">
+                        <div class="position-relative">
+                            <select name="limitPage" id="limitPage" class="form-control neumorphic-card me-3">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                            <i class="fas fa-list select-icon"></i>
+                        </div>
+                        <div class="position-relative">
+                            <input id="tb-search" class="tb-search form-control neumorphic-card ps-3 pe-5 w-100 w-sm-auto"
+                                type="search" name="search" placeholder="Search Data" aria-label="search"
+                                style="max-width: 165px;">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="table-responsive neumorphic-card p-3 mb-3">
                     <table class="table m-0">
@@ -145,19 +151,19 @@
                         <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
                                 ${element.images.map((img, i) => `
-                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                        </div>
-                                    `).join('')}
+                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                            </div>
+                                        `).join('')}
                             </div>
                             ${element.images.length > 1 ? `
-                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                        <i class="fas fa-chevron-left fs-3"></i> <!-- FontAwesome -->
-                                    </button>
-                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                        <i class="fas fa-chevron-right fs-3"></i>
-                                    </button>
-                                ` : ''}
+                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                            <i class="fas fa-chevron-left fs-3"></i> <!-- FontAwesome -->
+                                        </button>
+                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                            <i class="fas fa-chevron-right fs-3"></i>
+                                        </button>
+                                    ` : ''}
                         </div>
                     ` : '-';
 
