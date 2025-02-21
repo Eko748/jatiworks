@@ -11,7 +11,7 @@
                     <a href="#" class="social-link me-4">
                         <span class="bi bi-facebook h2 text-white"></span>
                     </a>
-                    <a href="https://www.instagram.com/ailand_id/" class="social-link me-4">
+                    <a href="#" class="social-link me-4">
                         <span class="bi bi-instagram h2 text-white"></span>
                     </a>
                     <a href="#" class="social-link me-4">

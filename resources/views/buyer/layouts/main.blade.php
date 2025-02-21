@@ -24,7 +24,7 @@
 </head>
 
 <body>
-    <button class="btn-floating bg-green-old">
+    <button class="btn-floating pulse-button bg-green-old">
         <span class="bi bi-whatsapp h3 text-white"></span>
         <p class="floating-admin" style="font-size: 13px"><a
                 href="https://wa.me/6282217101985?text=Halo%20saya%20butuh%20informasi%20lebih%20lanjut" target="_blank"

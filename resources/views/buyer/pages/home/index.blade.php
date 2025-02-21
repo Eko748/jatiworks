@@ -14,7 +14,7 @@
                             </h3>
                             <div class="row mt-auto">
                                 <div class="d-grid col-md-6 mb-3">
-                                    <a href="https://wa.me/6282111780074?text=Hello,%20I%20am%20interested%20in%20investing.%20Please%20provide%20more%20information."
+                                    <a href="#"
                                         target="_blank" class="btn btn-light fw-bold text-old-blue fs-6 py-2 pulse">
                                         <i class="bi bi-play-circle"></i>
                                         What is <span id="land">Jatiworks?</span>
@@ -88,8 +88,8 @@
     </section>
     <section id="investments-section" class="bg-green-white">
         <div class="container pt-5 pb-5">
-            <h3 class="heading fw-bold">Our Catalogue</h3>
-            <h6 class="subtitle h6 mb-5">Check our catalog which has the design you want</h6>
+            <h3 class="heading fw-bold">Our Collection</h3>
+            <h6 class="subtitle h6 mb-5">Explore Our Collection: Timeless Craftsmanship, Global Quality</h6>
             <div class="scrollable-cards overflow-x-auto">
                 <div class="d-inline-flex gap-3">
                     <div class="card shadow-smooth bg-green-old card-radius h-100 card-w">
@@ -99,24 +99,27 @@
                                 <img class="card-img-top card-radius mb-3"
                                     src="{{ asset('assets/img/public/catalogue_1.jpg') }}" alt="Land Image">
                             </div>
-                            <h5 class="fw-bold text-white">Solar Wood Mini House</h5>
+                            <h5 class="fw-bold text-white">SAHL X1 - Hybrid Trash Can
+                            </h5>
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
-                                <p class="h6 fw-bold text-white">Materials: Teak Wood</p>
+                                <p class="h6 fw-bold text-white">Material : Reclaimed pallet wood, recycled acrylic
+                                </p>
                             </div>
                             <div class="d-flex flex-column flex-md-row text-white">
                                 <div class="me-md-auto">
                                     <p class="fw-bold">Dimensions:</p>
                                     <ul>
-                                        <li>Length: 6m</li>
-                                        <li>Width: 3m</li>
-                                        <li>Height: 4m</li>
+                                        <li>Width: 346cm</li>
+                                        <li>Depth: 426cm</li>
+                                        <li>Height: 502cm</li>
                                     </ul>
                                 </div>
                                 <div class="mt-3 mt-md-0">
                                     <p class="fw-bold">Category:</p>
-                                    <span class="badge bg-light text-dark me-1">Eco-Friendly</span>
-                                    <span class="badge bg-light text-dark">Sustainable Housing</span>
+                                    <span class="badge bg-light text-dark me-1">Sustainable materials</span>
+                                    <span class="badge bg-light text-dark">Renewable energy</span>
+                                    <span class="badge bg-light text-dark">Home decor</span>
                                 </div>
                             </div>
                         </div>
@@ -128,24 +131,27 @@
                                 <img class="card-img-top card-radius mb-3"
                                     src="{{ asset('assets/img/public/catalogue_2.jpg') }}" alt="Land Image">
                             </div>
-                            <h5 class="fw-bold text-white">Minimalis Lamp</h5>
+                            <h5 class="fw-bold text-white">ALBOND - Smart Lantern
+                            </h5>
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
-                                <p class="h6 fw-bold text-white">Materials: Teak Wood</p>
+                                <p class="h6 fw-bold text-white">
+                                    Material : teak, acrylic
+                                </p>
                             </div>
                             <div class="d-flex flex-column flex-md-row text-white">
                                 <div class="me-md-auto">
                                     <p class="fw-bold">Dimensions:</p>
                                     <ul>
-                                        <li>Length: 30cm</li>
-                                        <li>Width: 30cm</li>
-                                        <li>Height: 60cm</li>
+                                        <li>Width: 18cm</li>
+                                        <li>Depth: 18cm</li>
+                                        <li>Height: 40cm</li>
                                     </ul>
                                 </div>
                                 <div class="mt-3 mt-md-0">
                                     <p class="fw-bold">Category:</p>
-                                    <span class="badge bg-light text-dark me-1">Home Decor</span>
-                                    <span class="badge bg-light text-dark">Minimalist Design</span>
+                                    <span class="badge bg-light text-dark me-1">Renewable energy</span>
+                                    <span class="badge bg-light text-dark">Home decor</span>
                                 </div>
                             </div>
                         </div>
@@ -154,11 +160,10 @@
             </div>
         </div>
     </section>
-
     <section id="why-ailand" class="bg-green-young">
         <div class="container pt-5 pb-5">
             <div class="section-header">
-                <h3 class="fw-bold text-old-blue mb-5">Why Jatiworks is The Best Choice for furniture supply chain ?</h3>
+                <h3 class="fw-bold text-old-blue mb-5">Why Jatiworks? The Smart Choice for Furniture Sourcing</h3>
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-4 mb-4">
@@ -233,9 +238,9 @@
                     <div class="card h-100 shadow-smooth  bg-old-blue-sec border-0" style="border-radius: 15px">
                         <div class="card-body p-4">
                             <div class="feature-icon d-flex align-items-center">
-                                <span class="bi bi-boxes h2 text-old-blue" data-icon="uiw:safety"></span>
+                                <span class="bi bi-cash-stack h2 text-old-blue" data-icon="uiw:safety"></span>
                                 <h5 class="fw-bold text-old-blue mb-2 ms-2">
-                                    Competitive Pricing Without Middlemen
+                                    Competitive Pricing
                                 </h5>
                             </div>
                             <div class="feature-content">

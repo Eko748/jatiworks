@@ -25,6 +25,9 @@
                         </select>
                         <i class="fas fa-list select-icon"></i>
                     </div>
+                    <button type="button" class="add-data neumorphic-button btn btn-md ms-auto">
+                        <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
+                    </button>
                 </div>
                 <div class="table-responsive neumorphic-card p-3 mb-3">
                     <table class="table m-0">
@@ -139,24 +142,24 @@
             dataList.forEach((element, index) => {
                 let imageCarousel = element.images.length ?
                     `
-                <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        ${element.images.map((img, i) => `
-                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                    <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                </div>
-                            `).join('')}
-                    </div>
-                    ${element.images.length > 1 ? `
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        ` : ''}
-                </div>
-            ` : '-';
+                        <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                ${element.images.map((img, i) => `
+                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                        </div>
+                                    `).join('')}
+                            </div>
+                            ${element.images.length > 1 ? `
+                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                        <i class="fas fa-chevron-left fs-3"></i> <!-- FontAwesome -->
+                                    </button>
+                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                        <i class="fas fa-chevron-right fs-3"></i>
+                                    </button>
+                                ` : ''}
+                        </div>
+                    ` : '-';
 
                 getDataTable += `
                 <tr class="neumorphic-tr">
