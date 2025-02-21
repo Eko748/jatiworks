@@ -9,6 +9,14 @@
             background: radial-gradient(circle at 50% 50%, #95efb1, #055940);
         }
 
+        .bg-green-white {
+            background: #d4f9e0;
+        }
+
+        .bg-green-young {
+            background: #a8f3c0;
+        }
+
         .bg-green-old {
             background: #055940;
         }
@@ -43,6 +51,11 @@
     @include('buyer.layouts.partials.footer')
     @include('buyer.layouts.script.botscript')
     @yield('js')
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            await initPageLoad();
+        });
+    </script>
 </body>
 
 </html>

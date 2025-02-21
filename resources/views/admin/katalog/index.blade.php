@@ -174,7 +174,6 @@
             document.getElementById('countPage').textContent = `${display_from} - ${display_to}`;
         }
 
-
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),

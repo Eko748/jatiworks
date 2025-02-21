@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="/">
-            <img src="{{ asset('assets/img/ail.png') }}" alt="Logo" height="30">
+            <img src="{{ asset('assets/img/public/favicon.png') }}" alt="Logo" height="30">
         </a>
         <button class="navbar-toggler border-0 shadow-none p-0" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -16,15 +16,11 @@
                 </li>
                 <li class="nav-item pe-4">
                     <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/investing') ? 'active' : '' }}"
-                        href="/investing">{{ __('localization.investing') }}</a>
+                        href="/investing">Catalogue</a>
                 </li>
                 <li class="nav-item pe-4">
                     <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/publishing') ? 'active' : '' }}"
-                        href="/publishing">{{ __('localization.publishing') }}</a>
-                </li>
-                <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/trading') ? 'active' : '' }}"
-                        href="/trading">{{ __('localization.trading') }}</a>
+                        href="/publishing">Custom Design</a>
                 </li>
                 @auth
                     <li class="nav-item pe-4">

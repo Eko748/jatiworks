@@ -120,5 +120,10 @@
                 notyf.error(resp.data.message || 'An error occurred.');
             }
         });
+
+        async function initPageLoad() {
+            await Promise.all([
+            ])
+        }
     </script>
 @endsection
