@@ -169,7 +169,7 @@
 
                 if (getDataRest.status == 200) {
                     let rest_data = getDataRest.data.data;
-                    notyf.success('Registration successful, redirecting...');
+                    notyf.success('Registration successful');
                     setTimeout(function() {
                         window.location.href = '{{ route('login.index') }}';
                     }, 1000);

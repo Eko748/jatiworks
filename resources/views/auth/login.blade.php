@@ -88,7 +88,7 @@
 
                 if (getDataRest.status == 200) {
                     let rest_data = getDataRest.data.data;
-                    notyf.success('Login berhasil, mengarahkan...');
+                    notyf.success('Login Succesfully');
                     setTimeout(function() {
                         window.location.href = rest_data.route_redirect;
                     }, 1000);
