@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\IsAdmin;
@@ -101,6 +102,11 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     // User Management
     Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
     Route::get('/getdatauser', [UserController::class, 'getdatauser'])->name('getdatauser');
+
+    // Katalog Management
+    Route::get('/katalog', [KatalogController::class, 'index'])->name('admin.katalog.index');
+    Route::get('/katalog-store', [KatalogController::class, 'store'])->name('admin.katalog.index');
+    Route::get('/getdatakatalog', [KatalogController::class, 'getdatakatalog'])->name('getdatakatalog');
 });
 
 // Buyer Routes (buyer only)
