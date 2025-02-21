@@ -14,8 +14,8 @@
                             </h3>
                             <div class="row mt-auto">
                                 <div class="d-grid col-md-6 mb-3">
-                                    <a href="#"
-                                        target="_blank" class="btn btn-light fw-bold text-old-blue fs-6 py-2 pulse">
+                                    <a href="#" target="_blank"
+                                        class="btn btn-light fw-bold text-old-blue fs-6 py-2 pulse">
                                         <i class="bi bi-play-circle"></i>
                                         What is <span id="land">Jatiworks?</span>
                                     </a>
@@ -258,7 +258,7 @@
         <div class="container pb-5 pt-5">
             <div class="section-header">
                 <h3 class="fw-bold text-old-blue">Our Activities</h3>
-                <h6 class="text-old-blue mb-5">Activities in supporting and maintaining the quality of all aspects</h6>
+                <h6 class="text-old-blue mb-5">Crafting Quality, Empowering Communities</h6>
             </div>
             <div class="scrollable-cards">
                 <div class="d-inline-flex gap-3">
@@ -267,22 +267,13 @@
                             class="img-fluid rounded-4">
                         <div class="card mx-2 rounded-4 h-100" style="margin-top: -6rem; z-index: 4; position: relative;">
                             <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="fw-bold text-old-blue">{{ __('localization.article') }}</h6>
-                                    <div class="d-flex align-items-center">
-                                        <span class="bi bi-calendar-range h6 me-2 text-old-blue"></span>
-                                        <h6 class="fw-bold text-old-blue">
-                                            {{ \Carbon\Carbon::parse('2025-01-05')->translatedFormat(__('j F Y')) }}</h6>
-                                    </div>
-                                </div>
-                                <h6 class="fw-bold text-old-blue">Investing in Land: A Guide for Beginners</h2>
-                                    <div class="mt-auto pt-3">
-                                        <a href="/detail-article" class="fw-bold text-decoration-none h6 text-old-blue">
-                                            <span
-                                                class="border-bottom border-old-blue">{{ __('localization.read') }}</span>
-                                            {{ __('localization.more') }}
-                                        </a>
-                                    </div>
+                                <h6 class="fw-bold text-old-blue">
+                                    Empowering Skilled Craftsmen
+                                </h6>
+                                <p>
+                                    Collaborating with small-scale craftsmen while managing buyer orders to ensure seamless
+                                    production.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -291,22 +282,13 @@
                             class="img-fluid rounded-4">
                         <div class="card mx-2 rounded-4 h-100" style="margin-top: -6rem; z-index: 4; position: relative;">
                             <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="fw-bold text-old-blue">{{ __('localization.article') }}</h6>
-                                    <div class="d-flex align-items-center">
-                                        <span class="bi bi-calendar-range h6 me-2 text-old-blue"></span>
-                                        <h6 class="fw-bold text-old-blue">
-                                            {{ \Carbon\Carbon::parse('2025-01-03')->translatedFormat(__('j F Y')) }}</h6>
-                                    </div>
-                                </div>
-                                <h6 class="fw-bold text-old-blue">Carry out loading of goods by paying attention to the quality of the goods</h2>
-                                    <div class="mt-auto pt-3">
-                                        <a href="/detail-article" class="fw-bold text-decoration-none h6 text-old-blue">
-                                            <span
-                                                class="border-bottom border-old-blue">{{ __('localization.read') }}</span>
-                                            {{ __('localization.more') }}
-                                        </a>
-                                    </div>
+                                <h6 class="fw-bold text-old-blue">
+                                    Upskilling for Global Standards
+                                </h6>
+                                <p>
+                                    Training artisans to enhance their craftsmanship and meet international quality
+                                    standards.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -315,22 +297,12 @@
                             class="img-fluid rounded-4">
                         <div class="card mx-2 rounded-4 h-100" style="margin-top: -6rem; z-index: 4; position: relative;">
                             <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="fw-bold text-old-blue">{{ __('localization.article') }}</h6>
-                                    <div class="d-flex align-items-center">
-                                        <span class="bi bi-calendar-range h6 me-2 text-old-blue"></span>
-                                        <h6 class="fw-bold text-old-blue">
-                                            {{ \Carbon\Carbon::parse('2025-01-01')->translatedFormat(__('j F Y')) }}</h6>
-                                    </div>
-                                </div>
-                                <h6 class="fw-bold text-old-blue">Shipping activities to various corners of the world</h6>
-                                    <div class="mt-auto pt-3">
-                                        <a href="/detail-article" class="fw-bold text-decoration-none h6 text-old-blue">
-                                            <span
-                                                class="border-bottom border-old-blue">{{ __('localization.read') }}</span>
-                                            {{ __('localization.more') }}
-                                        </a>
-                                    </div>
+                                <h6 class="fw-bold text-old-blue">
+                                    Seamless Order Fulfillment
+                                </h6>
+                                <p>
+                                    Coordinating shipments to ensure timely and efficient delivery to buyers worldwide.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -343,7 +315,8 @@
             <div class="row w-100">
                 <div class="col-md-6 mb-4 mb-md-0">
                     <h3 class="fw-bold text-white">Stay In Touch with <br class="d-md-none">Jatiworks</h3>
-                    <h6 class="text-white">Get The Latest Informations Sent Directly to Your Email !</h6>
+                    <h6 class="text-white">Get The Latest Informations</h6>
+                    <h6 class="text-white">Sent Directly to Your Email !</h6>
                 </div>
                 <div class="col-md-6">
                     <form action="">
@@ -444,19 +417,19 @@
                 <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         ${element.images.map((img, i) => `
-                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                        <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                    </div>
-                                                `).join('')}
+                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                        </div>
+                                                    `).join('')}
                     </div>
                     ${element.images.length > 1 ? `
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            ` : ''}
+                                                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"></span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"></span>
+                                                    </button>
+                                                ` : ''}
                 </div>
             ` : '-';
 

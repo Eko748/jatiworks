@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'AILand') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/public/favicon.png') }}">
 
     <!-- Fonts -->
     {{-- <link href="https://fonts.bunny.net/css?family=Plus+Jakarta+Sans" rel="stylesheet"> --}}
