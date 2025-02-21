@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\File;
 use App\Models\Katalog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KatalogController extends Controller
 {
@@ -14,16 +17,16 @@ class KatalogController extends Controller
     {
         $this->menu;
         $this->title = [
-            'Data User',
+            'Data Catalog',
         ];
     }
 
     public function index()
     {
-
         $title = $this->title[0];
+        $category = Category::all();
 
-        return view('admin.katalog.index', compact('title'));
+        return view('admin.katalog.index', compact('title', 'category'));
     }
 
     public function getdatakatalog(Request $request)
@@ -93,5 +96,64 @@ class KatalogController extends Controller
             'message'    => 'Success',
             'pagination' => $paginationMeta
         ], 200);
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'item_name'  => 'required|string|max:255',
+                'material'   => 'nullable|string|max:255',
+                'length'     => 'nullable|numeric',
+                'width'      => 'nullable|numeric',
+                'height'     => 'nullable|numeric',
+                'desc'       => 'nullable|string',
+                'category' => 'required|array',
+                'category.*' => 'exists:category,id',
+                'file'      => 'nullable|array',
+                'file.*'    => 'file|mimes:jpg,jpeg,png|max:2048'
+            ]);
+
+            DB::beginTransaction();
+
+            $katalog = Katalog::create([
+                'item_name' => $request->item_name,
+                'material'  => $request->material,
+                'length'    => $request->length,
+                'width'     => $request->width,
+                'height'    => $request->height,
+                'desc'      => $request->desc,
+            ]);
+
+            $katalog->category()->sync($request->category);
+
+            if ($request->hasFile('file')) {
+                foreach ($request->file('file') as $file) {
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('uploads/katalog', $filename, 'public');
+
+                    File::create([
+                        'id_katalog' => $katalog->id,
+                        'file_name'  => $filename
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status_code' => 201,
+                'message'     => 'Catalog added Successful !',
+                'data'        => $katalog->load('category', 'file')
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors'      => true,
+                'message'     => 'Something Wrong !',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
     }
 }
