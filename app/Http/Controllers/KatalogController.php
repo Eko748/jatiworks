@@ -66,7 +66,7 @@ class KatalogController extends Controller
                 'category' => $item->category->map(function ($category) {
                     return [
                         'id_category' => $category->id,
-                        'name'        => $category->name,
+                        'name_category' => $category->name_category,
                     ];
                 }),
                 'file' => $item->file->map(function ($file) {
