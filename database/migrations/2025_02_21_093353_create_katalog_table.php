@@ -19,8 +19,8 @@ return new class extends Migration
             $table->decimal('width');
             $table->decimal('height');
             $table->text('desc');
-            $table->timestamps();
             $table->enum('unit',['mm', 'm', 'cm']);
+            $table->timestamps();
             $table->softDeletes();
         });
     }
