@@ -16,11 +16,11 @@
                 </li>
                 <li class="nav-item pe-4">
                     <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/investing') ? 'active' : '' }}"
-                        href="/investing">Catalogue</a>
+                        href="#">Catalogue</a>
                 </li>
                 <li class="nav-item pe-4">
                     <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/publishing') ? 'active' : '' }}"
-                        href="/publishing">Custom Design</a>
+                        href="#">Custom Design</a>
                 </li>
                 @auth
                     <li class="nav-item pe-4">
