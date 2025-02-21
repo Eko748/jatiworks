@@ -24,14 +24,12 @@
 </head>
 
 <body>
-    <a href="#">
-        <button class="btn-floating pulse-button">
-            <span class="bi bi-whatsapp h3 text-white p-2"></span>
-            <p class="floating-admin" style="font-size: 13px"><a
-                    href="https://wa.me/6282111780074?text=Halo%20saya%20butuh%20informasi%20lebih%20lanjut"
-                    target="_blank" style="color: white; text-decoration: none">ADMIN AILAND</a></p>
-        </button>
-    </a>
+    <button class="btn-floating bg-green-old">
+        <span class="bi bi-whatsapp h3 text-white"></span>
+        <p class="floating-admin" style="font-size: 13px"><a
+                href="https://wa.me/6282217101985?text=Halo%20saya%20butuh%20informasi%20lebih%20lanjut" target="_blank"
+                style="color: white; text-decoration: none">ADMIN JATIWORKS</a></p>
+    </button>
     @include('buyer.layouts.partials.navbar')
     <main>
         @yield('content')
