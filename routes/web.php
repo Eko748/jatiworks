@@ -81,8 +81,6 @@ Route::get('/', function () {
     return view('buyer.pages.home.index');
 });
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 
 // Login Routes

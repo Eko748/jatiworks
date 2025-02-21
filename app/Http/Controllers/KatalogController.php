@@ -115,14 +115,15 @@ class KatalogController extends Controller
                 'height'     => 'nullable|numeric',
                 'desc'       => 'nullable|string',
                 'unit'       => 'string',
-                'category' => 'required|array',
-                'category.*' => 'exists:category,id',
-                'file'      => 'nullable|array',
-                'file.*'    => 'file|mimes:jpg,jpeg,png|max:2048'
+                'category'   => 'required|array',
+                'category.*' => 'string', // Bisa id kategori atau kategori baru dalam teks
+                'file'       => 'nullable|array',
+                'file.*'     => 'file|mimes:jpg,jpeg,png|max:2048'
             ]);
 
             DB::beginTransaction();
 
+            // Buat katalog baru
             $katalog = Katalog::create([
                 'item_name' => $request->item_name,
                 'material'  => $request->material,
@@ -133,8 +134,26 @@ class KatalogController extends Controller
                 'unit'      => $request->unit,
             ]);
 
-            $katalog->category()->sync($request->category);
+            $categoryIds = [];
 
+            foreach ($request->category as $cat) {
+                if (is_numeric($cat)) {
+                    $categoryIds[] = $cat; // Jika sudah ada, langsung gunakan ID-nya
+                } else {
+                    $category = Category::where('name_category', $cat)->first();
+
+                    if (!$category) {
+                        $category = Category::create(['name_category' => $cat]);
+                    }
+
+                    $categoryIds[] = $category->id;
+                }
+            }
+
+            // Hubungkan kategori dengan katalog
+            $katalog->category()->sync($categoryIds);
+
+            // Simpan file jika ada
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
@@ -151,7 +170,7 @@ class KatalogController extends Controller
 
             return response()->json([
                 'status_code' => 201,
-                'message'     => 'Catalog added Successful !',
+                'message'     => 'Catalog added successfully!',
                 'data'        => $katalog->load('category', 'file')
             ], 201);
         } catch (\Exception $e) {
@@ -159,7 +178,7 @@ class KatalogController extends Controller
             return response()->json([
                 'status_code' => 500,
                 'errors'      => true,
-                'message'     => 'Something Wrong !',
+                'message'     => 'Something went wrong!',
                 'error_detail' => $e->getMessage()
             ], 500);
         }
