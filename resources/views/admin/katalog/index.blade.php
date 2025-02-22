@@ -14,7 +14,8 @@
                 <button type="button" class="add-data neumorphic-button btn btn-md">
                     <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
                 </button>
-                <button type="button" id="toggleFilter" class="filter-data neumorphic-button btn btn-md" data-bs-toggle="collapse" data-bs-target="#filterContainer">
+                <button type="button" id="toggleFilter" class="filter-data neumorphic-button btn btn-md"
+                    data-bs-toggle="collapse" data-bs-target="#filterContainer">
                     <i class="fas fa-filter"></i><span class="d-none d-sm-inline ms-1">Filter</span>
                 </button>
                 <div class="d-flex align-items-center gap-1 ms-auto">
@@ -27,7 +28,7 @@
                         <i class="fas fa-list select-icon"></i>
                     </div>
                     <div class="position-relative">
-                        <input id="tb-search" class="tb-search form-control neumorphic-card ps-2 pe-5 w-100 w-sm-auto"
+                        <input id="searchPage" class="tb-search form-control neumorphic-card ps-2 pe-5 w-100 w-sm-auto"
                             type="search" name="search" placeholder="Search Data" aria-label="search"
                             style="max-width: 160px;">
                         <i class="fas fa-search search-icon"></i>
@@ -35,20 +36,24 @@
                 </div>
             </div>
             <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
-                <div class="row">
-                    <div class="col-md-8">
-                        <label for="filterCategory" class="form-label">Category</label>
-                        <select id="filterCategory" class="form-control" multiple>
-                            @foreach ($category as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
-                            @endforeach
-                        </select>
+                <form id="filterForm">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="filterCategory" class="form-label">Category</label>
+                            <select id="filterCategory" class="form-control" multiple>
+                                @foreach ($category as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
+                            <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
+                                    class="fas fa-rotate me-1"></i>Reset</button>
+                            <button type="submit" id="applyFilter" class="btn neumorphic-button-outline"><i
+                                    class="fas fa-circle-check me-1"></i>Apply</button>
+                        </div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end justify-content-end gap-2">
-                        <button id="applyFilter" class="btn neumorphic-button"><i class="fas fa-rotate me-1"></i>Reset</button>
-                        <button id="resetFilter" class="btn neumorphic-button-outline"><i class="fas fa-circle-check me-1"></i>Apply</button>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="table-responsive neumorphic-card p-3 mb-3">
                 <table class="table m-0">
@@ -97,49 +102,61 @@
         let customFilter = {}
         let storageUrl = '{{ asset('storage') }}'
 
-        async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
-            let filterParams = {}
+        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
+            let requestParams = {
+                page: currentPage,
+                limit: defaultLimitPage,
+                ascending: defaultAscending,
+                ...customFilter
+            };
 
-            let getDataRest = await renderAPI(
-                'GET',
-                '{{ route('getdatakatalog') }}', {
-                    page: page,
-                    limit: limit,
-                    ascending: ascending,
-                    search: search,
-                    ...filterParams
-                }
-            ).then(function(response) {
-                return response
-            }).catch(function(error) {
-                let resp = error.response
-                return resp
-            })
+            if (defaultSearch.trim() !== '') {
+                requestParams.search = defaultSearch;
+            }
+
+            let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
+            let thCount = thElements.length;
+
+            let loadingRow = `
+                <tr class="neumorphic-tr">
+                    <td class="text-center fw-bold" colspan="${thCount}">
+                        <div class="neumorphic-loader">
+                            <div class="spinner"></div>
+                        </div>
+                    </td>
+                </tr>`;
+
+            document.getElementById('listData').innerHTML = loadingRow;
+
+            let getDataRest = await renderAPI('GET', '{{ route('getdatakatalog') }}', requestParams)
+                .then(response => response)
+                .catch(error => error.response);
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
                     getDataRest.data.data.map(async item => await handleData(item))
-                )
-                await setListData(handleDataArray, getDataRest.data.pagination)
+                );
+                await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
-                let errorMessage = "Data gagal dimuat"
+                let errorMessage = "Data gagal dimuat";
                 if (getDataRest && getDataRest.data && getDataRest.data.message) {
-                    errorMessage = getDataRest.data.message
+                    errorMessage = getDataRest.data.message;
                 }
 
-                let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th")
-                let thCount = thElements.length
+                let errorRow = `
+                <tr class="neumorphic-tr">
+                    <td class="text-center fw-bold" colspan="${thCount}">
+                        <i class="fas fa-circle-exclamation me-2"></i>${errorMessage}
+                    </td>
+                </tr>`;
 
-                let errorRow = '<tr class="neumorphic-tr">' +
-                    '<td class="text-center fw-bold" colspan="' + thCount +
-                    '"><i class="fas fa-circle-exclamation me-2"></i>' + errorMessage + '</td>' +
-                    '</tr>'
-
-                document.getElementById('listData').innerHTML = errorRow
-                document.getElementById('countPage').textContent = "0 - 0"
-                document.getElementById('totalPage').textContent = "0"
+                document.getElementById('listData').innerHTML = errorRow;
+                document.getElementById('countPage').textContent = "0 - 0";
+                document.getElementById('totalPage').textContent = "0";
             }
         }
+
+
 
         async function handleData(data) {
             return {
@@ -165,19 +182,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                        </div>
-                                    `).join('')}
+                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                        </div>
+                                                                                    `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                        <i class="fas fa-circle-chevron-left fs-3"></i>
-                                    </button>
-                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                        <i class="fas fa-circle-chevron-right fs-3"></i>
-                                    </button>
-                                ` : ''}
+                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                    </button>
+                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                    </button>
+                                                                                ` : ''}
                     </div>
                 ` : '-'
 
@@ -209,12 +226,48 @@
             renderPagination()
         }
 
+        async function filterListData() {
+            document.getElementById('filterForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                customFilter = {
+                    'id_category': Array.from(document.getElementById("filterCategory").selectedOptions)
+                        .map(option => option.value)
+                };
+
+                defaultSearch = document.getElementById("searchPage").value;
+                defaultLimitPage = document.getElementById("limitPage").value;
+                currentPage = 1;
+
+                await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
+                    customFilter);
+            });
+
+            document.getElementById('resetFilter').addEventListener('click', async function() {
+                document.querySelectorAll("#filterForm input, #filterForm textarea, #filterForm select")
+                    .forEach(el => {
+                        el.value = "";
+                    });
+
+                document.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+
+                customFilter = {};
+                defaultSearch = document.getElementById("searchPage").value;
+                defaultLimitPage = document.getElementById("limitPage").value;
+                currentPage = 1;
+
+                await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
+                    customFilter);
+            });
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
-                searchList(),
-                toggleFilter(),
-                multiSelect('#filterCategory', 'Select Categories'),
+                searchListData(),
+                filterListData(),
+                toggleFilterButton(),
+                multiSelectData('#filterCategory', 'Select Categories'),
             ])
         }
     </script>

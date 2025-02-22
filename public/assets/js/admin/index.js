@@ -6,7 +6,7 @@ const notyf = new Notyf({
     }
 });
 
-function multiSelect(isParameter, isPlaceholder) {
+function multiSelectData(isParameter, isPlaceholder) {
     new SlimSelect({
         select: isParameter,
         settings: {
@@ -59,15 +59,21 @@ function tooltip() {
     });
 }
 
-function toggleFilter() {
+function toggleFilterButton() {
     const toggleFilter = document.getElementById("toggleFilter");
     const filterContainer = document.getElementById("filterContainer");
+    const icon = toggleFilter.querySelector("i");
+    const textSpan = toggleFilter.querySelector("span");
 
     filterContainer.addEventListener("show.bs.collapse", function () {
         toggleFilter.classList.add("active");
+        icon.classList.replace("fa-filter", "fa-circle-xmark");
+        textSpan.textContent = "Close";
     });
 
     filterContainer.addEventListener("hide.bs.collapse", function () {
         toggleFilter.classList.remove("active");
+        icon.classList.replace("fa-circle-xmark", "fa-filter");
+        textSpan.textContent = "Filter";
     });
 }

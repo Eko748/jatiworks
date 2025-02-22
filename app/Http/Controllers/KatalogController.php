@@ -42,10 +42,10 @@ class KatalogController extends Controller
             $query->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
         }
 
-        if ($request->has('startDate') && $request->has('endDate')) {
-            $startDate = $request->input('startDate');
-            $endDate = $request->input('endDate');
-            $query->whereBetween('id', [$startDate, $endDate]);
+        if ($request->has('id_category') && is_array($request->id_category) && count($request->id_category) > 0) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->whereIn('category.id', $request->id_category);
+            });
         }
 
         $data = $query->paginate($meta['limit']);
@@ -57,12 +57,7 @@ class KatalogController extends Controller
             'total_pages'  => $data->lastPage()
         ];
 
-        $data = [
-            'data' => $data->items(),
-            'meta' => $paginationMeta
-        ];
-
-        if (empty($data['data'])) {
+        if ($data->isEmpty()) {
             return response()->json([
                 'status_code' => 400,
                 'errors' => true,
@@ -70,7 +65,7 @@ class KatalogController extends Controller
             ], 400);
         }
 
-        $mappedData = collect($data['data'])->map(function ($item) {
+        $mappedData = collect($data->items())->map(function ($item) {
             return [
                 'id'         => $item->id,
                 'item_name'  => $item->item_name,
@@ -80,13 +75,13 @@ class KatalogController extends Controller
                 'height'     => $item->height,
                 'unit'       => $item->unit,
                 'desc'       => $item->desc,
-                'category' => $item->category->map(function ($category) {
+                'category'   => $item->category->map(function ($category) {
                     return [
-                        'id_category' => $category->id,
+                        'id_category'   => $category->id,
                         'name_category' => $category->name_category,
                     ];
                 }),
-                'file' => $item->file->map(function ($file) {
+                'file'       => $item->file->map(function ($file) {
                     return [
                         'id'        => $file->id,
                         'file_name' => $file->file_name,
@@ -98,9 +93,9 @@ class KatalogController extends Controller
         return response()->json([
             'data'       => $mappedData,
             'status_code' => 200,
-            'errors'     => true,
+            'errors'     => false,
             'message'    => 'Success',
-            'pagination' => $data['meta']
+            'pagination' => $paginationMeta
         ], 200);
     }
 

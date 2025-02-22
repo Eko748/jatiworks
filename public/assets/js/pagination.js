@@ -61,7 +61,7 @@ function renderPagination() {
     });
 }
 
-async function searchList() {
+async function searchListData() {
     document.getElementById('limitPage').addEventListener('change', async function () {
         defaultLimitPage = parseInt(this.value);
         currentPage = 1;
