@@ -6,6 +6,16 @@ const notyf = new Notyf({
     }
 });
 
+function multiSelect(isParameter, isPlaceholder) {
+    new SlimSelect({
+        select: isParameter,
+        settings: {
+            placeholderText: isPlaceholder,
+            allowDeselect: true
+        }
+    });
+}
+
 function toggleSidebar() {
     let sidebar = document.getElementById('sidebar');
     if (window.innerWidth < 768) {
@@ -46,5 +56,18 @@ function tooltip() {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+
+function toggleFilter() {
+    const toggleFilter = document.getElementById("toggleFilter");
+    const filterContainer = document.getElementById("filterContainer");
+
+    filterContainer.addEventListener("show.bs.collapse", function () {
+        toggleFilter.classList.add("active");
+    });
+
+    filterContainer.addEventListener("hide.bs.collapse", function () {
+        toggleFilter.classList.remove("active");
     });
 }

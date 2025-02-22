@@ -37,10 +37,10 @@ class ArticleController extends Controller
             $query->whereRaw("LOWER(title) LIKE ?", ["%$searchTerm%"]);
         }
 
-        if ($request->has('startDate') && $request->has('endDate')) {
-            $startDate = $request->input('startDate');
-            $endDate = $request->input('endDate');
-            $query->whereBetween('id', [$startDate, $endDate]);
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+            $query->whereBetween('id', [$start_date, $end_date]);
         }
 
         $data = $query->paginate($meta['limit']);
@@ -59,8 +59,8 @@ class ArticleController extends Controller
                 'title'  => $item->title,
                 'desc'  => $item->desc,
                 'status'  => $item->status,
-                'startDate'  => $item->startDate,
-                'endDate'  => $item->endDate,
+                'start_date'  => $item->start_date,
+                'end_date'  => $item->end_date,
             ];
         });
 
@@ -89,8 +89,8 @@ class ArticleController extends Controller
                 'material'   => 'nullable|string|max:255',
                 'length'     => 'nullable|numeric',
                 'width'      => 'nullable|numeric',
-                'startDate'  => 'required|date',
-                'endDate'    => 'required|date|after_or_equal:startDate',
+                'start_date'  => 'required|date',
+                'end_date'    => 'required|date|after_or_equal:start_date',
             ]);
 
             DB::beginTransaction();
@@ -106,7 +106,7 @@ class ArticleController extends Controller
 
             $now = now();
 
-            if ($request->startDate <= $now && $now <= $request->endDate) {
+            if ($request->start_date <= $now && $now <= $request->end_date) {
                 $status = 'Yes';
             } else {
                 $status = 'No';
@@ -117,8 +117,8 @@ class ArticleController extends Controller
                 'file_name'  => $fileName,
                 'desc'       => $request->desc,
                 'status'     => $status,
-                'startDate'  => $request->startDate,
-                'endDate'    => $request->endDate,
+                'start_date'  => $request->start_date,
+                'end_date'    => $request->end_date,
             ]);
 
             DB::commit();

@@ -14,7 +14,7 @@
                 <button type="button" class="add-data neumorphic-button btn btn-md">
                     <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
                 </button>
-                <button type="button" class="filter-data neumorphic-button btn btn-md">
+                <button type="button" id="toggleFilter" class="filter-data neumorphic-button btn btn-md" data-bs-toggle="collapse" data-bs-target="#filterContainer">
                     <i class="fas fa-filter"></i><span class="d-none d-sm-inline ms-1">Filter</span>
                 </button>
                 <div class="d-flex align-items-center gap-1 ms-auto">
@@ -31,6 +31,22 @@
                             type="search" name="search" placeholder="Search Data" aria-label="search"
                             style="max-width: 160px;">
                         <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="filterCategory" class="form-label">Category</label>
+                        <select id="filterCategory" class="form-control" multiple>
+                            @foreach ($category as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end justify-content-end gap-2">
+                        <button id="applyFilter" class="btn neumorphic-button"><i class="fas fa-rotate me-1"></i>Reset</button>
+                        <button id="resetFilter" class="btn neumorphic-button-outline"><i class="fas fa-circle-check me-1"></i>Apply</button>
                     </div>
                 </div>
             </div>
@@ -149,19 +165,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                        <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                    </div>
-                                `).join('')}
+                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                        </div>
+                                    `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                    <i class="fas fa-circle-chevron-left fs-3"></i>
-                                </button>
-                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                    <i class="fas fa-circle-chevron-right fs-3"></i>
-                                </button>
-                            ` : ''}
+                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                        <i class="fas fa-circle-chevron-left fs-3"></i>
+                                    </button>
+                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                        <i class="fas fa-circle-chevron-right fs-3"></i>
+                                    </button>
+                                ` : ''}
                     </div>
                 ` : '-'
 
@@ -196,7 +212,9 @@
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
-                searchList()
+                searchList(),
+                toggleFilter(),
+                multiSelect('#filterCategory', 'Select Categories'),
             ])
         }
     </script>

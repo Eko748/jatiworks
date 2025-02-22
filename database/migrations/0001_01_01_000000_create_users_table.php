@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('status', ['Offline', 'Online'])->default('Offline');
             $table->rememberToken();
+            $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
         });
 
