@@ -72,7 +72,7 @@
                     return;
                 }
 
-                let getDataRest = await renderAPI(
+                let getDataRest = await restAPI(
                     'POST',
                     '{{ route('login.postLogin') }}', {
                         email: email,

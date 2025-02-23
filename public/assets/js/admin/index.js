@@ -6,6 +6,99 @@ const notyf = new Notyf({
     }
 });
 
+function loadListData() {
+    let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
+    let thCount = thElements.length;
+
+    let loadingRow = `
+        <tr class="neumorphic-tr">
+            <td class="text-center fw-bold" colspan="${thCount}">
+                <div class="neumorphic-loader">
+                    <div class="spinner"></div>
+                </div>
+            </td>
+        </tr>`;
+
+    document.getElementById('listData').innerHTML = loadingRow;
+}
+
+function errorListData(getDataRest) {
+    notyf.error(getDataRest.data.message);
+
+    let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
+    let thCount = thElements.length;
+
+    let errorMessage = "Data gagal dimuat";
+    if (getDataRest && getDataRest.data && getDataRest.data.message) {
+        errorMessage = getDataRest.data.message;
+    }
+
+    let errorRow = `
+    <tr class="neumorphic-tr">
+        <td class="text-center fw-bold" colspan="${thCount}">
+            <i class="fas fa-circle-exclamation me-2"></i>${errorMessage}
+        </td>
+    </tr>`;
+
+    document.getElementById('listData').innerHTML = errorRow;
+    document.getElementById('countPage').textContent = "0 - 0";
+    document.getElementById('totalPage').textContent = "0";
+}
+
+function renderListData(getDataTable, pagination, display_from, display_to) {
+    document.getElementById('listData').innerHTML = getDataTable
+    document.getElementById('totalPage').textContent = pagination.total
+    document.getElementById('countPage').textContent = `${display_from} - ${display_to}`
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        new bootstrap.Tooltip(el)
+    })
+
+    renderPagination()
+}
+
+async function setFilterListData() {
+    document.getElementById('filterForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (typeof getFilterListData !== "function")
+            return notyf.error('filter is not set');
+
+        const [filterData] = await getFilterListData();
+        customFilter = filterData;
+
+        defaultSearch = document.getElementById("searchPage").value;
+        defaultLimitPage = document.getElementById("limitPage").value;
+        currentPage = 1;
+
+        await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
+            customFilter);
+    });
+
+    document.getElementById('resetFilter').addEventListener('click', async function () {
+        if (typeof getFilterListData !== "function")
+            return notyf.error('filter is not set');
+        if (!document.getElementById('filterForm'))
+            return notyf.error('filter form is not set');
+
+        document.querySelectorAll("#filterForm input, #filterForm textarea, #filterForm select")
+            .forEach(el => {
+                el.value = "";
+            });
+
+        const [, resetActions] = await getFilterListData();
+        if (resetActions) {
+            Object.values(resetActions).forEach(action => action());
+        }
+
+        customFilter = {};
+        defaultSearch = document.getElementById("searchPage").value;
+        defaultLimitPage = document.getElementById("limitPage").value;
+        currentPage = 1;
+
+        await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
+            customFilter);
+    });
+}
+
 function multiSelectData(isParameter, isPlaceholder) {
     new SlimSelect({
         select: isParameter,

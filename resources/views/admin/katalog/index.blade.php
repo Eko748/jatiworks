@@ -4,14 +4,27 @@
     {{ $title }}
 @endsection
 
+@section('assets_css')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+@endsection
+
 @section('css')
+    <style>
+        .cropper-container {
+            width: 750px !important;
+            height: 400px !important;
+            max-width: 750px !important;
+            max-height: 400px !important;
+        }
+    </style>
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex align-items-center pb-3 gap-1 flex-wrap">
-                <button type="button" class="add-data neumorphic-button btn btn-md">
+                <button type="button" class="add-data neumorphic-button btn btn-md" data-bs-toggle="modal"
+                    data-bs-target="#addDataModal">
                     <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
                 </button>
                 <button type="button" id="toggleFilter" class="filter-data neumorphic-button btn btn-md"
@@ -49,7 +62,7 @@
                         <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
                             <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
                                     class="fas fa-rotate me-1"></i>Reset</button>
-                            <button type="submit" id="applyFilter" class="btn neumorphic-button-outline"><i
+                            <button type="submit" id="applyFilter" class="btn neumorphic-button-outline fw-bold"><i
                                     class="fas fa-circle-check me-1"></i>Apply</button>
                         </div>
                     </div>
@@ -85,10 +98,165 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="addDataModal" tabindex="-1" aria-labelledby="addDataModalLabel" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Navigation Tabs -->
+                    <ul class="nav nav-tabs border-0 mb-3 gap-2" id="wizardTabs">
+                        <li class="nav-item">
+                            <button class="neumorphic-button text-green nav-link active wizard-step" data-step="1">1. Item
+                                Details</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="2">2. Select
+                                Categories</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="3">3.
+                                Description Contents</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="4">4. Upload
+                                Images</button>
+                        </li>
+                    </ul>
+                    <hr>
+                    <form id="addDataForm">
+                        <div class="wizard-content" id="step-1">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="itemName" class="form-label fw-bold">Item Name</label>
+                                    <input type="text" class="form-control neumorphic-card" id="itemName"
+                                        name="itemName" placeholder="Enter item name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="material" class="form-label fw-bold">Material</label>
+                                    <textarea class="form-control neumorphic-card" id="material" name="material" rows="1"
+                                        placeholder="Enter material details" required></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Dimensions (L × W × H):</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <label for="length" class="form-label">Length</label>
+                                            <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                id="length" name="length" placeholder="Enter length" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="width" class="form-label">Width</label>
+                                            <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                id="width" name="width" placeholder="Enter width" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="height" class="form-label">Height</label>
+                                            <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                id="height" name="height" placeholder="Enter height" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="unit" class="form-label">Unit</label>
+                                            <select id="unit" class="form-control neumorphic-card" name="unit"
+                                                required>
+                                                <option value="" disabled selected>Select unit</option>
+                                                <option value="mm">mm</option>
+                                                <option value="cm">cm</option>
+                                                <option value="m">m</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-content d-none" id="step-2">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Category:</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label for="category" class="form-label">Existing Categories</label>
+                                            <select id="category" class="form-control neumorphic-card" name="id_category">
+                                                <option value="">Select Category</option>
+                                                @foreach ($category as $cat)
+                                                    <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="new_category" class="form-label">Add New Category</label>
+                                            <input type="text" class="form-control neumorphic-card" id="new_category"
+                                                name="name_category" placeholder="Enter new category (optional)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-content d-none" id="step-3">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="desc" class="form-label fw-bold">Description</label>
+                                    <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-content d-none" id="step-4">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="imageInput" class="form-label fw-bold">Upload Images</label>
+                                    <input type="file" class="form-control neumorphic-card" id="imageInput" name="images[]" multiple>
+                                    <small class="text-muted">You can upload multiple images</small>
+                                    <div id="imagePreviewContainer" class="mt-3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Wizard Navigation Buttons -->
+                <div class="modal-footer border-0 d-flex justify-content-between">
+                    <button type="button" id="prevBtn" class="btn neumorphic-button d-none">Previous</button>
+                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">Next</button>
+                    <button type="submit" form="addDataForm" id="submitBtn"
+                        class="btn neumorphic-button-outline fw-bold d-none">
+                        <i class="fas fa-save me-1"></i>Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imagePreview">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
+                        Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('assets_js')
     <script src="{{ asset('assets/js/pagination.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 @endsection
 
 @section('js')
@@ -114,21 +282,9 @@
                 requestParams.search = defaultSearch;
             }
 
-            let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
-            let thCount = thElements.length;
+            loadListData();
 
-            let loadingRow = `
-                <tr class="neumorphic-tr">
-                    <td class="text-center fw-bold" colspan="${thCount}">
-                        <div class="neumorphic-loader">
-                            <div class="spinner"></div>
-                        </div>
-                    </td>
-                </tr>`;
-
-            document.getElementById('listData').innerHTML = loadingRow;
-
-            let getDataRest = await renderAPI('GET', '{{ route('getdatakatalog') }}', requestParams)
+            let getDataRest = await restAPI('GET', '{{ route('getdatakatalog') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
 
@@ -138,25 +294,9 @@
                 );
                 await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
-                let errorMessage = "Data gagal dimuat";
-                if (getDataRest && getDataRest.data && getDataRest.data.message) {
-                    errorMessage = getDataRest.data.message;
-                }
-
-                let errorRow = `
-                <tr class="neumorphic-tr">
-                    <td class="text-center fw-bold" colspan="${thCount}">
-                        <i class="fas fa-circle-exclamation me-2"></i>${errorMessage}
-                    </td>
-                </tr>`;
-
-                document.getElementById('listData').innerHTML = errorRow;
-                document.getElementById('countPage').textContent = "0 - 0";
-                document.getElementById('totalPage').textContent = "0";
+                errorListData(getDataRest);
             }
         }
-
-
 
         async function handleData(data) {
             return {
@@ -171,8 +311,8 @@
         }
 
         async function setListData(dataList, pagination) {
-            let totalPage = pagination.total_pages
-            let currentPage = pagination.current_page
+            totalPage = pagination.total_pages
+            currentPage = pagination.current_page
             let display_from = (pagination.per_page * (currentPage - 1)) + 1
             let display_to = Math.min(display_from + dataList.length - 1, pagination.total)
 
@@ -182,19 +322,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                        </div>
-                                                                                    `).join('')}
+                                                                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                                                        </div>
+                                                                                                                                                    `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                    </button>
-                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                    </button>
-                                                                                ` : ''}
+                                                                                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                                                    </button>
+                                                                                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                                                    </button>
+                                                                                                                                                ` : ''}
                     </div>
                 ` : '-'
 
@@ -210,54 +350,197 @@
                 </tr>`
             })
 
-            document.getElementById('listData').innerHTML = getDataTable
-            document.getElementById('totalPage').textContent = pagination.total
-            document.getElementById('countPage').textContent = `${display_from} - ${display_to}`
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-                new bootstrap.Tooltip(el)
-            })
+            renderListData(getDataTable, pagination, display_from, display_to);
+
             document.querySelectorAll('.carousel').forEach(carousel => {
                 new bootstrap.Carousel(carousel, {
                     interval: 2000,
                     ride: 'carousel'
                 })
             })
-
-            renderPagination()
         }
 
-        async function filterListData() {
-            document.getElementById('filterForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
+        async function getFilterListData() {
+            let selectedOptions = Array.from(document.getElementById("filterCategory").selectedOptions)
+                .map(option => option.value)
+                .filter(value => value !== "");
 
-                customFilter = {
-                    'id_category': Array.from(document.getElementById("filterCategory").selectedOptions)
-                        .map(option => option.value)
-                };
+            let filterData = {
+                id_category: selectedOptions.length ? selectedOptions : null
+            };
 
-                defaultSearch = document.getElementById("searchPage").value;
-                defaultLimitPage = document.getElementById("limitPage").value;
-                currentPage = 1;
+            let resetActions = {
+                resetSelect: () => document.querySelectorAll(".ss-value-delete").forEach(el => el.click())
+            };
 
-                await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
-                    customFilter);
+            return [filterData, resetActions];
+        }
+
+        async function uploadMultiImage() {
+            let cropper;
+            let imageFiles = [];
+            let croppedImages = [];
+            let currentImageIndex = 0;
+
+            const imageInput = document.getElementById("imageInput");
+            const imagePreview = document.getElementById("imagePreview");
+            const cropImageModal = new bootstrap.Modal(document.getElementById("cropImageModal"));
+            const cropImageBtn = document.getElementById("cropImageBtn");
+            const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+
+            imageInput.addEventListener("change", function(event) {
+                const newFiles = Array.from(event.target.files);
+                imageFiles = [...imageFiles, ...newFiles];
+                if (newFiles.length > 0) {
+                    currentImageIndex = imageFiles.length - newFiles.length;
+                    showCropModal(imageFiles[currentImageIndex]);
+                }
             });
 
-            document.getElementById('resetFilter').addEventListener('click', async function() {
-                document.querySelectorAll("#filterForm input, #filterForm textarea, #filterForm select")
-                    .forEach(el => {
-                        el.value = "";
+            function showCropModal(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    cropImageModal.show();
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(imagePreview, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        dragMode: "move",
+                        minCanvasWidth: 750,
+                        minCanvasHeight: 400,
+                        minContainerWidth: 750,
+                        minContainerHeight: 400,
+                        ready() {
+                            cropper.setCanvasData({
+                                left: 0,
+                                top: 0,
+                                width: 750,
+                                height: 500
+                            });
+
+                            let containerData = cropper.getContainerData();
+                            cropper.setCropBoxData({
+                                left: containerData.width / 2 - 375,
+                                top: containerData.height / 2 - 200,
+                                width: 750,
+                                height: 400
+                            });
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+
+            cropImageBtn.addEventListener("click", function() {
+                if (!cropper) return;
+
+                cropper.getCroppedCanvas({
+                    width: 500,
+                    height: 500
+                }).toBlob(function(blob) {
+                    const index = croppedImages.length;
+                    croppedImages.push(blob);
+
+                    let wrapper = document.createElement("div");
+                    wrapper.classList.add("cropped-image-wrapper", "position-relative", "d-inline-block",
+                        "me-2");
+                    wrapper.style.width = "100px";
+                    wrapper.style.height = "100px";
+
+                    let imgElement = document.createElement("img");
+                    imgElement.src = URL.createObjectURL(blob);
+                    imgElement.classList.add("cropped-preview");
+                    imgElement.style.width = "100px";
+                    imgElement.style.height = "100px";
+                    imgElement.style.borderRadius = "5px";
+
+                    let deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "position-absolute");
+                    deleteBtn.style.top = "5px";
+                    deleteBtn.style.right = "5px";
+                    deleteBtn.style.borderRadius = "50%";
+                    deleteBtn.style.width = "20px";
+                    deleteBtn.style.height = "20px";
+                    deleteBtn.style.display = "flex";
+                    deleteBtn.style.alignItems = "center";
+                    deleteBtn.style.justifyContent = "center";
+
+                    deleteBtn.addEventListener("click", function() {
+                        croppedImages.splice(index, 1);
+                        wrapper.remove();
                     });
 
-                document.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+                    wrapper.appendChild(imgElement);
+                    wrapper.appendChild(deleteBtn);
+                    imagePreviewContainer.appendChild(wrapper);
 
-                customFilter = {};
-                defaultSearch = document.getElementById("searchPage").value;
-                defaultLimitPage = document.getElementById("limitPage").value;
-                currentPage = 1;
+                    currentImageIndex++;
+                    if (currentImageIndex < imageFiles.length) {
+                        showCropModal(imageFiles[currentImageIndex]);
+                    } else {
+                        cropImageModal.hide();
+                        imageInput.value = "";
+                    }
+                });
+            });
+        }
 
-                await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
-                    customFilter);
+        async function setWizardForm() {
+            let currentStep = 1;
+            const steps = document.querySelectorAll(".wizard-content");
+            const totalSteps = steps.length;
+            const stepButtons = document.querySelectorAll(".wizard-step");
+
+            function changeStep(step) {
+                document.getElementById(`step-${currentStep}`).classList.add("d-none");
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove("active");
+
+                currentStep = step;
+                document.getElementById(`step-${currentStep}`).classList.remove("d-none");
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add("active");
+
+                document.getElementById("prevBtn").classList.toggle("d-none", currentStep === 1);
+                document.getElementById("nextBtn").classList.toggle("d-none", currentStep === totalSteps);
+                document.getElementById("submitBtn").classList.toggle("d-none", currentStep !== totalSteps);
+            }
+
+            function validateStep() {
+                let isValid = true;
+                document.querySelectorAll(
+                    `#step-${currentStep} input[required], #step-${currentStep} textarea[required]`).forEach(
+                    input => {
+                        if (!input.value.trim()) {
+                            input.classList.add("is-invalid");
+                            isValid = false;
+                        } else {
+                            input.classList.remove("is-invalid");
+                        }
+                    });
+                return isValid;
+            }
+
+            stepButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    let targetStep = parseInt(this.getAttribute("data-step"));
+                    if (targetStep > currentStep && !validateStep()) return;
+                    changeStep(targetStep);
+                });
+            });
+
+            document.getElementById("nextBtn").addEventListener("click", function() {
+                if (!validateStep()) return;
+                changeStep(currentStep + 1);
+            });
+
+            document.getElementById("prevBtn").addEventListener("click", function() {
+                changeStep(currentStep - 1);
             });
         }
 
@@ -265,9 +548,11 @@
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
                 searchListData(),
-                filterListData(),
+                setFilterListData(),
                 toggleFilterButton(),
                 multiSelectData('#filterCategory', 'Select Categories'),
+                setWizardForm(),
+                uploadMultiImage()
             ])
         }
     </script>

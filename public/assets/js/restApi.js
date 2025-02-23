@@ -1,4 +1,4 @@
-async function renderAPI(method,url,body) {
+async function restAPI(method,url,body) {
     const auth_token = '{{ crsf_token }}';
     let header;
     if(auth_token == null) {

@@ -14,7 +14,8 @@
                 <button type="button" class="add-data neumorphic-button btn btn-md">
                     <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
                 </button>
-                <button type="button" class="filter-data neumorphic-button btn btn-md">
+                <button type="button" id="toggleFilter" class="filter-data neumorphic-button btn btn-md"
+                    data-bs-toggle="collapse" data-bs-target="#filterContainer">
                     <i class="fas fa-filter"></i><span class="d-none d-sm-inline ms-1">Filter</span>
                 </button>
                 <div class="d-flex align-items-center gap-1 ms-auto">
@@ -27,12 +28,38 @@
                         <i class="fas fa-list select-icon"></i>
                     </div>
                     <div class="position-relative">
-                        <input id="tb-search" class="tb-search form-control neumorphic-card ps-2 pe-5 w-100 w-sm-auto"
+                        <input id="searchPage" class="tb-search form-control neumorphic-card ps-2 pe-5 w-100 w-sm-auto"
                             type="search" name="search" placeholder="Search Data" aria-label="search"
                             style="max-width: 160px;">
                         <i class="fas fa-search search-icon"></i>
                     </div>
                 </div>
+            </div>
+            <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
+                <form id="filterForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="filterStatusLogin" class="form-label">Status Login</label>
+                            <select id="filterStatusLogin" class="form-control" multiple>
+                                <option value="Online">Online</option>
+                                <option value="Online">Offline</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="filterRole" class="form-label">Role</label>
+                            <select id="filterRole" class="form-control" multiple>
+                                <option value="1">Admin</option>
+                                <option value="2">Buyer</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
+                            <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
+                                    class="fas fa-rotate me-1"></i>Reset</button>
+                            <button type="submit" id="applyFilter" class="btn neumorphic-button-outline fw-bold"><i
+                                    class="fas fa-circle-check me-1"></i>Apply</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="table-responsive neumorphic-card p-3 mb-3">
                 <table class="table m-0">
@@ -79,75 +106,59 @@
         let defaultSearch = ''
         let customFilter = {}
 
-        async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
-            let filterParams = {}
+        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
+            let requestParams = {
+                page: currentPage,
+                limit: defaultLimitPage,
+                ascending: defaultAscending,
+                ...customFilter
+            };
 
-            let getDataRest = await renderAPI(
-                'GET',
-                '{{ route('getdatauser') }}', {
-                    page: page,
-                    limit: limit,
-                    ascending: ascending,
-                    search: search,
-                    ...filterParams
-                }
-            ).then(function(response) {
-                return response
-            }).catch(function(error) {
-                let resp = error.response
-                return resp
-            })
+            if (defaultSearch.trim() !== '') {
+                requestParams.search = defaultSearch;
+            }
+
+            loadListData();
+
+            let getDataRest = await restAPI('GET', '{{ route('getdatauser') }}', requestParams)
+                .then(response => response)
+                .catch(error => error.response);
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
                     getDataRest.data.data.map(async item => await handleData(item))
-                )
-                await setListData(handleDataArray, getDataRest.data.pagination)
+                );
+                await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
-                let errorMessage = "Data gagal dimuat"
-                if (getDataRest && getDataRest.data && getDataRest.data.message) {
-                    errorMessage = getDataRest.data.message
-                }
-
-                let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th")
-                let thCount = thElements.length
-
-                let errorRow = '<tr class="neumorphic-tr">' +
-                    '<td class="text-center fw-bold" colspan="' + thCount +
-                    '"><i class="fas fa-circle-exclamation me-2"></i>' + errorMessage + '</td>' +
-                    '</tr>'
-
-                document.getElementById('listData').innerHTML = errorRow
-                document.getElementById('countPage').textContent = "0 - 0"
-                document.getElementById('totalPage').textContent = "0"
+                errorListData(getDataRest);
             }
         }
 
         async function handleData(data) {
-            let status = ''
+            let statusClass = 'badge border px-2 py-1 ';
             if (data.status === 'Online') {
-                status = `text-success`
+                statusClass += 'text-success border-success';
             } else {
-                status = `text-danger`
+                statusClass += 'text-danger border-danger';
             }
+
             return {
                 id: data?.id ?? '-',
                 name: data?.name ?? '-',
                 role_name: data?.role_name ?? '-',
                 email: data?.email ?? '-',
                 last_login_at: data?.last_login_at ?? '-',
-                status: data?.status ?? '-',
-                status_class: status
-            }
+                status: `<span class="${statusClass}">${data?.status ?? '-'}</span>`
+            };
         }
 
         async function setListData(dataList, pagination) {
-            totalPage = pagination.total_pages
-            currentPage = pagination.current_page
-            let display_from = (defaultLimitPage * (currentPage - 1)) + 1
-            let display_to = Math.min(display_from + dataList.length - 1, pagination.total)
+            totalPage = pagination.total_pages;
+            currentPage = pagination.current_page;
+            let display_from = (defaultLimitPage * (currentPage - 1)) + 1;
+            let display_to = Math.min(display_from + dataList.length - 1, pagination.total);
 
-            let getDataTable = ''
+            let getDataTable = '';
             dataList.forEach((element, index) => {
                 getDataTable += `
                 <tr class="neumorphic-tr">
@@ -155,26 +166,44 @@
                     <td>${element.name}</td>
                     <td>${element.email}</td>
                     <td>${element.role_name}</td>
-                    <td class="${element.status_class}">${element.status}</td>
+                    <td>${element.status}</td>
                     <td>${element.last_login_at}</td>
-                </tr>`
-            })
+                </tr>`;
+            });
 
-            document.getElementById('listData').innerHTML = getDataTable
-            document.getElementById('totalPage').textContent = pagination.total
-            document.getElementById('countPage').textContent = `${display_from} - ${display_to}`
+            renderListData(getDataTable, pagination, display_from, display_to);
+        }
 
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-                new bootstrap.Tooltip(el)
-            })
 
-            renderPagination()
+        async function getFilterListData() {
+            let selectedStatusLogin = Array.from(document.getElementById("filterStatusLogin").selectedOptions)
+                .map(option => option.value)
+                .filter(value => value !== "");
+
+            let selectedRoles = Array.from(document.getElementById("filterRole").selectedOptions)
+                .map(option => option.value)
+                .filter(value => value !== "");
+
+            let filterData = {
+                status_login: selectedStatusLogin.length ? selectedStatusLogin : null,
+                role: selectedRoles.length ? selectedRoles : null
+            };
+
+            let resetActions = {
+                resetSelect: () => document.querySelectorAll(".ss-value-delete").forEach(el => el.click())
+            };
+
+            return [filterData, resetActions];
         }
 
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
-                searchList()
+                searchListData(),
+                setFilterListData(),
+                toggleFilterButton(),
+                multiSelectData('#filterStatusLogin', 'Select Status Login'),
+                multiSelectData('#filterRole', 'Select Role'),
             ])
         }
     </script>

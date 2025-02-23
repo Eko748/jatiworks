@@ -106,7 +106,7 @@
             let formData = new FormData(this);
 
             try {
-                let getDataRest = await renderAPI(
+                let getDataRest = await restAPI(
                     'POST',
                     '{{ route('profile.update') }}',
                     formData

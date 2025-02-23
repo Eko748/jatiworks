@@ -352,7 +352,7 @@
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let filterParams = {}
 
-            let getDataRest = await renderAPI(
+            let getDataRest = await restAPI(
                 'GET',
                 '{{ route('getdatakatalog') }}', {
                     page: page,

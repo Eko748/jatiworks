@@ -28,15 +28,18 @@
     --highlight-color: #2c2c2c;
 }
 
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    border-color: var(--shadow-dark);
+}
+
 .dark-mode input::placeholder,
 .dark-mode textarea::placeholder {
     color: #f0f0f0;
     opacity: 1;
-}
-
-.dark-mode select {
-    color: #f0f0f0;
-    background-color: var(--bg-color);
 }
 
 .dark-mode select option:disabled {
@@ -70,6 +73,17 @@ body {
     box-shadow: 8px 8px 15px var(--shadow-dark), -8px -8px 15px var(--shadow-light);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
+}
+
+.neumorphic-modal {
+    background: var(--bg-color);
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.neumorphic-badge {
+    background: var(--bg-color-reverse);
 }
 
 .neumorphic-button {
@@ -506,4 +520,11 @@ body {
 
 .dark-mode .loading-text {
     color: var(--text-color);
+}
+
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 3.5rem);
 }

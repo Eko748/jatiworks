@@ -152,7 +152,7 @@
                     return;
                 }
 
-                let getDataRest = await renderAPI(
+                let getDataRest = await restAPI(
                     'POST',
                     '{{ route('register.postregister') }}', {
                         name: name,
