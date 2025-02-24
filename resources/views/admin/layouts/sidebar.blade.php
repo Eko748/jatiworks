@@ -34,6 +34,15 @@
                     </div>
                 </li>
             </a>
+            <a href="{{ route('admin.article.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.article.index') ? 'active' : '' }}">
+                    <div class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.article.index') ? 'active' : '' }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span class="sidebar-text">Article</span>
+                    </div>
+                </li>
+            </a>
         </ul>
     </nav>
 </aside>
