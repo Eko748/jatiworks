@@ -1,0 +1,33 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class OrderSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        DB::table('order')->insert([
+            'id' => 1,
+            'id_user'  => '4',
+            'item_name'  => 'Aquarium',
+            'material'  => 'Kaca, Kayu Jati, Karet',
+            'qty'  => '4',
+            'price'  => '5000000',
+            'status'  => 'Waiting for Payment',
+        ]);
+
+        DB::table('order')->insert([
+            'id' => 2,
+            'id_user'  => '6',
+            'id_katalog' => '3',
+            'status' => 'Not Completed',
+        ]);
+    }
+}

@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('id_katalog')->nullable();
             $table->string('item_name')->nullable();
             $table->string('material')->nullable();
-            $table->string('category')->nullable();
             $table->integer('qty')->nullable();
             $table->double('price')->nullable();
-            $table->enum('status', [''])->nullable();
+            $table->enum('status', ['Waiting for Payment', 'Not Completed', 'Payment Completed'])->default('Waiting for Payment');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

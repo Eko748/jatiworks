@@ -5,21 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Katalog extends Model
+class Order extends Model
 {
     use HasFactory;
 
-    protected $table = 'katalog';
+    protected $table = 'order';
     protected $guarded = [];
 
-    public function category()
+    public function user()
     {
-        return $this->belongsToMany(Category::class, 'post_category', 'id_katalog', 'id_category');
-    }
-
-    public function file()
-    {
-        return $this->hasMany(File::class, 'id_katalog', 'id');
+        return $this->belongsTo(User::class, 'id_user');
     }
 
     public function katalog()
