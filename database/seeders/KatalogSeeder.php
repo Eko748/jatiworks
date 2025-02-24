@@ -19,6 +19,7 @@ class KatalogSeeder extends Seeder
             'length' => 10,
             'width' => 4,
             'height' => 2,
+            'weight' => 6,
             'desc' => 'Best Park Wood',
         ]);
 
@@ -28,6 +29,7 @@ class KatalogSeeder extends Seeder
             'length' => 8,
             'width' => 3,
             'height' => 1,
+            'weight' => 3,
             'desc' => 'Omaygoto',
         ]);
 
@@ -37,6 +39,7 @@ class KatalogSeeder extends Seeder
             'length' => 9.5,
             'width' => 5,
             'height' => 2.5,
+            'weight' => 4,
             'desc' => 'LoremPisum',
         ]);
     }

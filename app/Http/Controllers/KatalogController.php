@@ -73,6 +73,7 @@ class KatalogController extends Controller
                 'length'     => $item->length,
                 'width'      => $item->width,
                 'height'     => $item->height,
+                'weight'     => $item->weight,
                 'unit'       => $item->unit,
                 'desc'       => $item->desc,
                 'category'   => $item->category->map(function ($category) {
@@ -108,23 +109,24 @@ class KatalogController extends Controller
                 'length'     => 'nullable|numeric',
                 'width'      => 'nullable|numeric',
                 'height'     => 'nullable|numeric',
+                'weight'     => 'nullable|string',
                 'desc'       => 'nullable|string',
                 'unit'       => 'string',
                 'category'   => 'required|array',
-                'category.*' => 'string', // Bisa id kategori atau kategori baru dalam teks
+                'category.*' => 'string',
                 'file'       => 'nullable|array',
                 'file.*'     => 'file|mimes:jpg,jpeg,png|max:2048'
             ]);
 
             DB::beginTransaction();
 
-            // Buat katalog baru
             $katalog = Katalog::create([
                 'item_name' => $request->item_name,
                 'material'  => $request->material,
                 'length'    => $request->length,
                 'width'     => $request->width,
                 'height'    => $request->height,
+                'weight'    => $request->weight,
                 'desc'      => $request->desc,
                 'unit'      => $request->unit,
             ]);
@@ -145,10 +147,8 @@ class KatalogController extends Controller
                 }
             }
 
-            // Hubungkan kategori dengan katalog
             $katalog->category()->sync($categoryIds);
 
-            // Simpan file jika ada
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();

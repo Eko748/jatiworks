@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             FileSeeder::class,
             CategorySeeder::class,
             PostCategorySeeder::class,
+            ArticleSeeder::class,
         ]);
     }
 }
