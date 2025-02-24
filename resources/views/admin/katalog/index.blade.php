@@ -620,9 +620,6 @@
                         })
                     );
 
-                    console.log('imageBlobs:', imageBlobs)
-
-                    // Kirim data setelah semua gambar berhasil diproses
                     const postData = await restAPI('POST', '{{ route('admin.katalog.store') }}', formData);
 
                     if (postData.status >= 200 && postData.status < 300) {
