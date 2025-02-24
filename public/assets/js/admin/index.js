@@ -99,15 +99,55 @@ async function setFilterListData() {
     });
 }
 
+async function confirmSubmitData(saveButton) {
+    const result = await Swal.fire({
+        title: "Confirmation",
+        text: "Are you sure you want to save this data?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: '#2ecc71',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Save',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+    });
+    if (!result.isConfirmed) return;
+
+    saveButton.disabled = true;
+    saveButton.innerHTML =
+        `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...`;
+}
+
 function multiSelectData(isParameter, isPlaceholder) {
-    new SlimSelect({
-        select: isParameter,
+    const selectElement = document.querySelector(isParameter);
+
+    if (!selectElement) return;
+
+    const slim = new SlimSelect({
+        select: selectElement,
         settings: {
             placeholderText: isPlaceholder,
             allowDeselect: true
         }
     });
+
+    const modal = selectElement.closest('.modal');
+    if (modal) {
+        modal.addEventListener('shown.bs.modal', function () {
+            const dropdown = document.querySelector('.ss-dropdown');
+            if (dropdown) {
+                dropdown.style.zIndex = '1050';
+                dropdown.style.position = 'absolute';
+            }
+
+            const searchInput = document.querySelector('.ss-search input');
+            if (searchInput) {
+                searchInput.removeAttribute('tabindex');
+            }
+        });
+    }
 }
+
 
 function toggleSidebar() {
     let sidebar = document.getElementById('sidebar');

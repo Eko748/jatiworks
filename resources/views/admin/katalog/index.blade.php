@@ -5,16 +5,25 @@
 @endsection
 
 @section('assets_css')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/cropper.min.css') }}">
 @endsection
 
 @section('css')
     <style>
         .cropper-container {
-            width: 750px !important;
-            height: 400px !important;
-            max-width: 750px !important;
-            max-height: 400px !important;
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #imagePreview {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
         }
     </style>
 @endsection
@@ -99,8 +108,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addDataModal" tabindex="-1" aria-labelledby="addDataModalLabel" aria-hidden="true"
-        data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="addDataModal" tabindex="-1" data-bs-focus="false" aria-labelledby="addDataModalLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl">
             <div class="modal-content neumorphic-modal p-3">
                 <div class="modal-header border-0">
@@ -110,20 +119,24 @@
                 <div class="modal-body">
                     <ul class="nav nav-tabs border-0 mb-3 gap-2" id="wizardTabs">
                         <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link active wizard-step" data-step="1">1. Item
-                                Details</button>
+                            <button class="neumorphic-button text-green nav-link active wizard-step" data-step="1">
+                                1 <span class="d-none d-md-inline">. Item Details</span>
+                            </button>
                         </li>
                         <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="2">2. Select
-                                Categories</button>
+                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="2">
+                                2 <span class="d-none d-md-inline">. Select Categories</span>
+                            </button>
                         </li>
                         <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="3">3.
-                                Description Contents</button>
+                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="3">
+                                3 <span class="d-none d-md-inline">. Description Contents</span>
+                            </button>
                         </li>
                         <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="4">4. Upload
-                                Images</button>
+                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="4">
+                                4 <span class="d-none d-md-inline">. Upload Images</span>
+                            </button>
                         </li>
                     </ul>
                     <hr>
@@ -145,7 +158,7 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control neumorphic-card" id="weight"
                                             name="weight" placeholder="Enter weight" required>
-                                        <span class="input-group-text neumorphic-card">kg</span>
+                                        <span class="input-group-text neumorphic-card neu-text">kg</span>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -223,14 +236,13 @@
                                 <div class="col-md-12">
                                     <label for="imageInput" class="form-label fw-bold">Upload Images</label>
                                     <input type="file" class="form-control neumorphic-card" id="imageInput" multiple>
-                                    <small class="text-muted">You can upload multiple images</small>
+                                    <small class="neu-text">You can upload multiple images</small>
                                     <div id="imagePreviewContainer" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-
                 <div class="modal-footer border-0 d-flex justify-content-between">
                     <button type="button" id="prevBtn" class="btn neumorphic-button d-none"><i
                             class="fas fa-backward me-1"></i>Previous</button>
@@ -269,7 +281,7 @@
 
 @section('assets_js')
     <script src="{{ asset('assets/js/pagination.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="{{ asset('assets/js/cropper.min.js') }}"></script>
 @endsection
 
 @section('js')
@@ -335,19 +347,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                            </div>
-                                                        `).join('')}
+                                                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                            </div>
+                                                                                                        `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                        </button>
-                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                        </button>
-                                                    ` : ''}
+                                                                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                        </button>
+                                                                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                        </button>
+                                                                                                    ` : ''}
                     </div>
                 ` : '-'
 
@@ -400,7 +412,6 @@
             const cropImageModal = new bootstrap.Modal(document.getElementById("cropImageModal"));
             const cropImageBtn = document.getElementById("cropImageBtn");
             const imagePreviewContainer = document.getElementById("imagePreviewContainer");
-
             imageInput.addEventListener("change", function(event) {
                 const newFiles = Array.from(event.target.files);
                 imageFiles = [...imageFiles, ...newFiles];
@@ -420,30 +431,43 @@
                     if (cropper) {
                         cropper.destroy();
                     }
+
+                    // Menyesuaikan ukuran berdasarkan layar
+                    let containerWidth = Math.min(window.innerWidth * 0.9,
+                        750); // Maksimal 750px, minimal 90% dari layar
+                    let containerHeight = (containerWidth / 750) * 400; // Menjaga aspek rasio 750:400
+
                     cropper = new Cropper(imagePreview, {
                         aspectRatio: 1,
                         viewMode: 1,
                         autoCropArea: 1,
                         dragMode: "move",
-                        minCanvasWidth: 750,
-                        minCanvasHeight: 400,
-                        minContainerWidth: 750,
-                        minContainerHeight: 400,
+                        minCanvasWidth: containerWidth,
+                        minCanvasHeight: containerHeight,
+                        minContainerWidth: containerWidth,
+                        minContainerHeight: containerHeight,
+                        responsive: true, // Cropper akan menyesuaikan ukuran saat jendela diubah
                         ready() {
+                            let containerData = cropper.getContainerData();
                             cropper.setCanvasData({
                                 left: 0,
                                 top: 0,
-                                width: 750,
-                                height: 500
+                                width: containerWidth,
+                                height: containerHeight
                             });
 
-                            let containerData = cropper.getContainerData();
                             cropper.setCropBoxData({
-                                left: containerData.width / 2 - 375,
-                                top: containerData.height / 2 - 200,
-                                width: 750,
-                                height: 400
+                                left: containerData.width / 2 - containerWidth / 2,
+                                top: containerData.height / 2 - containerHeight / 2,
+                                width: containerWidth,
+                                height: containerHeight
                             });
+
+                            // Pastikan cropper-container menyesuaikan ukuran layar
+                            document.querySelector('.cropper-container').style.width = containerWidth +
+                                'px';
+                            document.querySelector('.cropper-container').style.height = containerHeight +
+                                'px';
                         }
                     });
                 };
@@ -529,15 +553,14 @@
                 let isValid = true;
                 document.querySelectorAll(
                     `#step-${currentStep} input[required], #step-${currentStep} textarea[required], #step-${currentStep} select[required]`
-                ).forEach(
-                    input => {
-                        if (!input.value.trim()) {
-                            input.classList.add("is-invalid");
-                            isValid = false;
-                        } else {
-                            input.classList.remove("is-invalid");
-                        }
-                    });
+                ).forEach(input => {
+                    if (!input.value.trim()) {
+                        input.classList.add("is-invalid");
+                        isValid = false;
+                    } else {
+                        input.classList.remove("is-invalid");
+                    }
+                });
                 return isValid;
             }
 
@@ -553,9 +576,41 @@
                 if (!validateStep()) return;
                 changeStep(currentStep + 1);
             });
-
             document.getElementById("prevBtn").addEventListener("click", function() {
                 changeStep(currentStep - 1);
+            });
+            document.getElementById("addDataModal").addEventListener("shown.bs.modal", function() {
+                changeStep(1);
+            });
+            document.getElementById("addDataModal").addEventListener("hidden.bs.modal", function() {
+                resetForm();
+            });
+        }
+
+        function resetForm() {
+            const form = document.getElementById("addDataForm");
+
+            if (!form) return;
+
+            form.reset();
+
+            form.querySelectorAll('.ss-main select').forEach(select => {
+                const instance = select.slim;
+                if (instance) {
+                    instance.set('');
+                }
+            });
+
+            form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+
+            const categoryContainer = form.querySelector('#categoryContainer');
+            if (categoryContainer) categoryContainer.innerHTML = '';
+
+            const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
+            if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+
+            form.querySelectorAll("input[type='file']").forEach(input => {
+                input.value = '';
             });
         }
 
@@ -590,24 +645,9 @@
                 const saveButton = document.getElementById('submitBtn');
                 if (saveButton.disabled) return;
 
-                const result = await Swal.fire({
-                    title: "Confirmation",
-                    text: "Are you sure you want to save this data?",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonColor: '#2ecc71',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, Save',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: true
-                });
-                if (!result.isConfirmed) return;
+                await confirmSubmitData(saveButton);
 
-                saveButton.disabled = true;
                 const originalContent = saveButton.innerHTML;
-                saveButton.innerHTML =
-                    `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...`;
-
                 const formData = new FormData(document.getElementById('addDataForm'));
                 const croppedImages = document.querySelectorAll('.cropped-preview');
 
@@ -629,29 +669,20 @@
                     const postData = await restAPI('POST', '{{ route('admin.katalog.store') }}', formData);
 
                     if (postData.status >= 200 && postData.status < 300) {
-                        notyf.success('Data saved successfully.');
+                        await notyf.success('Data saved successfully.');
 
-                        setTimeout(() => {
-                            getListData(defaultLimitPage, currentPage, defaultAscending,
+                        setTimeout(async () => {
+                            await getListData(defaultLimitPage, currentPage, defaultAscending,
                                 defaultSearch, customFilter);
                         }, 1000);
 
                         const modalElement = document.getElementById('addDataModal');
                         const modalInstance = bootstrap.Modal.getInstance(modalElement);
                         if (modalInstance) {
-                            modalInstance.hide();
+                            await modalInstance.hide();
                         }
 
-                        document.getElementById("addDataForm").reset();
-
-                        document.querySelectorAll('.ss-main select').forEach(select => {
-                            const instance = select.slim;
-                            if (instance) {
-                                instance.set('');
-                            }
-                        });
-
-                        document.querySelectorAll('.cropped-preview').forEach(img => img.src = '');
+                        await resetForm();
                     } else {
                         notyf.error('An error occurred while saving data.');
                     }
@@ -664,20 +695,18 @@
             });
         }
 
-
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
                 searchListData(),
                 setFilterListData(),
                 toggleFilterButton(),
-                multiSelectData('#unit', 'Select Unit'),
                 multiSelectData('#filterCategory', 'Select Categories'),
                 multiSelectData('#id_category', 'Select Categories'),
                 setWizardForm(),
                 uploadMultiImage(),
                 addListData(),
-            ])
+            ]);
         }
     </script>
 @endsection

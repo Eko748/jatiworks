@@ -442,19 +442,36 @@ body {
 }
 
 .ss-search {
+    color: var(--text-color-reverse) !important;
+}
+
+.ss-search input {
+    background: var(--bg-color) !important;
+    box-shadow: 8px 8px 15px var(--shadow-dark), -8px -8px 15px var(--shadow-light) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.ss-list .ss-search {
     color: var(--text-color) !important;
-    opacity: 0.7 !important;
+}
+
+.ss-search input::placeholder {
+    color: var(--bg-color-reverse) !important;
+    opacity: 1;
 }
 
 .ss-list {
-    color: var(--text-color) !important;
-    background: var(--bg-color);
-    font-weight: bold !important;
+    margin: 2px !important;
 }
 
 .ss-list .ss-option {
-    background: var(--bg-color) !important;
+    margin: 8px !important;
     color: var(--text-color) !important;
+    background: var(--bg-color) !important;
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light) !important;
+    transition: all 0.3s ease-in-out !important;
+    border-radius: 12px !important;
 }
 
 .ss-list .ss-option:hover {
