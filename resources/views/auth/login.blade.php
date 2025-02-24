@@ -11,7 +11,12 @@
                     <h1 class="display-4 text-center fw-bold">Prosperity For All</h1>
                 </div>
             </div>
-            <div class="col-md-4 d-flex align-items-center justify-content-center">
+            <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+                <div class="w-75 mb-3">
+                    <a href="{{ url('/') }}" class="btn btn-outline-dark btn-sm fs-6 fw-bold">
+                        <i class="fas fa-circle-chevron-left me-1"></i>Back to Home
+                    </a>
+                </div>
                 <div class="login-form w-75">
                     <h2 class="fw-bold mb-4 text-dark text-center">Login Your Account</h2>
                     <form>

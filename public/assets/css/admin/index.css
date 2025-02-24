@@ -3,6 +3,7 @@
     --bg-color-reverse: #2c2c2c;
     --bg-color-btn: #1a1a1a;
     --bg-color-green: #32CD32;
+    --bg-color-red: #ed0606;
     --bg-color-hover: #e0e5ec;
     --shadow-dark: #b8bcc4;
     --shadow-light: #ffffff;
@@ -18,6 +19,7 @@
     --bg-color-reverse: #e0e5ec;
     --bg-color-btn: #e0e5ec;
     --bg-color-green: #32CD32;
+    --bg-color-red: #ed0606;
     --bg-color-hover: #2c2c2c;
     --shadow-dark: #1a1a1a;
     --shadow-light: #3a3a3a;
@@ -89,6 +91,22 @@ body {
 .neumorphic-button {
     color: var(--bg-color-btn);
     background: var(--bg-color);
+    box-shadow: 8px 8px 15px var(--shadow-dark), -4px -8px 15px var(--shadow-light);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.neumorphic-btn-success {
+    color: var(--bg-color-green);
+    border: 2px solid var(--bg-color-green);
+    box-shadow: 8px 8px 15px var(--shadow-dark), -4px -8px 15px var(--shadow-light);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.neumorphic-btn-danger {
+    color: var(--bg-color-red);
+    border: 2px solid var(--bg-color-red);
     box-shadow: 8px 8px 15px var(--shadow-dark), -4px -8px 15px var(--shadow-light);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;

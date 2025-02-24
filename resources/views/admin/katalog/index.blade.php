@@ -108,7 +108,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Navigation Tabs -->
                     <ul class="nav nav-tabs border-0 mb-3 gap-2" id="wizardTabs">
                         <li class="nav-item">
                             <button class="neumorphic-button text-green nav-link active wizard-step" data-step="1">1. Item
@@ -134,12 +133,20 @@
                                 <div class="col-md-6">
                                     <label for="itemName" class="form-label fw-bold">Item Name</label>
                                     <input type="text" class="form-control neumorphic-card" id="itemName"
-                                        name="itemName" placeholder="Enter item name" required>
+                                        name="item_name" placeholder="Enter item name" required>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <label for="material" class="form-label fw-bold">Material</label>
                                     <textarea class="form-control neumorphic-card" id="material" name="material" rows="1"
                                         placeholder="Enter material details" required></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="weight" class="form-label fw-bold">Weight</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control neumorphic-card" id="weight"
+                                            name="weight" placeholder="Enter weight" required>
+                                        <span class="input-group-text neumorphic-card">kg</span>
+                                    </div>
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Dimensions (L × W × H):</label>
@@ -163,10 +170,9 @@
                                             <label for="unit" class="form-label">Unit</label>
                                             <select id="unit" class="form-control neumorphic-card" name="unit"
                                                 required>
-                                                <option value="" disabled selected>Select unit</option>
-                                                <option value="mm">mm</option>
-                                                <option value="cm">cm</option>
-                                                <option value="m">m</option>
+                                                <option value="m">m (Meter)</option>
+                                                <option value="cm">cm (Centimeter)</option>
+                                                <option value="mm">mm (Milimeter)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -178,19 +184,26 @@
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Category:</label>
                                     <div class="row g-2">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <label for="category" class="form-label">Existing Categories</label>
-                                            <select id="category" class="form-control neumorphic-card" name="id_category">
-                                                <option value="">Select Category</option>
+                                            <select id="id_category" class="form-control neumorphic-card"
+                                                name="id_category" multiple>
                                                 @foreach ($category as $cat)
                                                     <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label for="new_category" class="form-label">Add New Category</label>
-                                            <input type="text" class="form-control neumorphic-card" id="new_category"
-                                                name="name_category" placeholder="Enter new category (optional)">
+                                        <div class="col-md-12 position-relative">
+                                            <label class="form-label">Add New Category (optional)</label>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="text" class="form-control neumorphic-card mb-2"
+                                                    name="name_category[]" placeholder="Enter new category">
+                                                <button type="button" class="btn circle-plus mb-2 neumorphic-btn-success"
+                                                    onclick="addCategoryInput()">
+                                                    <i class="fas fa-circle-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div id="categoryContainer" class="mt-2"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +213,8 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label for="desc" class="form-label fw-bold">Description</label>
-                                    <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description" required></textarea>
+                                    <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description"
+                                        required></textarea>
                                 </div>
                             </div>
                         </div>
@@ -208,20 +222,20 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label for="imageInput" class="form-label fw-bold">Upload Images</label>
-                                    <input type="file" class="form-control neumorphic-card" id="imageInput" name="images[]" multiple>
+                                    <input type="file" class="form-control neumorphic-card" id="imageInput" multiple>
                                     <small class="text-muted">You can upload multiple images</small>
                                     <div id="imagePreviewContainer" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
-
                     </form>
                 </div>
 
-                <!-- Wizard Navigation Buttons -->
                 <div class="modal-footer border-0 d-flex justify-content-between">
-                    <button type="button" id="prevBtn" class="btn neumorphic-button d-none">Previous</button>
-                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">Next</button>
+                    <button type="button" id="prevBtn" class="btn neumorphic-button d-none"><i
+                            class="fas fa-backward me-1"></i>Previous</button>
+                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline"><i
+                            class="fas fa-forward me-1"></i>Next</button>
                     <button type="submit" form="addDataForm" id="submitBtn"
                         class="btn neumorphic-button-outline fw-bold d-none">
                         <i class="fas fa-save me-1"></i>Submit
@@ -230,7 +244,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -322,19 +335,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                                                        </div>
-                                                                                                                                                    `).join('')}
+                                                                                                                                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                                                                                                    <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                            `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                                                    </button>
-                                                                                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                                                    </button>
-                                                                                                                                                ` : ''}
+                                                                                                                                                                                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                                                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                                                                                                            </button>
+                                                                                                                                                                                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                                                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                                                                                                            </button>
+                                                                                                                                                                                                        ` : ''}
                     </div>
                 ` : '-'
 
@@ -448,7 +461,8 @@
                     croppedImages.push(blob);
 
                     let wrapper = document.createElement("div");
-                    wrapper.classList.add("cropped-image-wrapper", "position-relative", "d-inline-block",
+                    wrapper.classList.add("cropped-image-wrapper", "position-relative",
+                        "d-inline-block",
                         "me-2");
                     wrapper.style.width = "100px";
                     wrapper.style.height = "100px";
@@ -514,7 +528,8 @@
             function validateStep() {
                 let isValid = true;
                 document.querySelectorAll(
-                    `#step-${currentStep} input[required], #step-${currentStep} textarea[required]`).forEach(
+                    `#step-${currentStep} input[required], #step-${currentStep} textarea[required], #step-${currentStep} select[required]`
+                ).forEach(
                     input => {
                         if (!input.value.trim()) {
                             input.classList.add("is-invalid");
@@ -544,15 +559,102 @@
             });
         }
 
+        async function addCategoryInput() {
+            let container = document.getElementById('categoryContainer');
+            let div = document.createElement('div');
+            div.classList.add('d-flex', 'align-items-center', 'gap-2', 'mt-2');
+
+            let input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'name_category[]';
+            input.classList.add('form-control', 'neumorphic-card', 'mb-2');
+            input.placeholder = 'Enter new category';
+
+            let button = document.createElement('button');
+            button.type = 'button';
+            button.classList.add('btn', 'neumorphic-btn-danger', 'mb-2');
+            button.innerHTML = '<i class="fas fa-minus-circle"></i>';
+            button.onclick = function() {
+                div.remove();
+            };
+
+            div.appendChild(input);
+            div.appendChild(button);
+            container.appendChild(div);
+        }
+
+        async function addListData() {
+            document.getElementById("addDataForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const saveButton = document.getElementById('submitBtn');
+                if (saveButton.disabled) return;
+
+                const result = await Swal.fire({
+                    title: "Confirmation",
+                    text: "Are you sure you want to save this data?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: '#2ecc71',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, Save',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                });
+                if (!result.isConfirmed) return;
+
+                saveButton.disabled = true;
+                const originalContent = saveButton.innerHTML;
+                saveButton.innerHTML =
+                    `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...`;
+
+                const formData = new FormData(document.getElementById('addDataForm'));
+                const croppedImages = document.querySelectorAll('.cropped-preview');
+
+                try {
+                    const imageBlobs = await Promise.all(
+                        Array.from(croppedImages).map(async (img, index) => {
+                            const response = await fetch(img.src);
+                            const blob = await response.blob();
+                            formData.append(`file[]`, blob, `cropped_image_${index}.png`);
+                        })
+                    );
+
+                    console.log('imageBlobs:', imageBlobs)
+
+                    // Kirim data setelah semua gambar berhasil diproses
+                    const postData = await restAPI('POST', '{{ route('admin.katalog.store') }}', formData);
+
+                    if (postData.status >= 200 && postData.status < 300) {
+                        notyf.success('Data berhasil disimpan');
+                        setTimeout(() => {
+                            getListData(defaultLimitPage, currentPage, defaultAscending,
+                                defaultSearch, customFilter);
+                        }, 1000);
+                    } else {
+                        notyf.error('Terjadi kesalahan saat menyimpan data');
+                    }
+                } catch (error) {
+                    notyf.error('Gagal menyimpan data, silakan coba lagi');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = originalContent;
+                }
+            });
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
                 searchListData(),
                 setFilterListData(),
                 toggleFilterButton(),
+                multiSelectData('#unit', 'Select Unit'),
                 multiSelectData('#filterCategory', 'Select Categories'),
+                multiSelectData('#id_category', 'Select Categories'),
                 setWizardForm(),
-                uploadMultiImage()
+                uploadMultiImage(),
+                addListData(),
             ])
         }
     </script>
