@@ -112,14 +112,16 @@ class KatalogController extends Controller
                 'weight'     => 'nullable|string',
                 'desc'       => 'nullable|string',
                 'unit'       => 'string',
-                'category'   => 'required|array',
-                'category.*' => 'string',
+                'id_category' => 'nullable|integer', // Jika kategori lama ada, bisa dikirim sebagai ID
+                'name_category' => 'nullable|array', // Kategori baru dikirim sebagai array
+                'name_category.*' => 'nullable|string', // Setiap kategori baru harus string
                 'file'       => 'nullable|array',
                 'file.*'     => 'file|mimes:jpg,jpeg,png|max:2048'
             ]);
 
             DB::beginTransaction();
 
+            // Simpan katalog baru
             $katalog = Katalog::create([
                 'item_name' => $request->item_name,
                 'material'  => $request->material,
@@ -131,33 +133,38 @@ class KatalogController extends Controller
                 'unit'      => $request->unit,
             ]);
 
+            // Menyimpan kategori
             $categoryIds = [];
 
-            foreach ($request->category as $cat) {
-                if (is_numeric($cat)) {
-                    $categoryIds[] = $cat; // Jika sudah ada, langsung gunakan ID-nya
-                } else {
-                    $category = Category::where('name_category', $cat)->first();
+            // Jika ID kategori lama dikirim, tambahkan ke array kategori
+            if (!empty($request->id_category)) {
+                $categoryIds[] = $request->id_category;
+            }
 
-                    if (!$category) {
-                        $category = Category::create(['name_category' => $cat]);
+            // Jika ada kategori baru, cek dan tambahkan ke database
+            if (!empty($request->name_category)) {
+                foreach ($request->name_category as $catName) {
+                    if (!empty(trim($catName))) { // Abaikan input kosong
+                        $category = Category::firstOrCreate(['name_category' => $catName]);
+                        $categoryIds[] = $category->id;
                     }
-
-                    $categoryIds[] = $category->id;
                 }
             }
 
+            // Hubungkan katalog dengan kategori yang sudah ada dan baru dibuat
             $katalog->category()->sync($categoryIds);
 
+            // Simpan file jika ada
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
                     $file->storeAs('uploads/katalog', $filename, 'public');
 
-                    File::create([
+                    $files = File::create([
                         'id_katalog' => $katalog->id,
                         'file_name'  => $filename
                     ]);
+                    // dd($files);
                 }
             }
 

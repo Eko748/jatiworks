@@ -281,7 +281,7 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
-        let storageUrl = '{{ asset('storage') }}'
+        let storageUrl = '{{ asset('storage/uploads/katalog') }}'
 
         async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
             let requestParams = {

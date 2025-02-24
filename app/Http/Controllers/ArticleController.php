@@ -12,17 +12,17 @@ class ArticleController extends Controller
     private array $menu = [];
     private array $title = [];
 
-    // public function __construct()
-    // {
-    //     $this->menu;
-    //     $this->title['Article'];
-    // }
+    public function __construct()
+    {
+        $this->menu;
+        $this->title['Article'];
+    }
 
     public function index()
     {
-        // $title = $this->title[0];
+        $title = $this->title[0];
 
-        return view('admin.article.index');
+        return view('admin.article.index', compact('title'));
     }
 
     public function getdataarticle(Request $request)
