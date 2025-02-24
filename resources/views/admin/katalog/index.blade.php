@@ -281,7 +281,7 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
-        let storageUrl = '{{ asset('storage/uploads/katalog') }}'
+        let storageUrl = '{{ asset('storage/uploads/katalog/') }}'
 
         async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
             let requestParams = {
@@ -335,19 +335,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                                                                                                                    <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                            `).join('')}
+                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                            </div>
+                                                        `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                                                                                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                                                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                                                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                        ` : ''}
+                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                        </button>
+                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                        </button>
+                                                    ` : ''}
                     </div>
                 ` : '-'
 
@@ -612,33 +612,58 @@
                 const croppedImages = document.querySelectorAll('.cropped-preview');
 
                 try {
-                    const imageBlobs = await Promise.all(
+                    await Promise.all(
                         Array.from(croppedImages).map(async (img, index) => {
                             const response = await fetch(img.src);
                             const blob = await response.blob();
-                            formData.append(`file[]`, blob, `cropped_image_${index}.png`);
+
+                            const now = new Date();
+                            const timestamp =
+                                `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
+
+                            const fileName = `${timestamp}_${index}.png`.replace(/\s+/g, '');
+                            formData.append(`file[]`, blob, fileName);
                         })
                     );
 
                     const postData = await restAPI('POST', '{{ route('admin.katalog.store') }}', formData);
 
                     if (postData.status >= 200 && postData.status < 300) {
-                        notyf.success('Data berhasil disimpan');
+                        notyf.success('Data saved successfully.');
+
                         setTimeout(() => {
                             getListData(defaultLimitPage, currentPage, defaultAscending,
                                 defaultSearch, customFilter);
                         }, 1000);
+
+                        const modalElement = document.getElementById('addDataModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+
+                        document.getElementById("addDataForm").reset();
+
+                        document.querySelectorAll('.ss-main select').forEach(select => {
+                            const instance = select.slim;
+                            if (instance) {
+                                instance.set('');
+                            }
+                        });
+
+                        document.querySelectorAll('.cropped-preview').forEach(img => img.src = '');
                     } else {
-                        notyf.error('Terjadi kesalahan saat menyimpan data');
+                        notyf.error('An error occurred while saving data.');
                     }
                 } catch (error) {
-                    notyf.error('Gagal menyimpan data, silakan coba lagi');
+                    notyf.error('Failed to save data. Please try again.');
                 } finally {
                     saveButton.disabled = false;
                     saveButton.innerHTML = originalContent;
                 }
             });
         }
+
 
         async function initPageLoad() {
             await Promise.all([
