@@ -154,12 +154,9 @@
                                         placeholder="Enter material details" required></textarea>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="weight" class="form-label fw-bold">Weight</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control neumorphic-card" id="weight"
-                                            name="weight" placeholder="Enter weight" required>
-                                        <span class="input-group-text neumorphic-card neu-text">kg</span>
-                                    </div>
+                                    <label for="weight" class="form-label fw-bold">Weight (kg)</label>
+                                    <input type="number" class="form-control neumorphic-card" id="weight"
+                                        name="weight" placeholder="Enter weight" required>
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Dimensions (L × W × H):</label>
@@ -235,7 +232,7 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label for="imageInput" class="form-label fw-bold">Upload Images</label>
-                                    <input type="file" class="form-control neumorphic-card" id="imageInput" multiple>
+                                    <input type="file" accept="image/*" class="form-control neumorphic-card" id="imageInput" multiple>
                                     <small class="neu-text">You can upload multiple images</small>
                                     <div id="imagePreviewContainer" class="mt-3"></div>
                                 </div>
@@ -315,7 +312,7 @@
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleData(item))
+                    getDataRest.data.data.map(async item => await handleListData(item))
                 );
                 await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
@@ -323,7 +320,7 @@
             }
         }
 
-        async function handleData(data) {
+        async function handleListData(data) {
             return {
                 id: data?.id ?? '-',
                 item_name: data?.item_name ?? '-',
@@ -347,19 +344,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                            </div>
-                                                                                                        `).join('')}
+                                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                        <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                    </div>
+                                                                                                                `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                        </button>
-                                                                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                        </button>
-                                                                                                    ` : ''}
+                                                                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                </button>
+                                                                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                </button>
+                                                                                                            ` : ''}
                     </div>
                 ` : '-'
 
@@ -432,10 +429,8 @@
                         cropper.destroy();
                     }
 
-                    // Menyesuaikan ukuran berdasarkan layar
-                    let containerWidth = Math.min(window.innerWidth * 0.9,
-                        750); // Maksimal 750px, minimal 90% dari layar
-                    let containerHeight = (containerWidth / 750) * 400; // Menjaga aspek rasio 750:400
+                    let containerWidth = Math.min(window.innerWidth * 0.9, 750);
+                    let containerHeight = (containerWidth / 750) * 400;
 
                     cropper = new Cropper(imagePreview, {
                         aspectRatio: 1,
@@ -446,7 +441,7 @@
                         minCanvasHeight: containerHeight,
                         minContainerWidth: containerWidth,
                         minContainerHeight: containerHeight,
-                        responsive: true, // Cropper akan menyesuaikan ukuran saat jendela diubah
+                        responsive: true,
                         ready() {
                             let containerData = cropper.getContainerData();
                             cropper.setCanvasData({
@@ -463,7 +458,6 @@
                                 height: containerHeight
                             });
 
-                            // Pastikan cropper-container menyesuaikan ukuran layar
                             document.querySelector('.cropper-container').style.width = containerWidth +
                                 'px';
                             document.querySelector('.cropper-container').style.height = containerHeight +

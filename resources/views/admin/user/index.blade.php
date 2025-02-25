@@ -11,7 +11,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex align-items-center pb-3 gap-1 flex-wrap">
-                <button type="button" class="add-data neumorphic-button btn btn-md">
+                <button type="button" class="add-data neumorphic-button btn btn-md" data-bs-toggle="modal"
+                    data-bs-target="#addDataModal">
                     <i class="fas fa-circle-plus"></i><span class="d-none d-sm-inline ms-1">Add</span>
                 </button>
                 <button type="button" id="toggleFilter" class="filter-data neumorphic-button btn btn-md"
@@ -90,6 +91,54 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="addDataModal" tabindex="-1" data-bs-focus="false" aria-labelledby="addDataModalLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDataForm">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="name" class="form-label fw-bold">Full Name</label>
+                                <input type="text" class="form-control neumorphic-card" id="name" name="name"
+                                    placeholder="Enter full name" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="email" class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control neumorphic-card" id="email" name="email"
+                                    placeholder="Enter email address" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="password" class="form-label fw-bold">Password</label>
+                                <input type="password" class="form-control neumorphic-card" id="password"
+                                    name="password" placeholder="Enter password" autocomplete="new-password" required>
+                                <div class="mt-2" id="password-rules">
+                                    <small class="d-block text-danger" id="rule-length">❌ At least 8 characters</small>
+                                    <small class="d-block text-danger" id="rule-uppercase">❌ At least 1 uppercase
+                                        letter</small>
+                                    <small class="d-block text-danger" id="rule-number">❌ At least 1 number</small>
+                                    <small class="d-block text-danger" id="rule-symbol">❌ At least 1 symbol</small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-end">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
+                            class="fas fa-circle-xmark me-1"></i>Cancel</button>
+                    <button type="submit" form="addDataForm" id="submitBtn"
+                        class="btn neumorphic-button-outline fw-bold">
+                        <i class="fas fa-save me-1"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('assets_js')
@@ -126,7 +175,7 @@
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleData(item))
+                    getDataRest.data.data.map(async item => await handleListData(item))
                 );
                 await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
@@ -134,7 +183,7 @@
             }
         }
 
-        async function handleData(data) {
+        async function handleListData(data) {
             let statusClass = 'badge border px-2 py-1 ';
             if (data.status === 'Online') {
                 statusClass += 'text-success border-success';
@@ -174,7 +223,6 @@
             renderListData(getDataTable, pagination, display_from, display_to);
         }
 
-
         async function getFilterListData() {
             let selectedStatusLogin = Array.from(document.getElementById("filterStatusLogin").selectedOptions)
                 .map(option => option.value)
@@ -196,6 +244,140 @@
             return [filterData, resetActions];
         }
 
+        async function addListData() {
+            document.getElementById("addDataForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const saveButton = document.getElementById('submitBtn');
+                if (saveButton.disabled) return;
+
+                await confirmSubmitData(saveButton);
+
+                const originalContent = saveButton.innerHTML;
+                const formData = new FormData(document.getElementById('addDataForm'));
+
+                try {
+                    const postData = await restAPI('POST', '{{ route('admin.katalog.store') }}', formData);
+
+                    if (postData.status >= 200 && postData.status < 300) {
+                        await notyf.success('Data saved successfully.');
+
+                        setTimeout(async () => {
+                            await getListData(defaultLimitPage, currentPage, defaultAscending,
+                                defaultSearch, customFilter);
+                        }, 1000);
+
+                        const modalElement = document.getElementById('addDataModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            await modalInstance.hide();
+                        }
+
+                        await resetForm();
+                    } else {
+                        notyf.error('An error occurred while saving data.');
+                    }
+                } catch (error) {
+                    notyf.error('Failed to save data. Please try again.');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = originalContent;
+                }
+            });
+        }
+
+        function resetForm() {
+            const form = document.getElementById("addDataForm");
+
+            if (!form) return;
+
+            form.reset();
+
+            form.querySelectorAll('.ss-main select').forEach(select => {
+                const instance = select.slim;
+                if (instance) {
+                    instance.set('');
+                }
+            });
+
+            form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+
+            const categoryContainer = form.querySelector('#categoryContainer');
+            if (categoryContainer) categoryContainer.innerHTML = '';
+
+            const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
+            if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+
+            form.querySelectorAll("input[type='file']").forEach(input => {
+                input.value = '';
+            });
+        }
+
+        function handlePasswordUser() {
+            const passwordInput = document.querySelector("#password");
+            const passwordRules = document.querySelector("#password-rules");
+            const ruleLength = document.querySelector("#rule-length");
+            const ruleUppercase = document.querySelector("#rule-uppercase");
+            const ruleNumber = document.querySelector("#rule-number");
+            const ruleSymbol = document.querySelector("#rule-symbol");
+
+            passwordRules.style.display = "none";
+
+            passwordInput.addEventListener("focus", function() {
+                passwordRules.style.display = "block";
+            });
+
+            passwordInput.addEventListener("input", function() {
+                const value = passwordInput.value;
+
+                if (value.length >= 8) {
+                    ruleLength.innerHTML = "✅ At least 8 characters";
+                    ruleLength.classList.remove("text-danger");
+                    ruleLength.classList.add("text-success");
+                } else {
+                    ruleLength.innerHTML = "❌ At least 8 characters";
+                    ruleLength.classList.remove("text-success");
+                    ruleLength.classList.add("text-danger");
+                }
+
+                if (/[A-Z]/.test(value)) {
+                    ruleUppercase.innerHTML = "✅ At least 1 uppercase letter";
+                    ruleUppercase.classList.remove("text-danger");
+                    ruleUppercase.classList.add("text-success");
+                } else {
+                    ruleUppercase.innerHTML = "❌ At least 1 uppercase letter";
+                    ruleUppercase.classList.remove("text-success");
+                    ruleUppercase.classList.add("text-danger");
+                }
+
+                if (/\d/.test(value)) {
+                    ruleNumber.innerHTML = "✅ At least 1 number";
+                    ruleNumber.classList.remove("text-danger");
+                    ruleNumber.classList.add("text-success");
+                } else {
+                    ruleNumber.innerHTML = "❌ At least 1 number";
+                    ruleNumber.classList.remove("text-success");
+                    ruleNumber.classList.add("text-danger");
+                }
+
+                if (/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+                    ruleSymbol.innerHTML = "✅ At least 1 symbol";
+                    ruleSymbol.classList.remove("text-danger");
+                    ruleSymbol.classList.add("text-success");
+                } else {
+                    ruleSymbol.innerHTML = "❌ At least 1 symbol";
+                    ruleSymbol.classList.remove("text-success");
+                    ruleSymbol.classList.add("text-danger");
+                }
+            });
+
+            passwordInput.addEventListener("blur", function() {
+                if (passwordInput.value === "") {
+                    passwordRules.style.display = "none";
+                }
+            });
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
@@ -204,6 +386,7 @@
                 toggleFilterButton(),
                 multiSelectData('#filterStatusLogin', 'Select Status Login'),
                 multiSelectData('#filterRole', 'Select Role'),
+                handlePasswordUser()
             ])
         }
     </script>
