@@ -84,7 +84,7 @@ class ArticleController extends Controller
     {
         try {
             $request->validate([
-                'file_name'  => 'nullable|string|max:255',
+                'file_name'  => 'file|mimes:jpg,jpeg,png|max:2048',
                 'title'   => 'nullable|string|max:255',
                 'desc'     => 'nullable|string|max:255',
                 'status'      => 'nullable|string|max:255',
@@ -129,6 +129,30 @@ class ArticleController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors'      => true,
+                'message'     => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        try {
+            $article = Article::findOrFail($id);
+
+            // Toggle status (Yes <-> No)
+            $article->status = ($article->status === 'Yes') ? 'No' : 'Yes';
+            $article->save();
+
+            return response()->json([
+                'status_code' => 200,
+                'message'     => 'Status updated successfully!',
+                'data'        => $article
+            ], 200);
+        } catch (\Exception $e) {
             return response()->json([
                 'status_code' => 500,
                 'errors'      => true,
