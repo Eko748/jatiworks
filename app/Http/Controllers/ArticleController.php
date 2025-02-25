@@ -84,7 +84,7 @@ class ArticleController extends Controller
     {
         try {
             $request->validate([
-                'article'  => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validasi input file
+                'article'  => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                 'title'    => 'nullable|string|max:255',
                 'desc'     => 'nullable|string|max:255',
                 'status'   => 'nullable|string|max:255',
@@ -96,7 +96,7 @@ class ArticleController extends Controller
 
             $fileName = null;
 
-            if ($request->hasFile('article')) { // Periksa apakah ada file yang diupload
+            if ($request->hasFile('article')) {
                 $file = $request->file('article');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('uploads/article', $fileName, 'public');
@@ -106,7 +106,7 @@ class ArticleController extends Controller
             $status = ($request->start_date <= $now && $now <= $request->end_date) ? 'Yes' : 'No';
 
             $article = Article::create([
-                'file_name'  => $fileName, // Simpan nama file ke kolom file_name
+                'file_name'  => $fileName,
                 'title'       => $request->title,
                 'desc'       => $request->desc,
                 'status'     => $status,
