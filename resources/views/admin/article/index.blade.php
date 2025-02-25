@@ -187,18 +187,30 @@
 
         async function handleListData(data) {
             let statusClass = 'badge border px-2 py-1 ';
-            if (data.status === 'YES') {
-                statusClass += 'text-success border-success';
-            } else {
-                statusClass += 'text-danger border-danger';
+            statusClass += data.status === 'Yes' ? 'text-success border-success' : 'text-danger border-danger';
+
+            let today = new Date();
+            let startDate = data.start_date ? new Date(data.start_date) : null;
+            let endDate = data.end_date ? new Date(data.end_date) : null;
+
+            let badgeClass = 'border border-secondary text-secondary'; // Default badge
+            if (endDate) {
+                if (endDate < today) {
+                    badgeClass = 'border border-danger text-danger'; // Sudah lewat
+                } else if (startDate && today >= startDate && today <= endDate) {
+                    badgeClass = 'border border-success text-success'; // Sedang dalam rentang
+                } else {
+                    badgeClass = 'border border-info text-info'; // Masih dalam rentang tetapi belum aktif
+                }
             }
 
-            let dateRange = data.start_date && data.end_date ?
-                `${data.start_date} - ${data.end_date}` :
+            let dateRange = startDate && endDate ?
+                `<div>Start: <span class="badge ${badgeClass} px-2 py-1">${data.start_date}</span></div>
+         <div>End: <span class="badge ${badgeClass} px-2 py-1">${data.end_date}</span></div>` :
                 '-';
 
             let imageTag = data.file_name ?
-                `<img src="${storageUrl}/${data.file_name}" alt="${data.title}" class="img-thumbnail" width="100">` :
+                `<img src="${storageUrl}/${data.file_name}" class="d-block w-100" style="max-height: 100px; object-fit: contain;" alt="${data.title}">` :
                 '-';
 
             return {
@@ -210,6 +222,7 @@
                 images: imageTag
             };
         }
+
 
         async function setListData(dataList, pagination) {
             totalPage = pagination.total_pages;
