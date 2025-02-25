@@ -85,6 +85,7 @@
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Material</th>
+                            <th class="text-wrap align-top">Weight (kg)</th>
                             <th class="text-wrap align-top">Dimensions (l x w x h)</th>
                             <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Category</th>
@@ -326,6 +327,7 @@
                 item_name: data?.item_name ?? '-',
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
+                weight: data?.weight ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : []
@@ -366,6 +368,7 @@
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
                     <td>${element.item_name}</td>
                     <td>${element.material}</td>
+                    <td>${element.weight}</td>
                     <td>${element.dimensions}</td>
                     <td>${element.unit}</td>
                     <td>${element.category}</td>

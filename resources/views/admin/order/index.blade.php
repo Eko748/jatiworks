@@ -59,11 +59,15 @@
                     <thead>
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
-                            <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Status</th>
-                            <th class="text-wrap align-top">Title</th>
-                            <th class="text-wrap align-top">Description</th>
-                            <th class="text-wrap align-top">Content Date Range</th>
+                            <th class="text-wrap align-top">Buyer</th>
+                            <th class="text-wrap align-top">Item Name</th>
+                            <th class="text-wrap align-top">Material</th>
+                            <th class="text-wrap align-top">Weight (kg)</th>
+                            <th class="text-wrap align-top">Dimensions (l x w x h)</th>
+                            <th class="text-wrap align-top">Unit</th>
+                            <th class="text-wrap align-top">Qty</th>
+                            <th class="text-wrap align-top">Price</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -146,7 +150,6 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
-        let storageUrl = '{{ asset('storage/uploads/article/') }}'
 
         async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
             let requestParams = {
@@ -162,7 +165,7 @@
 
             loadListData();
 
-            let getDataRest = await restAPI('GET', '{{ route('getdataarticle') }}', requestParams)
+            let getDataRest = await restAPI('GET', '{{ route('getdataorder') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
 
@@ -178,42 +181,39 @@
 
         async function handleListData(data) {
             let statusClass = 'badge border px-2 py-1 ';
-            statusClass += data.status === 'Yes' ? 'text-success border-success' : 'text-danger border-danger';
+            let statusIcon = '';
 
-            let today = new Date();
-            let startDate = data.start_date ? new Date(data.start_date) : null;
-            let endDate = data.end_date ? new Date(data.end_date) : null;
-
-            let badgeClass = 'border border-secondary text-secondary';
-            if (endDate) {
-                if (endDate < today) {
-                    badgeClass = 'border border-danger text-danger';
-                } else if (startDate && today >= startDate && today <= endDate) {
-                    badgeClass = 'border border-success text-success';
-                } else {
-                    badgeClass = 'border border-info text-info';
-                }
+            switch (data.status) {
+                case 'Payment Completed':
+                    statusClass += 'text-success border-success';
+                    statusIcon = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'Waiting for Payment':
+                    statusClass += 'text-info border-info';
+                    statusIcon = '<i class="fas fa-clock"></i>';
+                    break;
+                case 'Not Completed':
+                    statusClass += 'text-danger border-danger';
+                    statusIcon = '<i class="fas fa-times-circle"></i>';
+                    break;
+                default:
+                    statusClass += 'text-secondary border-secondary';
+                    statusIcon = '<i class="fas fa-question-circle"></i>';
             }
-
-            let dateRange = startDate && endDate ?
-                `<div>Start: <span class="badge ${badgeClass} px-2 py-1">${data.start_date}</span></div>
-                    <div>End: <span class="badge ${badgeClass} px-2 py-1">${data.end_date}</span></div>` :
-                '-';
-
-            let imageTag = data.file_name ?
-                `<img src="${storageUrl}/${data.file_name}" class="d-block w-100" style="max-height: 100px; object-fit: contain;" alt="${data.title}">` :
-                '-';
 
             return {
                 id: data?.id ?? '-',
-                title: data?.title ?? '-',
-                desc: data?.desc ?? '-',
-                date_range: dateRange,
-                status: `<span class="${statusClass}">${data?.status ?? '-'}</span>`,
-                images: imageTag
+                buyer_name: data?.buyer_name ?? '-',
+                item_name: data?.item_name ?? '-',
+                material: data?.material ?? '-',
+                unit: data?.unit ?? '-',
+                weight: data?.weight ?? '-',
+                qty: data?.qty ?? '-',
+                price: data?.price ?? '-',
+                dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
+                status: `<span class="${statusClass}">${statusIcon} ${data?.status ?? '-'}</span>`,
             };
         }
-
 
         async function setListData(dataList, pagination) {
             totalPage = pagination.total_pages;
@@ -226,11 +226,15 @@
                 getDataTable += `
                 <tr class="neumorphic-tr">
                     <td class="text-center">${display_from + index}.</td>
-                    <td>${element.images}</td>
                     <td>${element.status}</td>
-                    <td>${element.title}</td>
-                    <td>${element.desc}</td>
-                    <td>${element.date_range}</td>
+                    <td>${element.buyer_name}</td>
+                    <td>${element.item_name}</td>
+                    <td>${element.material}</td>
+                    <td>${element.weight}</td>
+                    <td>${element.dimensions}</td>
+                    <td>${element.unit}</td>
+                    <td>${element.qty}</td>
+                    <td>${element.price}</td>
                 </tr>`;
             });
 

@@ -45,6 +45,15 @@
                 </li>
             </a>
             <p>Sistem</p>
+            <a href="{{ route('admin.order.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.order.index') ? 'active' : '' }}">
+                    <div class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.order.index') ? 'active' : '' }}">
+                        <i class="fas fa-credit-card"></i>
+                        <span class="sidebar-text">Order</span>
+                    </div>
+                </li>
+            </a>
             <a href="{{ route('admin.article.index') }}" class="text-decoration-none">
                 <li
                     class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.article.index') ? 'active' : '' }}">
