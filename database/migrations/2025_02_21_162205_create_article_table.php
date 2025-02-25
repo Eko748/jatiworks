@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('desc');
             $table->enum('status',['Yes','No'])->nullable();
-            $table->dateTime('start_Date')->nullable();
-            $table->dateTime('end_Date')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

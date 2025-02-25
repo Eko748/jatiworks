@@ -17,7 +17,7 @@ class KatalogController extends Controller
     {
         $this->menu;
         $this->title = [
-            'Data Catalogue',
+            'Data Catalogue - Jatiworks',
         ];
     }
 

@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $this->menu;
         $this->title = [
-            'Data User',
+            'Data User - Jatiworks',
         ];
     }
 

@@ -13,7 +13,7 @@ class ArticleController extends Controller
 
     public function __construct()
     {
-        $this->title[''] = 'Article';
+        $this->title[''] = 'Article - Jatiworks';
     }
 
     public function index()
@@ -36,10 +36,10 @@ class ArticleController extends Controller
             $query->whereRaw("LOWER(title) LIKE ?", ["%$searchTerm%"]);
         }
 
-        if ($request->has('start_Date') && $request->has('end_Date')) {
-            $start_Date = $request->input('start_Date');
-            $end_Date = $request->input('end_Date');
-            $query->whereBetween('id', [$start_Date, $end_Date]);
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+            $query->whereBetween('id', [$start_date, $end_date]);
         }
 
         $data = $query->paginate($meta['limit']);
@@ -58,8 +58,8 @@ class ArticleController extends Controller
                 'title'  => $item->title,
                 'desc'  => $item->desc,
                 'status'  => $item->status,
-                'start_Date'  => $item->start_Date,
-                'end_Date'  => $item->end_Date,
+                'start_date'  => $item->start_date,
+                'end_date'  => $item->end_date,
             ];
         });
 
@@ -88,8 +88,8 @@ class ArticleController extends Controller
                 'material'   => 'nullable|string|max:255',
                 'length'     => 'nullable|numeric',
                 'width'      => 'nullable|numeric',
-                'start_Date'  => 'required|date',
-                'end_Date'    => 'required|date|after_or_equal:start_Date',
+                'start_date'  => 'required|date',
+                'end_date'    => 'required|date|after_or_equal:start_date',
             ]);
 
             DB::beginTransaction();
@@ -105,7 +105,7 @@ class ArticleController extends Controller
 
             $now = now();
 
-            if ($request->start_Date <= $now && $now <= $request->end_Date) {
+            if ($request->start_date <= $now && $now <= $request->end_date) {
                 $status = 'Yes';
             } else {
                 $status = 'No';
@@ -116,8 +116,8 @@ class ArticleController extends Controller
                 'file_name'  => $fileName,
                 'desc'       => $request->desc,
                 'status'     => $status,
-                'start_Date'  => $request->start_Date,
-                'end_Date'    => $request->end_Date,
+                'start_date'  => $request->start_date,
+                'end_date'    => $request->end_date,
             ]);
 
             DB::commit();
