@@ -56,57 +56,21 @@ class OrderController extends Controller
         }
 
         $mappedData = collect($data->items())->map(function ($item) {
-            if ($item->id_katalog === null) {
-                return [
-                    'id' => $item->id,
-                    'buyer_name' => $item->user->name ?? null,
-                    'item_name' => $item->item_name,
-                    'material' => $item->material,
-                    'length' => $item->length ?? null,
-                    'width' => $item->width ?? null,
-                    'height' => $item->height ?? null,
-                    'weight' => $item->weight ?? null,
-                    'unit' => $item->unit ?? null,
-                    'desc' => $item->desc ?? null,
-                    'qty' => $item->qty,
-                    'price' => $item->price,
-                    'qty' => $item->qty,
-                    'price' => $item->price,
-                    'status' => $item->status,
-                ];
-            } elseif ($item->id_katalog !== null && empty($item->item_name) && empty($item->material) && empty($item->qty)) {
-                return [
-                    'id' => $item->id,
-                    'buyer_name' => $item->user->name ?? null,
-                    'item_name' => $item->katalog->item_name ?? null,
-                    'material' => $item->katalog->material ?? null,
-                    'length' => $item->katalog->length ?? null,
-                    'width' => $item->katalog->width ?? null,
-                    'height' => $item->katalog->height ?? null,
-                    'weight' => $item->katalog->weight ?? null,
-                    'unit' => $item->katalog->unit ?? null,
-                    'desc' => $item->katalog->desc ?? null,
-                    'qty' => $item->qty,
-                    'price' => $item->price,
-                    'status' => $item->status,
-                ];
-            } else {
-                return [
-                    'id' => $item->id,
-                    'buyer_name' => $item->user->name ?? null,
-                    'item_name' => $item->item_name,
-                    'material' => $item->material,
-                    'length' => $item->length ?? null,
-                    'width' => $item->width ?? null,
-                    'height' => $item->height ?? null,
-                    'weight' => $item->weight ?? null,
-                    'unit' => $item->unit ?? null,
-                    'desc' => $item->desc ?? null,
-                    'qty' => $item->qty,
-                    'price' => $item->price,
-                    'status' => $item->status,
-                ];
-            }
+            return [
+                'id' => $item->id,
+                'buyer_name' => $item->user->name ?? null,
+                'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
+                'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
+                'length' => $item->id_katalog === null ? $item->length : ($item->katalog->length ?? null),
+                'width' => $item->id_katalog === null ? $item->width : ($item->katalog->width ?? null),
+                'height' => $item->id_katalog === null ? $item->height : ($item->katalog->height ?? null),
+                'weight' => $item->id_katalog === null ? $item->weight : ($item->katalog->weight ?? null),
+                'unit' => $item->id_katalog === null ? $item->unit : ($item->katalog->unit ?? null),
+                'desc' => $item->id_katalog === null ? $item->desc : ($item->katalog->desc ?? null),
+                'qty' => $item->qty,
+                'price' => $item->price,
+                'status' => $item->status->label(),
+            ];
         });
 
         return response()->json([
