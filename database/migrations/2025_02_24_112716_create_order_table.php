@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->string('material')->nullable();
             $table->integer('qty')->nullable();
             $table->double('price')->nullable();
-            $table->enum('status', ['Waiting for Payment', 'Not Completed', 'Payment Completed'])->default('Waiting for Payment');
+            $table->enum('status', array_column(OrderStatus::cases(), 'value'))->default(OrderStatus::WaitingForPayment->value);
             $table->decimal('length')->nullable();
             $table->decimal('width')->nullable();
             $table->decimal('height')->nullable();

@@ -25,7 +25,7 @@ class OrderSeeder extends Seeder
             'desc'  => 'Info Mint',
             'qty'  => '4',
             'price'  => '5000000',
-            'status'  => 'Waiting for Payment',
+            'status'  => 'WP',
         ]);
 
         DB::table('order')->insert([
@@ -34,7 +34,7 @@ class OrderSeeder extends Seeder
             'id_katalog' => '3',
             'qty' => '8',
             'price' => '15000000',
-            'status' => 'Not Completed',
+            'status' => 'NC',
         ]);
     }
 }
