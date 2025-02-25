@@ -40,7 +40,11 @@ class ArticleController extends Controller
             $start_date = $request->input('start_date');
             $end_date = $request->input('end_date');
 
-            $query->whereBetween('start_date', [$start_date, $end_date]);
+            $query->where(function ($q) use ($start_date, $end_date) {
+                $q->where('start_date', '<=', $start_date)
+                    ->where('end_date', '>=', $end_date)
+                    ->where('end_date', '>=', $start_date);
+            });
         }
 
         $data = $query->paginate($meta['limit']);

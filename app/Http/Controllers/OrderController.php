@@ -42,7 +42,7 @@ class OrderController extends Controller
         if ($request->has('start_date') && $request->has('end_date')) {
             $start_date = $request->input('start_date');
             $end_date = $request->input('end_date');
-            $query->whereBetween('id', [$start_date, $end_date]);
+            $query->whereBetween('created_at', [$start_date, $end_date]);
         }
 
         $data = $query->paginate($meta['limit']);
