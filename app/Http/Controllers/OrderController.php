@@ -39,10 +39,10 @@ class OrderController extends Controller
             });
         }
 
-        if ($request->has('startDate') && $request->has('endDate')) {
-            $startDate = $request->input('startDate');
-            $endDate = $request->input('endDate');
-            $query->whereBetween('id', [$startDate, $endDate]);
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+            $query->whereBetween('id', [$start_date, $end_date]);
         }
 
         $data = $query->paginate($meta['limit']);
@@ -60,7 +60,7 @@ class OrderController extends Controller
                 // Jika id_katalog null, tampilkan data dari tabel Order
                 return [
                     'id' => $item->id,
-                    'name' => $item->user->name ?? null,
+                    'buyer_name' => $item->user->name ?? null,
                     'item_name' => $item->item_name,
                     'material' => $item->material,
                     'qty' => $item->qty,
@@ -71,21 +71,18 @@ class OrderController extends Controller
                 // Jika id_katalog ada dan data Order lainnya null, tampilkan data dari tabel Katalog
                 return [
                     'id' => $item->id,
+                    'buyer_name' => $item->user->name ?? null,
                     'item_name' => $item->katalog->item_name ?? null,
                     'material' => $item->katalog->material ?? null,
-                    'length' => $item->katalog->length ?? null,
-                    'width' => $item->katalog->width ?? null,
-                    'height' => $item->katalog->height ?? null,
-                    'weight' => $item->katalog->weight ?? null,
-                    'unit' => $item->katalog->unit ?? null,
-                    'desc' => $item->katalog->desc ?? null,
+                    'qty' => $item->qty,
+                    'price' => $item->price,
                     'status' => $item->status,
                 ];
             } else {
                 // Jika id_katalog ada tetapi data Order tidak null, tetap tampilkan data Order
                 return [
                     'id' => $item->id,
-                    'name' => $item->user->name ?? null,
+                    'buyer_name' => $item->user->name ?? null,
                     'item_name' => $item->item_name,
                     'material' => $item->material,
                     'qty' => $item->qty,
