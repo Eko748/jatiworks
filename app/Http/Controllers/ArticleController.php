@@ -84,10 +84,10 @@ class ArticleController extends Controller
     {
         try {
             $request->validate([
-                'file_name'  => 'file|mimes:jpg,jpeg,png|max:2048',
-                'title'   => 'nullable|string|max:255',
+                'article'  => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validasi input file
+                'title'    => 'nullable|string|max:255',
                 'desc'     => 'nullable|string|max:255',
-                'status'      => 'nullable|string|max:255',
+                'status'   => 'nullable|string|max:255',
                 'start_date'  => 'required|date',
                 'end_date'    => 'required|date|after_or_equal:start_date',
             ]);
@@ -96,28 +96,22 @@ class ArticleController extends Controller
 
             $fileName = null;
 
-            if ($request->hasFile('article')) {
-                foreach ($request->file('article') as $file) {
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->storeAs('uploads/article', $fileName, 'public');
-                }
+            if ($request->hasFile('article')) { // Periksa apakah ada file yang diupload
+                $file = $request->file('article');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('uploads/article', $fileName, 'public');
             }
 
             $now = now();
-
-            if ($request->start_date <= $now && $now <= $request->end_date) {
-                $status = 'Yes';
-            } else {
-                $status = 'No';
-            }
+            $status = ($request->start_date <= $now && $now <= $request->end_date) ? 'Yes' : 'No';
 
             $article = Article::create([
-                'item_name'  => $request->item_name,
-                'file_name'  => $fileName,
+                'file_name'  => $fileName, // Simpan nama file ke kolom file_name
+                'title'       => $request->title,
                 'desc'       => $request->desc,
                 'status'     => $status,
-                'start_date'  => $request->start_date,
-                'end_date'    => $request->end_date,
+                'start_date' => $request->start_date,
+                'end_date'   => $request->end_date,
             ]);
 
             DB::commit();

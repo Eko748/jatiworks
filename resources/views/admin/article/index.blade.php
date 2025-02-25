@@ -116,8 +116,8 @@
                             </div>
                             <div class="col-md-12">
                                 <label for="file_name" class="form-label fw-bold">Upload Image</label>
-                                <input type="file" class="form-control neumorphic-card" id="file_name"
-                                    name="file_name" accept="image/*" required>
+                                <input type="file" class="form-control neumorphic-card" id="article"
+                                    name="article" accept="image/*" required>
                             </div>
                             <div class="col-md-12">
                                 <label for="date_range" class="form-label fw-bold">Content Date Range</label>
