@@ -233,7 +233,8 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label for="imageInput" class="form-label fw-bold">Upload Images</label>
-                                    <input type="file" accept="image/*" class="form-control neumorphic-card" id="imageInput" multiple>
+                                    <input type="file" accept="image/*" class="form-control neumorphic-card"
+                                        id="imageInput" multiple>
                                     <small class="neu-text">You can upload multiple images</small>
                                     <div id="imagePreviewContainer" class="mt-3"></div>
                                 </div>
@@ -346,19 +347,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                        <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                    </div>
-                                                                                                                `).join('')}
+                                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                        </div>
+                                                                                                                    `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                </button>
-                                                                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                </button>
-                                                                                                            ` : ''}
+                                                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                    </button>
+                                                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                    </button>
+                                                                                                                ` : ''}
                     </div>
                 ` : '-'
 
@@ -525,6 +526,14 @@
                     }
                 });
             });
+
+            const modal = document.getElementById('cropImageModal');
+
+            if (modal && imageInput) {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    imageInput.value = '';
+                });
+            }
         }
 
         async function setWizardForm() {
