@@ -279,6 +279,16 @@
                 const originalContent = saveButton.innerHTML;
                 const formData = new FormData(document.getElementById('addDataForm'));
 
+                const dateRangeValue = document.getElementById("date_range").value;
+                if (dateRangeValue) {
+                    const dateRangeArray = dateRangeValue.split(
+                    " to ");
+                    if (dateRangeArray.length === 2) {
+                        formData.append("start_date", dateRangeArray[0]);
+                        formData.append("end_date", dateRangeArray[1]);
+                    }
+                }
+
                 try {
                     const postData = await restAPI('POST', '{{ route('admin.article.store') }}', formData);
 
@@ -308,6 +318,7 @@
                 }
             });
         }
+
 
         function resetForm() {
             const form = document.getElementById("addDataForm");
@@ -351,6 +362,7 @@
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
                 searchListData(),
                 setFilterListData(),
+                addListData(),
                 toggleFilterButton(),
                 dateRangeInput()
             ])
