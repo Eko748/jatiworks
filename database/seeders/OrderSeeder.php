@@ -24,6 +24,7 @@ class OrderSeeder extends Seeder
             'weight'  => '6',
             'desc'  => 'Info Mint',
             'qty'  => '4',
+            'unit'  => 'm',
             'price'  => '5000000',
             'status'  => 'WP',
         ]);
