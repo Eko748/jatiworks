@@ -9,21 +9,20 @@ use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
-    private array $menu = [];
-    private array $title = [];
+    private array $title = ['' => 'Article'];
 
     public function __construct()
     {
-        $this->menu;
-        $this->title['Article'];
+        $this->title[''] = 'Article';
     }
 
     public function index()
     {
-        $title = $this->title[0];
+        $title = $this->title[''];
 
         return view('admin.article.index', compact('title'));
     }
+
 
     public function getdataarticle(Request $request)
     {

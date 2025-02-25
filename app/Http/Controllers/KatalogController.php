@@ -160,11 +160,10 @@ class KatalogController extends Controller
                     $filename = time() . '_' . $file->getClientOriginalName();
                     $file->storeAs('uploads/katalog', $filename, 'public');
 
-                    $files = File::create([
+                    File::create([
                         'id_katalog' => $katalog->id,
                         'file_name'  => $filename
                     ]);
-                    // dd($files);
                 }
             }
 
