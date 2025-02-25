@@ -57,12 +57,17 @@ class OrderController extends Controller
 
         $mappedData = collect($data->items())->map(function ($item) {
             if ($item->id_katalog === null) {
-                // Jika id_katalog null, tampilkan data dari tabel Order
                 return [
                     'id' => $item->id,
                     'buyer_name' => $item->user->name ?? null,
                     'item_name' => $item->item_name,
                     'material' => $item->material,
+                    'length' => $item->length ?? null,
+                    'width' => $item->width ?? null,
+                    'height' => $item->height ?? null,
+                    'weight' => $item->weight ?? null,
+                    'unit' => $item->unit ?? null,
+                    'desc' => $item->desc ?? null,
                     'qty' => $item->qty,
                     'price' => $item->price,
                     'qty' => $item->qty,
@@ -70,9 +75,9 @@ class OrderController extends Controller
                     'status' => $item->status,
                 ];
             } elseif ($item->id_katalog !== null && empty($item->item_name) && empty($item->material) && empty($item->qty)) {
-                // Jika id_katalog ada dan data Order lainnya null, tampilkan data dari tabel Katalog
                 return [
                     'id' => $item->id,
+                    'buyer_name' => $item->user->name ?? null,
                     'item_name' => $item->katalog->item_name ?? null,
                     'material' => $item->katalog->material ?? null,
                     'length' => $item->katalog->length ?? null,
@@ -86,7 +91,6 @@ class OrderController extends Controller
                     'status' => $item->status,
                 ];
             } else {
-                // Jika id_katalog ada tetapi data Order tidak null, tetap tampilkan data Order
                 return [
                     'id' => $item->id,
                     'buyer_name' => $item->user->name ?? null,
