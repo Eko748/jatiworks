@@ -24,8 +24,8 @@ return new class extends Migration
             $table->decimal('width')->nullable();
             $table->decimal('height')->nullable();
             $table->decimal('weight')->nullable();
-            $table->text('desc');
-            $table->enum('unit',['mm', 'm', 'cm']);
+            $table->text('desc')->nullable();
+            $table->enum('unit',['mm', 'm', 'cm'])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
