@@ -27,6 +27,8 @@ class OrderSeeder extends Seeder
             'id' => 2,
             'id_user'  => '6',
             'id_katalog' => '3',
+            'qty' => '8',
+            'price' => '15000000',
             'status' => 'Not Completed',
         ]);
     }
