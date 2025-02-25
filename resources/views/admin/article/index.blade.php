@@ -6,6 +6,27 @@
 
 @section('assets_css')
     <link rel="stylesheet" href="{{ asset('assets/css/flatpickr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/cropper.min.css') }}">
+@endsection
+
+@section('css')
+    <style>
+        .cropper-container {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #imagePreview {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -95,10 +116,15 @@
                 <div class="modal-body">
                     <form id="addDataForm">
                         <div class="row g-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label for="title" class="form-label fw-bold">Title</label>
                                 <input type="text" class="form-control neumorphic-card" id="title" name="title"
                                     placeholder="Enter title" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="date_range" class="form-label fw-bold">Content Date Range</label>
+                                <input type="text" class="form-control neumorphic-card" id="date_range"
+                                    name="date_range" placeholder="Select date range" autocomplete="off" required>
                             </div>
                             <div class="col-md-12">
                                 <label for="desc" class="form-label fw-bold">Description</label>
@@ -106,14 +132,10 @@
                                     rows="4" required></textarea>
                             </div>
                             <div class="col-md-12">
-                                <label for="file_name" class="form-label fw-bold">Upload Image</label>
-                                <input type="file" class="form-control neumorphic-card" id="article" name="article"
+                                <label for="imageInput" class="form-label fw-bold">Upload Image</label>
+                                <input type="file" class="form-control neumorphic-card" id="imageInput"
                                     accept="image/*" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="date_range" class="form-label fw-bold">Content Date Range</label>
-                                <input type="text" class="form-control neumorphic-card" id="date_range"
-                                    name="date_range" placeholder="Select date range" autocomplete="off" required>
+                                <div id="imagePreviewContainer" class="mt-3"></div>
                             </div>
                         </div>
                     </form>
@@ -130,11 +152,33 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imagePreview">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
+                        Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('assets_js')
-    <script src="{{ asset('assets/js/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/js/pagination.js') }}"></script>
+    <script src="{{ asset('assets/js/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/js/cropper.min.js') }}"></script>
 @endsection
 
 @section('js')
@@ -196,8 +240,8 @@
             }
 
             let dateRange = startDate && endDate ?
-                `<div>Start: <span class="badge ${badgeClass} px-2 py-1">${data.start_date}</span></div>
-                    <div>End: <span class="badge ${badgeClass} px-2 py-1">${data.end_date}</span></div>` :
+                `<div>Start:<br><span class="badge ${badgeClass} px-2 py-1">${data.start_date}</span></div>
+                <div>End:<br><span class="badge ${badgeClass} px-2 py-1">${data.end_date}</span></div>` :
                 '-';
 
             let imageTag = data.file_name ?
@@ -213,7 +257,6 @@
                 images: imageTag
             };
         }
-
 
         async function setListData(dataList, pagination) {
             totalPage = pagination.total_pages;
@@ -284,8 +327,20 @@
                         formData.append("end_date", dateRangeArray[1]);
                     }
                 }
+                const croppedImageElement = document.querySelector(".cropped-preview");
+                if (!croppedImageElement) return;
+                const response = await fetch(croppedImageElement.src);
+                const blob = await response.blob();
+
+                const now = new Date();
+                const timestamp =
+                    `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
+
+                const fileName = `${timestamp}.png`.replace(/\s+/g, '');
+                formData.append("article", blob, fileName);
 
                 try {
+
                     const postData = await restAPI('POST', '{{ route('admin.article.store') }}', formData);
 
                     if (postData.status >= 200 && postData.status < 300) {
@@ -352,6 +407,140 @@
             });
         }
 
+        async function uploadSingleImage() {
+            let cropper;
+            let croppedImage = null;
+
+            const imageInput = document.getElementById("imageInput");
+            const imagePreview = document.getElementById("imagePreview");
+            const cropImageModal = new bootstrap.Modal(document.getElementById("cropImageModal"));
+            const cropImageBtn = document.getElementById("cropImageBtn");
+            const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+
+            imageInput.addEventListener("change", function(event) {
+                if (croppedImage) return;
+
+                const file = event.target.files[0];
+                if (file) {
+                    showCropModal(file);
+                }
+            });
+
+            function showCropModal(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    cropImageModal.show();
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    let containerWidth = Math.min(window.innerWidth * 0.9, 750);
+                    let containerHeight = (containerWidth / 750) * 400;
+
+                    cropper = new Cropper(imagePreview, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        dragMode: "move",
+                        minCanvasWidth: containerWidth,
+                        minCanvasHeight: containerHeight,
+                        minContainerWidth: containerWidth,
+                        minContainerHeight: containerHeight,
+                        responsive: true,
+                        ready() {
+                            let containerData = cropper.getContainerData();
+                            cropper.setCanvasData({
+                                left: 0,
+                                top: 0,
+                                width: containerWidth,
+                                height: containerHeight
+                            });
+
+                            cropper.setCropBoxData({
+                                left: containerData.width / 2 - containerWidth / 2,
+                                top: containerData.height / 2 - containerHeight / 2,
+                                width: containerWidth,
+                                height: containerHeight
+                            });
+
+                            document.querySelector('.cropper-container').style.width = containerWidth +
+                                'px';
+                            document.querySelector('.cropper-container').style.height = containerHeight +
+                                'px';
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+
+            cropImageBtn.addEventListener("click", function() {
+                if (!cropper) return;
+
+                cropper.getCroppedCanvas({
+                    width: 500,
+                    height: 500
+                }).toBlob(function(blob) {
+                    croppedImage = blob;
+
+                    let wrapper = document.createElement("div");
+                    wrapper.classList.add("cropped-image-wrapper", "position-relative",
+                        "d-inline-block", "me-2");
+                    wrapper.style.width = "100px";
+                    wrapper.style.height = "100px";
+
+                    let imgElement = document.createElement("img");
+                    imgElement.src = URL.createObjectURL(blob);
+                    imgElement.classList.add("cropped-preview");
+                    imgElement.style.width = "100px";
+                    imgElement.style.height = "100px";
+                    imgElement.style.borderRadius = "5px";
+
+                    let deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "position-absolute");
+                    deleteBtn.style.top = "5px";
+                    deleteBtn.style.right = "5px";
+                    deleteBtn.style.borderRadius = "50%";
+                    deleteBtn.style.width = "20px";
+                    deleteBtn.style.height = "20px";
+                    deleteBtn.style.display = "flex";
+                    deleteBtn.style.alignItems = "center";
+                    deleteBtn.style.justifyContent = "center";
+
+                    deleteBtn.addEventListener("click", function() {
+                        croppedImage = null;
+                        wrapper.remove();
+                        imageInput.value = "";
+                        imageInput.disabled =
+                            false;
+                        imageInput.style.display =
+                            "block";
+                    });
+
+                    wrapper.appendChild(imgElement);
+                    wrapper.appendChild(deleteBtn);
+                    imagePreviewContainer.innerHTML = "";
+                    imagePreviewContainer.appendChild(wrapper);
+
+                    cropImageModal.hide();
+                    imageInput.value = "";
+                    imageInput.disabled = true;
+                    imageInput.style.display = "none";
+                });
+            });
+
+            const modal = document.getElementById('cropImageModal');
+
+            if (modal && imageInput) {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    imageInput.value = '';
+                });
+            }
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
@@ -360,7 +549,8 @@
                 addListData(),
                 toggleFilterButton(),
                 dateRangeInput('#date_range'),
-                dateRangeInput('#filterDateRange')
+                dateRangeInput('#filterDateRange'),
+                uploadSingleImage(),
             ])
         }
     </script>
