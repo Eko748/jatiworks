@@ -29,7 +29,7 @@ class ArticleController extends Controller
         $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
         $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
 
-        $query = Article::all()->orderBy('id', $meta['orderBy']);
+        $query = Article::query()->orderBy('id', $meta['orderBy']);
 
         if (!empty($request['search'])) {
             $searchTerm = trim(strtolower($request['search']));
