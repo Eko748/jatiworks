@@ -20,10 +20,10 @@ return new class extends Migration
             $table->integer('qty')->nullable();
             $table->double('price')->nullable();
             $table->enum('status', ['Waiting for Payment', 'Not Completed', 'Payment Completed'])->default('Waiting for Payment');
-            $table->decimal('length');
-            $table->decimal('width');
-            $table->decimal('height');
-            $table->decimal('weight');
+            $table->decimal('length')->nullable();
+            $table->decimal('width')->nullable();
+            $table->decimal('height')->nullable();
+            $table->decimal('weight')->nullable();
             $table->text('desc');
             $table->enum('unit',['mm', 'm', 'cm']);
             $table->timestamps();
