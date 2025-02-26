@@ -19,6 +19,12 @@ class PostCategorySeeder extends Seeder
             ['id_katalog' => 1, 'id_category' => 4],
             ['id_katalog' => 2, 'id_category' => 1],
             ['id_katalog' => 2, 'id_category' => 3],
+            ['id_katalog' => 3, 'id_category' => 5],
+            ['id_katalog' => 3, 'id_category' => 6],
+            ['id_katalog' => 4, 'id_category' => 5],
+            ['id_katalog' => 4, 'id_category' => 6],
+            ['id_katalog' => 4, 'id_category' => 7],
+            ['id_katalog' => 4, 'id_category' => 8],
         ]);
     }
 }

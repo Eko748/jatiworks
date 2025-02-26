@@ -144,12 +144,12 @@
                     <form id="addDataForm">
                         <div class="wizard-content" id="step-1">
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="itemName" class="form-label fw-bold">Item Name</label>
                                     <input type="text" class="form-control neumorphic-card" id="itemName"
                                         name="item_name" placeholder="Enter item name" required>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-9">
                                     <label for="material" class="form-label fw-bold">Material</label>
                                     <textarea class="form-control neumorphic-card" id="material" name="material" rows="1"
                                         placeholder="Enter material details" required></textarea>

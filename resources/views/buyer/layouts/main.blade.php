@@ -21,6 +21,7 @@
             background: #055940;
         }
     </style>
+    @yield('css')
 </head>
 
 <body>
@@ -34,6 +35,7 @@
     <main>
         @yield('content')
     </main>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/axios.js') }}"></script>
     <script src="{{ asset('assets/js/restAPI.js') }}"></script>
     <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
