@@ -125,6 +125,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
 
     // Order Management
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
+    Route::post('/order-store', [OrderController::class, 'store'])->name('admin.order.store');
     Route::get('/getdataorder', [OrderController::class, 'getdataorder'])->name('getdataorder');
 });
 

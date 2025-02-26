@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('file', function (Blueprint $table) {
             $table->id();
-            $table->string('id_katalog');
+            $table->string('id_katalog')->nullable();
+            $table->string('id_order')->nullable();
             $table->string('file_name')->nullable();
             $table->timestamps();
             $table->softDeletes();

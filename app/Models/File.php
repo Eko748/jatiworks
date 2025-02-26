@@ -16,4 +16,9 @@ class File extends Model
     {
         return $this->belongsTo(Katalog::class, 'id_katalog', 'id');
     }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'id_order', 'id');
+    }
 }

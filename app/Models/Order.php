@@ -25,4 +25,9 @@ class Order extends Model
     {
         return $this->belongsTo(Katalog::class, 'id_katalog');
     }
+
+    public function file()
+    {
+        return $this->hasMany(File::class, 'id_order', 'id');
+    }
 }

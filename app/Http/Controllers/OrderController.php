@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\File;
+use App\Models\Katalog;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -15,14 +19,16 @@ class OrderController extends Controller
     {
         $this->menu;
         $this->title = [
-            'Data Catalogue',
+            'Orders',
         ];
     }
     public function index()
     {
         $title = $this->title[0];
+        $user = User::where('id_role', 2)->get();
+        $katalog = Katalog::all();
 
-        return view('admin.order.index', compact('title'));
+        return view('admin.order.index', compact('title', 'user', 'katalog'));
     }
 
     public function getdataorder(Request $request)
@@ -70,6 +76,12 @@ class OrderController extends Controller
                 'qty' => $item->qty,
                 'price' => $item->price,
                 'status' => $item->status->label(),
+                'file'       => $item->file->map(function ($file) {
+                    return [
+                        'id'        => $file->id,
+                        'file_name' => $file->file_name,
+                    ];
+                })
             ];
         });
 
@@ -85,5 +97,86 @@ class OrderController extends Controller
                 'total_pages' => $data->lastPage()
             ]
         ], 200);
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($request->filled('id_katalog')) {
+                $request->validate([
+                    'id_user'   => 'required|integer',
+                    'id_katalog' => 'required|integer|exists:katalog,id',
+                    'qty'       => 'required|integer|min:1',
+                    'price'     => 'required|numeric|min:0'
+                ]);
+
+                $order = Order::create([
+                    'id_user'   => $request->id_user,
+                    'id_katalog' => $request->id_katalog,
+                    'qty'       => $request->qty,
+                    'price'     => $request->price,
+                ]);
+            } else {
+                $request->validate([
+                    'id_user'   => 'required|integer',
+                    'item_name' => 'required|string|max:255',
+                    'material'  => 'nullable|string|max:255',
+                    'length'    => 'nullable|numeric',
+                    'width'     => 'nullable|numeric',
+                    'height'    => 'nullable|numeric',
+                    'weight'    => 'nullable|string',
+                    'desc'      => 'nullable|string',
+                    'unit'      => 'required|string',
+                    'qty'       => 'required|integer|min:1',
+                    'price'     => 'required|numeric|min:0',
+                    'file'      => 'nullable|array',
+                    'file.*'    => 'file|mimes:jpg,jpeg,png|max:2048'
+                ]);
+
+                $order = Order::create([
+                    'id_user'   => $request->id_user,
+                    'item_name' => $request->item_name,
+                    'material'  => $request->material,
+                    'length'    => $request->length,
+                    'width'     => $request->width,
+                    'height'    => $request->height,
+                    'weight'    => $request->weight,
+                    'desc'      => $request->desc,
+                    'unit'      => $request->unit,
+                    'qty'       => $request->qty,
+                    'price'     => $request->price
+                ]);
+
+                if ($request->hasFile('file')) {
+                    foreach ($request->file('file') as $file) {
+                        $filename = time() . '_' . $file->getClientOriginalName();
+                        $file->storeAs('uploads/order', $filename, 'public');
+
+                        File::create([
+                            'id_order' => $order->id,
+                            'file_name' => $filename
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status_code' => 201,
+                'message'     => 'Order successfully created!',
+                'data'        => $order->load('file')
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors'      => true,
+                'message'     => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
     }
 }
