@@ -60,6 +60,7 @@
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
                             <th class="text-wrap align-top">Status</th>
+                            <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Buyer</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Material</th>
@@ -208,6 +209,7 @@
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
+                code_order: data?.code_order ?? '-',
                 qty: data?.qty ?? '-',
                 price: data?.price ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
@@ -227,6 +229,7 @@
                 <tr class="neumorphic-tr">
                     <td class="text-center">${display_from + index}.</td>
                     <td>${element.status}</td>
+                    <td>${element.code_order}</td>
                     <td>${element.buyer_name}</td>
                     <td>${element.item_name}</td>
                     <td>${element.material}</td>

@@ -64,6 +64,7 @@ class OrderController extends Controller
         $mappedData = collect($data->items())->map(function ($item) {
             return [
                 'id' => $item->id,
+                'code_order' => $item->code_order,
                 'buyer_name' => $item->user->name ?? null,
                 'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
                 'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
