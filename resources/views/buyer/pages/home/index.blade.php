@@ -345,6 +345,7 @@
                 id: data?.id ?? '-',
                 item_name: data?.item_name ?? '-',
                 material: data?.material ?? '-',
+                unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
@@ -385,42 +386,41 @@
                 ` : '-';
 
                 getDataHtml += `
-    <div class="card shadow-smooth bg-green-old card-radius w-100 overflow-hidden">
-        <div class="card-body d-flex flex-column">
-            ${imageCarousel}
+                <div class="card shadow-smooth bg-green-old card-radius w-100 overflow-hidden">
+                    <div class="card-body d-flex flex-column">
+                        ${imageCarousel}
 
-            <div class="mt-2">
-                <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
-                    ${element.item_name}
-                </h5>
-            </div>
-            <hr class="my-0 mb-2 mt-1 text-white">
-            <div class="d-flex align-items-start">
-                <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
-                <p class="h6 fw-bold text-white mb-0 flex-grow-1" style="word-break: break-word; max-width: 100%;">
-                    Material: ${element.material}
-                </p>
-            </div>
+                        <div class="mt-2">
+                            <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
+                                ${element.item_name}
+                            </h5>
+                        </div>
+                        <hr class="my-0 mb-2 mt-1 text-white">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
+                            <p class="h6 fw-bold text-white mb-0 flex-grow-1" style="word-break: break-word; max-width: 100%;">
+                                Material: ${element.material}
+                            </p>
+                        </div>
 
-            <div class="text-white mt-3">
-                <p class="fw-bold mb-1">Dimensions & Weight:</p>
-                <div class="d-grid gap-1" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));">
-                    <div>📏 Length: <span class="fw-bold">${element.dimensions.split(' x ')[0]}cm</span></div>
-                    <div>📐 Width: <span class="fw-bold">${element.dimensions.split(' x ')[1]}cm</span></div>
-                    <div>📏 Height: <span class="fw-bold">${element.dimensions.split(' x ')[2]}cm</span></div>
-                    <div>⚖️ Weight: <span class="fw-bold">${element.weight}kg</span></div>
-                </div>
-            </div>
+                        <div class="text-white mt-3">
+                            <p class="fw-bold mb-1">Dimensions & Weight:</p>
+                            <div class="d-grid gap-1" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));">
+                                <div>📏 Length: <span class="fw-bold">${element.dimensions.split(' x ')[0]}${element.unit}</span></div>
+                                <div>📐 Width: <span class="fw-bold">${element.dimensions.split(' x ')[1]}${element.unit}</span></div>
+                                <div>📏 Height: <span class="fw-bold">${element.dimensions.split(' x ')[2]}${element.unit}</span></div>
+                                <div>⚖️ Weight: <span class="fw-bold">${element.weight}kg</span></div>
+                            </div>
+                        </div>
 
-            <div class="mt-3">
-                <p class="fw-bold text-white mb-1">Category:</p>
-                <div class="d-flex flex-wrap gap-1">
-                    ${element.category.split(', ').map(cat => `<span class="badge bg-light text-dark">${cat}</span>`).join('')}
-                </div>
-            </div>
-        </div>
-    </div>`;
-
+                        <div class="mt-3">
+                            <p class="fw-bold text-white mb-1">Category:</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                ${element.category.split(', ').map(cat => `<span class="badge bg-light text-dark">${cat}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             });
 
             document.getElementById('catalogue-data').innerHTML = getDataHtml;
