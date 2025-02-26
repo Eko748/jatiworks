@@ -44,7 +44,7 @@ class KatalogSeeder extends Seeder
         ]);
 
         Katalog::create([
-            'item_name' => 'Furina Furina Furina',
+            'item_name' => 'Furina Furina Furina Furina Furina Furina',
             'material' => 'Furina, Furina, Mavuika',
             'length' => 7.5,
             'width' => 7,

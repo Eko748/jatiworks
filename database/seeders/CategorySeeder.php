@@ -18,6 +18,10 @@ class CategorySeeder extends Seeder
             ['name_category' => 'Category B'],
             ['name_category' => 'Category C'],
             ['name_category' => 'Category D'],
+            ['name_category' => 'Economy'],
+            ['name_category' => 'Natural'],
+            ['name_category' => 'Scandinavian'],
+            ['name_category' => 'Tropis'],
         ]);
     }
 }
