@@ -16,6 +16,7 @@ class OrderSeeder extends Seeder
         DB::table('order')->insert([
             'id' => 1,
             'id_user'  => '4',
+            'code_order'  => '69696969',
             'item_name'  => 'Aquarium',
             'material'  => 'Kaca, Kayu Jati, Karet',
             'length'  => '4',
@@ -31,6 +32,7 @@ class OrderSeeder extends Seeder
 
         DB::table('order')->insert([
             'id' => 2,
+            'code_order' => '28325825',
             'id_user'  => '6',
             'id_katalog' => '3',
             'qty' => '8',
