@@ -126,6 +126,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     // Order Management
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order-store', [OrderController::class, 'store'])->name('admin.order.store');
+    Route::put('/order/update-status/{id}', [OrderController::class, 'updateStatus'])->name('order.updateStatus');
     Route::get('/getdataorder', [OrderController::class, 'getdataorder'])->name('getdataorder');
 });
 

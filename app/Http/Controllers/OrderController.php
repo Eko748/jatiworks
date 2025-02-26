@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Katalog;
@@ -42,6 +43,13 @@ class OrderController extends Controller
             $searchTerm = trim(strtolower($request['search']));
             $query->where(function ($query) use ($searchTerm) {
                 $query->orWhereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
+                $query->orWhereRaw("LOWER(code_order) LIKE ?", ["%$searchTerm%"]);
+                $query->orWhereHas('katalog', function ($subquery) use ($searchTerm) {
+                    $subquery->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
+                });
+                $query->orWhereHas('user', function ($subquery) use ($searchTerm) {
+                    $subquery->whereRaw("LOWER(name) LIKE ?", ["%$searchTerm%"]);
+                });
             });
         }
 
@@ -187,6 +195,36 @@ class OrderController extends Controller
                 'status_code' => 500,
                 'errors'      => true,
                 'message'     => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+
+            $request->validate([
+                'status' => ['required', 'in:WP,NC,PC']
+            ]);
+
+            $order->status = OrderStatus::from($request->status);
+            $order->save();
+
+            return response()->json([
+                'status_code' => 200,
+                'message'     => 'Status updated successfully!',
+                'data'        => [
+                    'id'     => $order->id,
+                    'status' => $order->status->label(),
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code'  => 500,
+                'errors'       => true,
+                'message'      => 'Something went wrong!',
                 'error_detail' => $e->getMessage()
             ], 500);
         }
