@@ -116,7 +116,7 @@ class OrderController extends Controller
                     'id_user'   => $request->id_user,
                     'id_katalog' => $request->id_katalog,
                     'qty'       => $request->qty,
-                    'price'     => $request->price,
+                    'price'     => $request->price
                 ]);
             } else {
                 $request->validate([
@@ -128,7 +128,7 @@ class OrderController extends Controller
                     'height'    => 'nullable|numeric',
                     'weight'    => 'nullable|string',
                     'desc'      => 'nullable|string',
-                    'unit'      => 'required|string',
+                    'unit'      => 'nullable|string',
                     'qty'       => 'required|integer|min:1',
                     'price'     => 'required|numeric|min:0',
                     'file'      => 'nullable|array',
@@ -161,6 +161,17 @@ class OrderController extends Controller
                     }
                 }
             }
+
+            $id_order_str = (string) $order->id;
+            $id_user_str = (string) $request->id_user;
+            $total_length = strlen($id_order_str) + strlen($id_user_str);
+
+            $random_length = max(0, 6 - $total_length);
+            $random_number = str_pad(mt_rand(0, pow(10, $random_length) - 1), $random_length, '0', STR_PAD_LEFT);
+
+            $order->update([
+                'code_order' => "{$id_order_str}{$id_user_str}{$random_number}"
+            ]);
 
             DB::commit();
 
