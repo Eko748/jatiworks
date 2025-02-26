@@ -193,7 +193,7 @@
                     statusIcon = '<i class="fas fa-clock"></i>';
                     break;
                 case 'Not Completed':
-                    statusClass += 'text-danger border-danger';
+                    statusClass += 'text-warning border-warning';
                     statusIcon = '<i class="fas fa-times-circle"></i>';
                     break;
                 default:
