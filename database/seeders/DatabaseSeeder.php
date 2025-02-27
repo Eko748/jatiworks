@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             PostCategorySeeder::class,
             ArticleSeeder::class,
             OrderSeeder::class,
+            TrackingStepSeeder::class,
+            OrderTrackingSeeder::class,
         ]);
     }
 }

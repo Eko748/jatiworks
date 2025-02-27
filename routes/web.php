@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Content\KatalogLandingController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -82,6 +83,10 @@ Route::get('/', function () {
     return view('buyer.pages.home.index');
 });
 
+Route::get('/catalogue', function () {
+    return view('buyer.pages.katalog.index');
+});
+
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 
 // Login Routes
@@ -127,6 +132,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
     Route::post('/order-store', [OrderController::class, 'store'])->name('admin.order.store');
     Route::put('/order/update-status/{id}', [OrderController::class, 'updateStatus'])->name('order.updateStatus');
+    Route::get('/order/{id}/detail', [OrderController::class, 'detail'])->name('admin.order.detail');
     Route::get('/getdataorder', [OrderController::class, 'getdataorder'])->name('getdataorder');
 });
 
@@ -134,4 +140,6 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
 Route::middleware(['auth', IsBuyer::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/catalogue', [KatalogLandingController::class, 'index'])->name('katalog.index');
 });

@@ -69,6 +69,7 @@
                             <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Qty</th>
                             <th class="text-wrap align-top">Price</th>
+                            <th class="text-wrap align-top">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -238,6 +239,11 @@
                     <td>${element.unit}</td>
                     <td>${element.qty}</td>
                     <td>${element.price}</td>
+                    <td>
+                        <a href="/admin/order/${element.id}/detail" class="btn btn-sm neumorphic-button">
+                            <i class="fas fa-eye me-1"></i>Detail
+                        </a>
+                    </td>
                 </tr>`;
             });
 

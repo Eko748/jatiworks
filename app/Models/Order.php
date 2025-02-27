@@ -30,4 +30,9 @@ class Order extends Model
     {
         return $this->hasMany(File::class, 'id_order', 'id');
     }
+
+    public function orderTracking()
+    {
+        return $this->hasMany(OrderTracking::class, 'id_order', 'id');
+    }
 }

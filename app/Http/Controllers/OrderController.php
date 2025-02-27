@@ -70,29 +70,30 @@ class OrderController extends Controller
         }
 
         $mappedData = collect($data->items())->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'code_order' => $item->code_order,
-                'buyer_name' => $item->user->name ?? null,
-                'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
-                'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
-                'length' => $item->id_katalog === null ? $item->length : ($item->katalog->length ?? null),
-                'width' => $item->id_katalog === null ? $item->width : ($item->katalog->width ?? null),
-                'height' => $item->id_katalog === null ? $item->height : ($item->katalog->height ?? null),
-                'weight' => $item->id_katalog === null ? $item->weight : ($item->katalog->weight ?? null),
-                'unit' => $item->id_katalog === null ? $item->unit : ($item->katalog->unit ?? null),
-                'desc' => $item->id_katalog === null ? $item->desc : ($item->katalog->desc ?? null),
-                'qty' => $item->qty,
-                'price' => $item->price,
-                'status' => $item->status->label(),
-                'file'       => $item->file->map(function ($file) {
-                    return [
-                        'id'        => $file->id,
-                        'file_name' => $file->file_name,
-                    ];
-                })
-            ];
-        });
+                return [
+                    'id' => $item->id,
+                    'code_order' => $item->code_order,
+                    'buyer_name' => $item->user->name ?? null,
+                    'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
+                    'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
+                    'length' => $item->id_katalog === null ? $item->length : ($item->katalog->length ?? null),
+                    'width' => $item->id_katalog === null ? $item->width : ($item->katalog->width ?? null),
+                    'height' => $item->id_katalog === null ? $item->height : ($item->katalog->height ?? null),
+                    'weight' => $item->id_katalog === null ? $item->weight : ($item->katalog->weight ?? null),
+                    'unit' => $item->id_katalog === null ? $item->unit : ($item->katalog->unit ?? null),
+                    'desc' => $item->id_katalog === null ? $item->desc : ($item->katalog->desc ?? null),
+                    'qty' => $item->qty,
+                    'price' => $item->price,
+                    'status' => $item->status->label(),
+                    'detail_url' => route('admin.order.detail', $item->id),
+                    'file'       => $item->file->map(function ($file) {
+                        return [
+                            'id'        => $file->id,
+                            'file_name' => $file->file_name,
+                        ];
+                    })
+                ];
+            });
 
         return response()->json([
             'data' => $mappedData,
@@ -228,5 +229,15 @@ class OrderController extends Controller
                 'error_detail' => $e->getMessage()
             ], 500);
         }
+    }
+    public function detail($id)
+    {
+        $order = Order::with(['orderTracking.trackingStep' => function($query) {
+            $query->orderBy('step_order', 'asc');
+        }])->findOrFail($id);
+
+        $title = 'Order Detail - ' . $order->code_order;
+
+        return view('admin.order.detail', compact('title', 'order'));
     }
 }
