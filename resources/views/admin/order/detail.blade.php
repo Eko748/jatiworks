@@ -103,7 +103,7 @@
                                     <i class="fas fa-sticky-note me-2"></i>
                                     <div>
                                         <span class="fw-bold d-block">Description:</span>
-                                        <span>{{ $order->id_katalog ? $order->katalog->description : $order->description }}</span>
+                                        <span>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</span>
                                     </div>
                                 </div>
                             </div>
