@@ -33,7 +33,7 @@
                             <p><strong>Dimensions (l x w x h):</strong> {{ $orderDetails['length'] }} x {{ $orderDetails['width'] }} x {{ $orderDetails['height'] }}</p>
                             <p><strong>Weight:</strong> {{ $order->id_katalog ? $order->katalog->weight : $order->weight }}</p>
                             <p><strong>Unit:</strong> {{ $order->id_katalog ? $order->katalog->unit : $order->unit }}</p>
-                            <p><strong>Description:</strong> {{ $order->id_katalog ? $order->katalog->description : $order->description }}</p>
+                            <p><strong>Description:</strong> {{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</p>
                             <p><strong>Status:</strong> {{ $order->status->label() }}</p>
                         </div>
                     </div>

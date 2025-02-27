@@ -84,10 +84,6 @@
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Buyer</th>
                             <th class="text-wrap align-top">Item Name</th>
-                            <th class="text-wrap align-top">Material</th>
-                            <th class="text-wrap align-top">Weight (kg)</th>
-                            <th class="text-wrap align-top">Dimensions (l x w x h)</th>
-                            <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Qty</th>
                             <th class="text-wrap align-top">Price</th>
                             <th class="text-wrap align-top">Action</th>
@@ -301,10 +297,6 @@
                     <td>${element.code_order}</td>
                     <td>${element.buyer_name}</td>
                     <td>${element.item_name}</td>
-                    <td>${element.material}</td>
-                    <td>${element.weight}</td>
-                    <td>${element.dimensions}</td>
-                    <td>${element.unit}</td>
                     <td>${element.qty}</td>
                     <td>${element.price}</td>
                     <td>
