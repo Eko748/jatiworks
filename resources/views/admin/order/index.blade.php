@@ -184,23 +184,47 @@
         async function handleListData(data) {
             let statusClass = 'badge border px-2 py-1 ';
             let statusIcon = '';
+            let statusHtml = '';
 
             switch (data.status) {
                 case 'Payment Completed':
                     statusClass += 'text-success border-success';
                     statusIcon = '<i class="fas fa-check-circle"></i>';
+                    statusHtml = `<div class="${statusClass}">${statusIcon} ${data?.status ?? '-'}</div>`;
                     break;
                 case 'Waiting for Payment':
                     statusClass += 'text-info border-info';
                     statusIcon = '<i class="fas fa-clock"></i>';
+                    statusHtml = `
+                        <div class="dropdown">
+                            <button class="${statusClass} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ${statusIcon} ${data?.status ?? '-'}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', 'NC')">Not Completed</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', 'PC')">Payment Completed</a></li>
+                            </ul>
+                        </div>
+                    `;
                     break;
                 case 'Not Completed':
                     statusClass += 'text-warning border-warning';
                     statusIcon = '<i class="fas fa-times-circle"></i>';
+                    statusHtml = `
+                        <div class="dropdown">
+                            <button class="${statusClass} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ${statusIcon} ${data?.status ?? '-'}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', 'PC')">Payment Completed</a></li>
+                            </ul>
+                        </div>
+                    `;
                     break;
                 default:
                     statusClass += 'text-secondary border-secondary';
                     statusIcon = '<i class="fas fa-question-circle"></i>';
+                    statusHtml = `<div class="${statusClass}">${statusIcon} ${data?.status ?? '-'}</div>`;
             }
 
             return {
@@ -214,8 +238,22 @@
                 qty: data?.qty ?? '-',
                 price: data?.price ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
-                status: `<span class="${statusClass}">${statusIcon} ${data?.status ?? '-'}</span>`,
+                status: statusHtml,
             };
+        }
+
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const response = await restAPI('PUT', `/admin/order/${orderId}/update-status`, { status });
+                if (response.status === 200) {
+                    notyf.success('Order status updated successfully');
+                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                } else {
+                    notyf.error('Failed to update order status');
+                }
+            } catch (error) {
+                notyf.error('An error occurred while updating order status');
+            }
         }
 
         async function setListData(dataList, pagination) {

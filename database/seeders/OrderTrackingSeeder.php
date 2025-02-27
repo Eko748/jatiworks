@@ -25,7 +25,7 @@ class OrderTrackingSeeder extends Seeder
             }
 
             OrderTracking::create([
-                'id_order' => 1,
+                'id_order' => 2,
                 'id_tracking_step' => $i,
                 'file_name' => $fileName,
                 'status' => $status

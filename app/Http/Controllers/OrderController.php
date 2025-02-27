@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Katalog;
 use App\Models\Order;
+use App\Models\OrderTracking;
+use App\Models\TrackingStep;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -204,15 +206,31 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         try {
+            DB::beginTransaction();
             $order = Order::findOrFail($id);
 
             $request->validate([
                 'status' => ['required', 'in:WP,NC,PC']
             ]);
 
+            $oldStatus = $order->status;
             $order->status = OrderStatus::from($request->status);
             $order->save();
 
+            // Create order tracking records when status changes from WP to NC or PC
+            if ($oldStatus === OrderStatus::WaitingForPayment && in_array($order->status, [OrderStatus::NotCompleted, OrderStatus::PaymentCompleted])) {
+                $trackingSteps = TrackingStep::orderBy('step_order')->get();
+
+                foreach ($trackingSteps as $step) {
+                    OrderTracking::create([
+                        'id_order' => $order->id,
+                        'id_tracking_step' => $step->id,
+                        'status' => 'pending',
+                    ]);
+                }
+            }
+
+            DB::commit();
             return response()->json([
                 'status_code' => 200,
                 'message'     => 'Status updated successfully!',
@@ -230,6 +248,7 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
     public function detail($id)
     {
         $order = Order::with(['orderTracking.trackingStep' => function($query) {
