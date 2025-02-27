@@ -81,13 +81,10 @@
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
                             <th class="text-wrap align-top">Status</th>
+                            <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Buyer</th>
                             <th class="text-wrap align-top">Item Name</th>
-                            <th class="text-wrap align-top">Material</th>
-                            <th class="text-wrap align-top">Weight (kg)</th>
-                            <th class="text-wrap align-top">Dimensions (l x w x h)</th>
-                            <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Qty</th>
                             <th class="text-wrap align-top">Price</th>
                             <th class="text-wrap align-top">Action</th>
@@ -117,7 +114,7 @@
             <div class="modal-content neumorphic-modal p-3">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Order</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="d-flex justify-content-between gap-3 mb-4">
@@ -144,24 +141,6 @@
     </div>
 
     <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content neumorphic-modal p-3">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">Crop Image</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="img-container">
-                        <img id="imagePreview">
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
-                        Upload</button>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -180,6 +159,8 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
+        let storageUrl = '{{ asset('storage/uploads/order/') }}'
+        let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
             let requestParams = {
@@ -200,9 +181,7 @@
                 .catch(error => error.response);
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
-                let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleListData(item))
-                );
+                let handleDataArray = await Promise.all(getDataRest.data.data.map(async item => handleListData(item)));
                 await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
                 errorListData(getDataRest);
@@ -210,64 +189,122 @@
         }
 
         async function handleListData(data) {
-            let statusClass = 'badge border px-2 py-1 ';
-            let statusIcon = '';
-            let statusHtml = '';
+            let statusMapping = {
+                'Payment Completed': {
+                    class: 'text-green border-success neumorphic-button',
+                    icon: '<i class="fas fa-check-circle"></i>',
+                    dropdown: false
+                },
+                'Waiting for Payment': {
+                    class: 'text-info border-info neumorphic-button',
+                    icon: '<i class="fas fa-clock"></i>',
+                    dropdown: [{
+                            text: 'Not Completed',
+                            value: 'NC'
+                        },
+                        {
+                            text: 'Payment Completed',
+                            value: 'PC'
+                        }
+                    ]
+                },
+                'Not Completed': {
+                    class: 'text-warning border-warning neumorphic-button',
+                    icon: '<i class="fas fa-times-circle"></i>',
+                    dropdown: [{
+                        text: 'Payment Completed',
+                        value: 'PC'
+                    }]
+                }
+            };
 
-            switch (data.status) {
-                case 'Payment Completed':
-                    statusClass += 'text-success border-success';
-                    statusIcon = '<i class="fas fa-check-circle"></i>';
-                    statusHtml = `<div class="${statusClass}">${statusIcon} ${data?.status ?? '-'}</div>`;
-                    break;
-                case 'Waiting for Payment':
-                    statusClass += 'text-info border-info';
-                    statusIcon = '<i class="fas fa-clock"></i>';
-                    statusHtml = `
-                        <div class="dropdown">
-                            <button class="${statusClass} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                ${statusIcon} ${data?.status ?? '-'}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', 'NC')">Not Completed</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', 'PC')">Payment Completed</a></li>
-                            </ul>
-                        </div>
-                    `;
-                    break;
-                case 'Not Completed':
-                    statusClass += 'text-warning border-warning';
-                    statusIcon = '<i class="fas fa-times-circle"></i>';
-                    statusHtml = `
-                        <div class="dropdown">
-                            <button class="${statusClass} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                ${statusIcon} ${data?.status ?? '-'}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', 'PC')">Payment Completed</a></li>
-                            </ul>
-                        </div>
-                    `;
-                    break;
-                default:
-                    statusClass += 'text-secondary border-secondary';
-                    statusIcon = '<i class="fas fa-question-circle"></i>';
-                    statusHtml = `<div class="${statusClass}">${statusIcon} ${data?.status ?? '-'}</div>`;
-            }
+            let statusData = statusMapping[data.status] || {
+                class: 'text-secondary border-secondary',
+                icon: '<i class="fas fa-question-circle"></i>',
+                dropdown: false
+            };
+
+            let statusHtml = statusData.dropdown ? `
+                <div class="dropdown">
+                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ${statusData.icon} ${data?.status ?? '-'}
+                    </button>
+                    <ul class="dropdown-menu">
+                        ${statusData.dropdown.map(item => `
+                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                            `).join('')}
+                    </ul>
+                </div>
+            ` : `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
+
+            let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
             return {
                 id: data?.id ?? '-',
                 buyer_name: data?.buyer_name ?? '-',
                 item_name: data?.item_name ?? '-',
-                material: data?.material ?? '-',
-                unit: data?.unit ?? '-',
-                weight: data?.weight ?? '-',
                 code_order: data?.code_order ?? '-',
                 qty: data?.qty ?? '-',
                 price: data?.price ?? '-',
-                dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 status: statusHtml,
+                images
             };
+        }
+
+        async function setListData(dataList, pagination) {
+            totalPage = pagination.total_pages;
+            currentPage = pagination.current_page;
+            let display_from = (defaultLimitPage * (currentPage - 1)) + 1;
+            let display_to = Math.min(display_from + dataList.length - 1, pagination.total);
+
+            let getDataTable = '';
+            dataList.forEach((element, index) => {
+                let imageCarousel = `
+                    <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
+                        <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
+                            ${element.images.map((img, i) => `
+                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                    </div>
+                                `).join('')}
+                        </div>
+                        ${element.images.length > 1 ? `
+                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                </button>
+                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                </button>
+                            ` : ''}
+                    </div>
+                `;
+
+                getDataTable += `
+                <tr class="neumorphic-tr">
+                    <td class="text-center">${display_from + index}.</td>
+                    <td>${element.status}</td>
+                    <td style="width: 150px; text-align: center;">${imageCarousel}</td>
+                    <td>${element.code_order}</td>
+                    <td>${element.buyer_name}</td>
+                    <td>${element.item_name}</td>
+                    <td>${element.qty}</td>
+                    <td>${element.price}</td>
+                    <td>
+                        <a href="/admin/order/${element.id}/detail" class="btn btn-sm neumorphic-button">
+                            <i class="fas fa-eye me-1"></i>Detail
+                        </a>
+                    </td>
+                </tr>`;
+            });
+
+            renderListData(getDataTable, pagination, display_from, display_to);
+
+            document.querySelectorAll('.carousel').forEach(carousel => {
+                new bootstrap.Carousel(carousel, {
+                    interval: 2000,
+                    ride: 'carousel'
+                });
+            });
         }
 
         async function updateOrderStatus(orderId, status) {
@@ -284,38 +321,6 @@
             } catch (error) {
                 notyf.error('An error occurred while updating order status');
             }
-        }
-
-        async function setListData(dataList, pagination) {
-            totalPage = pagination.total_pages;
-            currentPage = pagination.current_page;
-            let display_from = (defaultLimitPage * (currentPage - 1)) + 1;
-            let display_to = Math.min(display_from + dataList.length - 1, pagination.total);
-
-            let getDataTable = '';
-            dataList.forEach((element, index) => {
-                getDataTable += `
-                <tr class="neumorphic-tr">
-                    <td class="text-center">${display_from + index}.</td>
-                    <td>${element.status}</td>
-                    <td>${element.code_order}</td>
-                    <td>${element.buyer_name}</td>
-                    <td>${element.item_name}</td>
-                    <td>${element.material}</td>
-                    <td>${element.weight}</td>
-                    <td>${element.dimensions}</td>
-                    <td>${element.unit}</td>
-                    <td>${element.qty}</td>
-                    <td>${element.price}</td>
-                    <td>
-                        <a href="/admin/order/${element.id}/detail" class="btn btn-sm neumorphic-button">
-                            <i class="fas fa-eye me-1"></i>Detail
-                        </a>
-                    </td>
-                </tr>`;
-            });
-
-            renderListData(getDataTable, pagination, display_from, display_to);
         }
 
         async function getFilterListData() {
@@ -435,38 +440,42 @@
                     let containerWidth = Math.min(window.innerWidth * 0.9, 750);
                     let containerHeight = (containerWidth / 750) * 400;
 
-                    cropper = new Cropper(imagePreview, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 1,
-                        dragMode: "move",
-                        minCanvasWidth: containerWidth,
-                        minCanvasHeight: containerHeight,
-                        minContainerWidth: containerWidth,
-                        minContainerHeight: containerHeight,
-                        responsive: true,
-                        ready() {
-                            let containerData = cropper.getContainerData();
-                            cropper.setCanvasData({
-                                left: 0,
-                                top: 0,
-                                width: containerWidth,
-                                height: containerHeight
-                            });
+                    setTimeout(() => {
+                        cropper = new Cropper(imagePreview, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            dragMode: "move",
+                            minCanvasWidth: containerWidth,
+                            minCanvasHeight: containerHeight,
+                            minContainerWidth: containerWidth,
+                            minContainerHeight: containerHeight,
+                            responsive: true,
+                            ready() {
+                                let containerData = cropper.getContainerData();
+                                cropper.setCanvasData({
+                                    left: 0,
+                                    top: 0,
+                                    width: containerWidth,
+                                    height: containerHeight
+                                });
 
-                            cropper.setCropBoxData({
-                                left: containerData.width / 2 - containerWidth / 2,
-                                top: containerData.height / 2 - containerHeight / 2,
-                                width: containerWidth,
-                                height: containerHeight
-                            });
+                                cropper.setCropBoxData({
+                                    left: containerData.width / 2 - containerWidth / 2,
+                                    top: containerData.height / 2 - containerHeight / 2,
+                                    width: containerWidth,
+                                    height: containerHeight
+                                });
 
-                            document.querySelector('.cropper-container').style.width = containerWidth +
-                                'px';
-                            document.querySelector('.cropper-container').style.height = containerHeight +
-                                'px';
-                        }
-                    });
+                                document.querySelector('.cropper-container').style.width =
+                                    containerWidth +
+                                    'px';
+                                document.querySelector('.cropper-container').style.height =
+                                    containerHeight +
+                                    'px';
+                            }
+                        });
+                    }, 100);
                 };
                 reader.readAsDataURL(file);
             }
@@ -578,6 +587,12 @@
                     container.innerHTML = "";
                     const modalFooter = document.getElementById("btnContainer");
 
+                    document.querySelectorAll('input[name="catalogue_option"]').forEach((el) => {
+                        el.closest("label").classList.remove("active");
+                    });
+
+                    this.closest("label").classList.add("active");
+
                     if (this.value === "with-catalogue") {
                         renderWithCatalogue(container);
                         modalFooter.innerHTML = `
@@ -591,11 +606,35 @@
                             </div>
                         `;
                     } else if (this.value === "without-catalogue") {
+                        modalCrop();
                         renderWithoutCatalogue(container);
                         setupWizardFooter(1, 4);
                     }
                 });
             });
+
+            function modalCrop() {
+                const modalCrop = document.getElementById('cropImageModal');
+                modalCrop.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content neumorphic-modal p-3">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Crop Image</h5>
+                            <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img id="imagePreview">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
+                                Upload</button>
+                        </div>
+                    </div>
+                </div>`;
+            }
 
             function renderWithCatalogue(container) {
                 container.innerHTML = `
@@ -740,38 +779,44 @@
                     ${stepContents}
                 `;
 
+                initWizard(steps.length);
                 multiSelectData('#id_user', 'Select User Buyer');
                 multiSelectData('#unit', 'Select Unit');
                 uploadMultiImage();
-                initWizard(steps.length);
             }
 
             function initWizard(totalSteps) {
                 currentStep = 1;
                 setupWizardFooter(currentStep, totalSteps);
 
-                document.addEventListener("click", function(event) {
+                document.getElementById("wizardTabs").addEventListener("click", function(event) {
                     if (event.target.classList.contains("wizard-step")) {
                         event.preventDefault();
                         let step = parseInt(event.target.dataset.step);
+
                         if (step !== currentStep) {
-                            if (step > currentStep) return;
                             document.getElementById(`step-${currentStep}`).classList.add("d-none");
                             document.getElementById(`step-${step}`).classList.remove("d-none");
-                            currentStep = step;
+
                             document.querySelectorAll(".wizard-step").forEach(btn => btn.classList.remove(
                                 "active"));
                             event.target.classList.add("active");
+
+                            currentStep = step;
                             setupWizardFooter(currentStep, totalSteps);
                         }
                     }
+                });
 
+                document.addEventListener("click", function(event) {
                     if (event.target.id === "nextBtn" && currentStep < totalSteps) {
                         document.getElementById(`step-${currentStep}`).classList.add("d-none");
                         currentStep++;
                         document.getElementById(`step-${currentStep}`).classList.remove("d-none");
+
                         document.querySelectorAll(".wizard-step").forEach(btn => btn.classList.remove("active"));
                         document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add("active");
+
                         setupWizardFooter(currentStep, totalSteps);
                     }
 
@@ -779,12 +824,15 @@
                         document.getElementById(`step-${currentStep}`).classList.add("d-none");
                         currentStep--;
                         document.getElementById(`step-${currentStep}`).classList.remove("d-none");
+
                         document.querySelectorAll(".wizard-step").forEach(btn => btn.classList.remove("active"));
                         document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add("active");
+
                         setupWizardFooter(currentStep, totalSteps);
                     }
                 });
             }
+
 
             function setupWizardFooter(currentStep, totalSteps = 4) {
                 const modalFooter = document.querySelector(".modal-footer");
@@ -793,25 +841,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                    <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                        <i class="fas fa-backward me-1"></i>Previous
-                                                                    </button>` : ''
+                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                        <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                            <i class="fas fa-forward me-1"></i>Next
-                                                                        </button>` : ''
+                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                        <i class="fas fa-forward me-1"></i>Next
+                                                                                                                    </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                        <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                            <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                        </button>
-                                                                        <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                            <i class="fas fa-save me-1"></i>Submit
-                                                                        </button>
-                                                                    ` : ''
+                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                    </button>
+                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                        <i class="fas fa-save me-1"></i>Submit
+                                                                                                                    </button>
+                                                                                                                ` : ''
                             }
                         </div>
                     </div>

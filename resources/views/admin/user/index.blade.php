@@ -98,7 +98,7 @@
             <div class="modal-content neumorphic-modal p-3">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addDataForm">
