@@ -29,6 +29,11 @@
                             <p><strong>Order Code:</strong> {{ $order->code_order }}</p>
                             <p><strong>Buyer:</strong> {{ $order->user->name }}</p>
                             <p><strong>Item Name:</strong> {{ $order->id_katalog ? $order->katalog->item_name : $order->item_name }}</p>
+                            <p><strong>Material:</strong> {{ $order->id_katalog ? $order->katalog->material : $order->material }}</p>
+                            <p><strong>Dimensions (l x w x h):</strong> {{ $orderDetails['length'] }} x {{ $orderDetails['width'] }} x {{ $orderDetails['height'] }}</p>
+                            <p><strong>Weight:</strong> {{ $order->id_katalog ? $order->katalog->weight : $order->weight }}</p>
+                            <p><strong>Unit:</strong> {{ $order->id_katalog ? $order->katalog->unit : $order->unit }}</p>
+                            <p><strong>Description:</strong> {{ $order->id_katalog ? $order->katalog->description : $order->description }}</p>
                             <p><strong>Status:</strong> {{ $order->status->label() }}</p>
                         </div>
                     </div>

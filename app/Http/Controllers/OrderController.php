@@ -77,13 +77,6 @@ class OrderController extends Controller
                 'code_order' => $item->code_order,
                 'buyer_name' => $item->user->name ?? null,
                 'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
-                'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
-                'length' => $item->id_katalog === null ? $item->length : ($item->katalog->length ?? null),
-                'width' => $item->id_katalog === null ? $item->width : ($item->katalog->width ?? null),
-                'height' => $item->id_katalog === null ? $item->height : ($item->katalog->height ?? null),
-                'weight' => $item->id_katalog === null ? $item->weight : ($item->katalog->weight ?? null),
-                'unit' => $item->id_katalog === null ? $item->unit : ($item->katalog->unit ?? null),
-                'desc' => $item->id_katalog === null ? $item->desc : ($item->katalog->desc ?? null),
                 'qty' => $item->qty,
                 'price' => $item->price,
                 'status' => $item->status->label(),
@@ -117,7 +110,7 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             if ($request->filled('id_katalog')) {
-                $request->validate([
+                $validatedData = $request->validate([
                     'id_user'   => 'required|integer',
                     'id_katalog' => 'required|integer|exists:katalog,id',
                     'qty'       => 'required|integer|min:1',
@@ -125,11 +118,20 @@ class OrderController extends Controller
                 ]);
 
                 $order = Order::create([
-                    'id_user'   => $request->id_user,
-                    'id_katalog' => $request->id_katalog,
-                    'qty'       => $request->qty,
-                    'price'     => $request->price
+                    'id_user'   => $validatedData['id_user'],
+                    'id_katalog' => $validatedData['id_katalog'],
+                    'qty'       => $validatedData['qty'],
+                    'price'     => $validatedData['price']
                 ]);
+
+                // Generate code_order for katalog orders
+                $order_id = $order->id;
+                $id_user_str = (string) $validatedData['id_user'];
+                $total_length = strlen($id_user_str);
+                $random_length = max(0, 6 - $total_length);
+                $random_number = str_pad(mt_rand(0, pow(10, $random_length) - 1), $random_length, '0', STR_PAD_LEFT);
+                $code_order = $id_user_str . $order_id . $random_number;
+                $order->update(['code_order' => $code_order]);
             } else {
                 $request->validate([
                     'id_user'   => 'required|integer',
@@ -250,12 +252,27 @@ class OrderController extends Controller
 
     public function detail($id)
     {
-        $order = Order::with(['orderTracking.trackingStep' => function ($query) {
-            $query->orderBy('step_order', 'asc');
-        }])->findOrFail($id);
+        $order = Order::with([
+            'orderTracking.trackingStep' => function ($query) {
+                $query->orderBy('step_order', 'asc');
+            },
+            'katalog',
+            'user',
+            'file'
+        ])->findOrFail($id);
+
+        $orderDetails = [
+            'material' => $order->id_katalog === null ? $order->material : ($order->katalog->material ?? null),
+            'length' => $order->id_katalog === null ? $order->length : ($order->katalog->length ?? null),
+            'width' => $order->id_katalog === null ? $order->width : ($order->katalog->width ?? null),
+            'height' => $order->id_katalog === null ? $order->height : ($order->katalog->height ?? null),
+            'weight' => $order->id_katalog === null ? $order->weight : ($order->katalog->weight ?? null),
+            'unit' => $order->id_katalog === null ? $order->unit : ($order->katalog->unit ?? null),
+            'desc' => $order->id_katalog === null ? $order->desc : ($order->katalog->desc ?? null)
+        ];
 
         $title = 'Order Detail - ' . $order->code_order;
 
-        return view('admin.order.detail', compact('title', 'order'));
+        return view('admin.order.detail', compact('title', 'order', 'orderDetails'));
     }
 }
