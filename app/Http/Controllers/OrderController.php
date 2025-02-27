@@ -271,7 +271,7 @@ class OrderController extends Controller
             'desc' => $order->id_katalog === null ? $order->desc : ($order->katalog->desc ?? null)
         ];
 
-        $title = 'Order Detail - ' . $order->code_order;
+        $title = 'Order Detail';
 
         return view('admin.order.detail', compact('title', 'order', 'orderDetails'));
     }
