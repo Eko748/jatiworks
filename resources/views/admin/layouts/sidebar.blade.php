@@ -30,7 +30,7 @@
                 <li
                     class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.katalog.index') ? 'active' : '' }}">
                     <div class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.katalog.index') ? 'active' : '' }}">
-                        <i class="fas fa-folder"></i>
+                        <i class="fas fa-book"></i>
                         <span class="sidebar-text">Catalogue</span>
                     </div>
                 </li>

@@ -247,10 +247,15 @@
                             class="fas fa-backward me-1"></i>Previous</button>
                     <button type="button" id="nextBtn" class="btn neumorphic-button-outline"><i
                             class="fas fa-forward me-1"></i>Next</button>
-                    <button type="submit" form="addDataForm" id="submitBtn"
-                        class="btn neumorphic-button-outline fw-bold d-none">
-                        <i class="fas fa-save me-1"></i>Submit
-                    </button>
+                    <div id="submitBtnContainer" class="d-flex justify-content-end d-none gap-2">
+                        <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                            <i class="fas fa-circle-xmark me-1"></i>Cancel
+                        </button>
+                        <button type="submit" form="addDataForm" id="submitBtn"
+                            class="btn neumorphic-button-outline fw-bold">
+                            <i class="fas fa-save me-1"></i>Submit
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -347,19 +352,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                        </div>
-                                                                                                                    `).join('')}
+                                                                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                            </div>
+                                                                                                                        `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                    </button>
-                                                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                    </button>
-                                                                                                                ` : ''}
+                                                                                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                        </button>
+                                                                                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                        </button>
+                                                                                                                    ` : ''}
                     </div>
                 ` : '-'
 
@@ -552,7 +557,7 @@
 
                 document.getElementById("prevBtn").classList.toggle("d-none", currentStep === 1);
                 document.getElementById("nextBtn").classList.toggle("d-none", currentStep === totalSteps);
-                document.getElementById("submitBtn").classList.toggle("d-none", currentStep !== totalSteps);
+                document.getElementById("submitBtnContainer").classList.toggle("d-none", currentStep !== totalSteps);
             }
 
             function validateStep() {
@@ -709,6 +714,7 @@
                 toggleFilterButton(),
                 multiSelectData('#filterCategory', 'Select Categories'),
                 multiSelectData('#id_category', 'Select Categories'),
+                multiSelectData('#unit', 'Select Unit'),
                 setWizardForm(),
                 uploadMultiImage(),
                 addListData(),

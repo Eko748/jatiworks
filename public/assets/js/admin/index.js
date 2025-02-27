@@ -131,6 +131,8 @@ function multiSelectData(isParameter, isPlaceholder) {
         }
     });
 
+    slim.setSelected('');
+
     const modal = selectElement.closest('.modal');
     if (modal) {
         modal.addEventListener('shown.bs.modal', function () {

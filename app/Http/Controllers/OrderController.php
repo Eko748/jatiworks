@@ -72,30 +72,30 @@ class OrderController extends Controller
         }
 
         $mappedData = collect($data->items())->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'code_order' => $item->code_order,
-                    'buyer_name' => $item->user->name ?? null,
-                    'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
-                    'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
-                    'length' => $item->id_katalog === null ? $item->length : ($item->katalog->length ?? null),
-                    'width' => $item->id_katalog === null ? $item->width : ($item->katalog->width ?? null),
-                    'height' => $item->id_katalog === null ? $item->height : ($item->katalog->height ?? null),
-                    'weight' => $item->id_katalog === null ? $item->weight : ($item->katalog->weight ?? null),
-                    'unit' => $item->id_katalog === null ? $item->unit : ($item->katalog->unit ?? null),
-                    'desc' => $item->id_katalog === null ? $item->desc : ($item->katalog->desc ?? null),
-                    'qty' => $item->qty,
-                    'price' => $item->price,
-                    'status' => $item->status->label(),
-                    'detail_url' => route('admin.order.detail', $item->id),
-                    'file'       => $item->file->map(function ($file) {
-                        return [
-                            'id'        => $file->id,
-                            'file_name' => $file->file_name,
-                        ];
-                    })
-                ];
-            });
+            return [
+                'id' => $item->id,
+                'code_order' => $item->code_order,
+                'buyer_name' => $item->user->name ?? null,
+                'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
+                'material' => $item->id_katalog === null ? $item->material : ($item->katalog->material ?? null),
+                'length' => $item->id_katalog === null ? $item->length : ($item->katalog->length ?? null),
+                'width' => $item->id_katalog === null ? $item->width : ($item->katalog->width ?? null),
+                'height' => $item->id_katalog === null ? $item->height : ($item->katalog->height ?? null),
+                'weight' => $item->id_katalog === null ? $item->weight : ($item->katalog->weight ?? null),
+                'unit' => $item->id_katalog === null ? $item->unit : ($item->katalog->unit ?? null),
+                'desc' => $item->id_katalog === null ? $item->desc : ($item->katalog->desc ?? null),
+                'qty' => $item->qty,
+                'price' => $item->price,
+                'status' => $item->status->label(),
+                'detail_url' => route('admin.order.detail', $item->id),
+                'file'       => $item->file->map(function ($file) {
+                    return [
+                        'id'        => $file->id,
+                        'file_name' => $file->file_name,
+                    ];
+                })
+            ];
+        });
 
         return response()->json([
             'data' => $mappedData,
@@ -134,16 +134,16 @@ class OrderController extends Controller
                 $request->validate([
                     'id_user'   => 'required|integer',
                     'item_name' => 'required|string|max:255',
-                    'material'  => 'nullable|string|max:255',
-                    'length'    => 'nullable|numeric',
-                    'width'     => 'nullable|numeric',
-                    'height'    => 'nullable|numeric',
-                    'weight'    => 'nullable|string',
-                    'desc'      => 'nullable|string',
-                    'unit'      => 'nullable|string',
+                    'material'  => 'required|string|max:255',
+                    'length'    => 'required|numeric',
+                    'width'     => 'required|numeric',
+                    'height'    => 'required|numeric',
+                    'weight'    => 'required|string',
+                    'desc'      => 'required|string',
+                    'unit'      => 'required|string',
                     'qty'       => 'required|integer|min:1',
                     'price'     => 'required|numeric|min:0',
-                    'file'      => 'nullable|array',
+                    'file'      => 'required|array',
                     'file.*'    => 'file|mimes:jpg,jpeg,png|max:2048'
                 ]);
 
@@ -161,6 +161,16 @@ class OrderController extends Controller
                     'price'     => $request->price
                 ]);
 
+                $order_id = $order->id;
+                $id_user_str = (string) $request->id_user;
+                $total_length = strlen($id_user_str);
+
+                $random_length = max(0, 6 - $total_length);
+                $random_number = str_pad(mt_rand(0, pow(10, $random_length) - 1), $random_length, '0', STR_PAD_LEFT);
+
+                $code_order = $id_user_str . $order_id . $random_number;
+                $order->update(['code_order' => $code_order]);
+
                 if ($request->hasFile('file')) {
                     foreach ($request->file('file') as $file) {
                         $filename = time() . '_' . $file->getClientOriginalName();
@@ -173,17 +183,6 @@ class OrderController extends Controller
                     }
                 }
             }
-
-            $id_order_str = (string) $order->id;
-            $id_user_str = (string) $request->id_user;
-            $total_length = strlen($id_order_str) + strlen($id_user_str);
-
-            $random_length = max(0, 6 - $total_length);
-            $random_number = str_pad(mt_rand(0, pow(10, $random_length) - 1), $random_length, '0', STR_PAD_LEFT);
-
-            $order->update([
-                'code_order' => "{$id_order_str}{$id_user_str}{$random_number}"
-            ]);
 
             DB::commit();
 
@@ -251,7 +250,7 @@ class OrderController extends Controller
 
     public function detail($id)
     {
-        $order = Order::with(['orderTracking.trackingStep' => function($query) {
+        $order = Order::with(['orderTracking.trackingStep' => function ($query) {
             $query->orderBy('step_order', 'asc');
         }])->findOrFail($id);
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('id_user');
             $table->string('id_katalog')->nullable();
-            $table->string('code_order');
+            $table->string('code_order')->nullable();
             $table->string('item_name')->nullable();
             $table->string('material')->nullable();
             $table->integer('qty')->nullable();
