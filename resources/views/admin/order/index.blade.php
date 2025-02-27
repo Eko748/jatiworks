@@ -551,9 +551,6 @@
 
             form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
 
-            const categoryContainer = form.querySelector('#categoryContainer');
-            if (categoryContainer) categoryContainer.innerHTML = '';
-
             const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
             if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
 
@@ -605,13 +602,13 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label for="id_user" class="form-label">Buyer</label>
-                            <select id="id_user" class="form-control neumorphic-card" name="id_user[]">
+                            <select id="id_user" class="form-control neumorphic-card" name="id_user">
                                 ${getUserOptions()}
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label for="id_katalog" class="form-label">Catalogue</label>
-                            <select id="id_katalog" class="form-control neumorphic-card" name="id_katalog[]">
+                            <select id="id_katalog" class="form-control neumorphic-card" name="id_katalog">
                                 ${getCatalogueOptions()}
                             </select>
                         </div>
@@ -904,7 +901,6 @@
                 dateRangeInput('#date_range'),
                 dateRangeInput('#filterDateRange'),
                 setMethodAddListData(),
-
             ])
         }
     </script>
