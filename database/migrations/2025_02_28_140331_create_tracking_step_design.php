@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('file', function (Blueprint $table) {
+        Schema::create('tracking_step_design', function (Blueprint $table) {
             $table->id();
-            $table->string('id_katalog')->nullable();
-            $table->string('id_order')->nullable();
-            $table->string('id_design')->nullable();
-            $table->string('file_name')->nullable();
+            $table->string('step_name');
+            $table->integer('step_order');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('file');
+        Schema::dropIfExists('tracking_step_design');
     }
 };

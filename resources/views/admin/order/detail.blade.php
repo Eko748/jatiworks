@@ -198,7 +198,7 @@
                                                         <div class="col-md-12 mb-3">
                                                             <label class="form-label"><i
                                                                     class="fas fa-sticky-note me-1"></i>
-                                                                Add Note</label>
+                                                                Add Note (Optional)</label>
                                                             <textarea name="notes" class="form-control neumorphic-card" rows="2" placeholder="Enter note">{{ $tracking->notes }}</textarea>
                                                         </div>
                                                     @endif
@@ -247,8 +247,7 @@
                                     @else
                                         <div class="neumorphic-card2">
                                             <div class="alert alert-warning mt-3" role="alert">
-                                                <i class="fas fa-lock me-1"></i> This step is locked. Complete the previous
-                                                in-progress step first.
+                                                <i class="fas fa-lock me-1"></i> This step is locked. Please wait until the worker has finished the previous step.
                                             </div>
                                         </div>
                                     @endif
@@ -265,7 +264,7 @@
                     <div class="neumorphic-card p-3">
                         <div class="d-flex flex-column flex-sm-row justify-content-between">
                             <h5 class="mb-0 fw-bold">Order Information</h5>
-                            <span>#Code: <strong
+                            <span>#Code Order: <strong
                                     class="neumorphic-card2 text-white px-2 py-1 bg-success">{{ $order->code_order }}</strong></span>
                         </div>
                         <hr>

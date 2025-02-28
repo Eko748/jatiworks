@@ -21,4 +21,9 @@ class File extends Model
     {
         return $this->belongsTo(Order::class, 'id_order', 'id');
     }
+
+    public function custom_design()
+    {
+        return $this->belongsTo(Katalog::class, 'id_custom', 'id');
+    }
 }

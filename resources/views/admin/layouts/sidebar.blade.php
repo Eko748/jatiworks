@@ -54,6 +54,15 @@
                     </div>
                 </li>
             </a>
+            <a href="{{ route('admin.custom.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.custom.*') ? 'active' : '' }}">
+                    <div class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.custom.*') ? 'active' : '' }}">
+                        <i class="fas fa-palette"></i>
+                        <span class="sidebar-text">Custom Design</span>
+                    </div>
+                </li>
+            </a>
         </ul>
     </nav>
 </aside>

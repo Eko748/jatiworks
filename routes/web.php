@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Content\KatalogLandingController;
+use App\Http\Controllers\CustomDesignController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -135,6 +136,11 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::put('/order/{id}/update-tracking', [OrderController::class, 'updateTrackingStep'])->name('order.updateTracking');
     Route::get('/order/{id}/detail', [OrderController::class, 'detail'])->name('admin.order.detail');
     Route::get('/getdataorder', [OrderController::class, 'getdataorder'])->name('getdataorder');
+
+    // Custom Design Management
+    Route::get('/design', [CustomDesignController::class, 'index'])->name('admin.custom.index');
+    // Route::post('/custom-store', [CustomDesignController::class, 'store'])->name('admin.custom.store');
+    Route::get('/getdatadesign', [CustomDesignController::class, 'getdatadesign'])->name('getdatadesign');
 });
 
 // Buyer Routes (buyer only)
