@@ -252,7 +252,6 @@ class OrderController extends Controller
 
     public function updateTrackingStep(Request $request, $id)
     {
-        // dd($request);
         try {
             DB::beginTransaction();
 
@@ -261,12 +260,13 @@ class OrderController extends Controller
                 'id_tracking_step' => 'required|exists:tracking_step,id',
                 'status' => 'nullable|in:pending,in_progress,completed',
                 'notes' => 'nullable|string',
-                'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+                'file.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048' // Allow multiple files
             ], [
                 'id_tracking_step.required' => 'The tracking step ID is required.',
                 'id_tracking_step.exists' => 'The selected tracking step does not exist.',
-                'status.required' => 'The status field is required.',
-                'status.in' => 'The status must be one of: pending, in_progress, completed.'
+                'status.in' => 'The status must be one of: pending, in_progress, completed.',
+                'file.*.mimes' => 'Each file must be a JPG, JPEG, or PNG.',
+                'file.*.max' => 'Each file must not exceed 2MB.'
             ]);
 
             if ($validator->fails()) {
@@ -278,27 +278,35 @@ class OrderController extends Controller
                 ], 422);
             }
 
+            // Ambil data tracking order
             $orderTracking = OrderTracking::where('id_order', $id)
                 ->where('id_tracking_step', $request->id_tracking_step)
                 ->firstOrFail();
 
+            // Gunakan status sebelumnya jika tidak ada request status
+            $status = $request->status ?? $orderTracking->status;
+
             $data = [
-                'status' => $request->status,
+                'status' => $status,
                 'notes' => $request->notes,
-                'completed_at' => $request->status === 'completed' ? now() : null
+                'completed_at' => $status === 'completed' ? now() : null
             ];
 
+            // Handle multiple file uploads
             if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('uploads/tracking', $filename, 'public');
-                $data['file_name'] = $filename;
+                $fileNames = [];
+                foreach ($request->file('file') as $file) {
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('uploads/tracking', $filename, 'public');
+                    $fileNames[] = $filename;
+                }
+                $data['file_name'] = json_encode($fileNames);
             }
 
             $orderTracking->update($data);
 
             // If current step is marked as completed, update the next step to in_progress
-            if ($request->status === 'completed') {
+            if ($status === 'completed') {
                 $currentStep = TrackingStep::find($request->id_tracking_step);
                 $nextStep = TrackingStep::where('step_order', '>', $currentStep->step_order)
                     ->orderBy('step_order')
@@ -317,7 +325,6 @@ class OrderController extends Controller
                 'message' => 'Tracking step updated successfully!',
                 'data' => $orderTracking
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

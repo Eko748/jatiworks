@@ -196,16 +196,31 @@
                                     @endif
 
                                     @if ($tracking->file_name)
-                                        <p class="mt-2 mb-0 neu-text"><strong><i class="fas fa-paperclip me-1"></i>
-                                                Attachment:</strong></p>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <img src="{{ asset('storage/uploads/tracking/' . $tracking->file_name) }}"
-                                                class="img-thumbnail" style="max-width: 100px;"
-                                                onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $tracking->file_name) }}')">
-                                            <button class="btn btn-sm neumorphic-button"
-                                                onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $tracking->file_name) }}' . $tracking->file_name) }}')">
-                                                <i class="fas fa-eye me-1"></i> View Full Size
-                                            </button>
+                                        <p class="mt-2 mb-2 neu-text">
+                                            <strong><i class="fas fa-paperclip me-1"></i> Attachment:</strong>
+                                        </p>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap ms-4">
+                                            @php
+                                                $decodedFiles = json_decode($tracking->file_name, true);
+                                                $files = is_array($decodedFiles)
+                                                    ? $decodedFiles
+                                                    : [$tracking->file_name];
+                                            @endphp
+
+                                            @foreach ($files as $file)
+                                                <div class="position-relative" style="display: inline-block;">
+                                                    <img src="{{ asset('storage/uploads/tracking/' . $file) }}"
+                                                        class="img-thumbnail card-radius"
+                                                        style="max-width: 100px; cursor: pointer;"
+                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
+                                                    <button
+                                                        class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1"
+                                                        style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;"
+                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
+                                                        <i class="fas fa-eye text-white"></i>
+                                                    </button>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     @elseif (!$isDisabled)
                                         @if ($tracking->status === 'completed' && $tracking->notes && $tracking->file_name)
@@ -680,6 +695,34 @@
                     }
                 });
             });
+        }
+
+        function showFilePreview(fileUrl) {
+            const previewModal = document.createElement('div');
+            previewModal.style.position = 'fixed';
+            previewModal.style.top = '0';
+            previewModal.style.left = '0';
+            previewModal.style.width = '100%';
+            previewModal.style.height = '100%';
+            previewModal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            previewModal.style.display = 'flex';
+            previewModal.style.alignItems = 'center';
+            previewModal.style.justifyContent = 'center';
+            previewModal.style.zIndex = '9999';
+
+            const image = document.createElement('img');
+            image.src = fileUrl;
+            image.style.maxWidth = '90%';
+            image.style.maxHeight = '90%';
+            image.style.borderRadius = '10px';
+            image.style.boxShadow = '0px 0px 10px rgba(255, 255, 255, 0.5)';
+
+            previewModal.onclick = function() {
+                document.body.removeChild(previewModal);
+            };
+
+            previewModal.appendChild(image);
+            document.body.appendChild(previewModal);
         }
 
         async function initPageLoad() {
