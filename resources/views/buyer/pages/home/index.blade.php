@@ -327,6 +327,8 @@
                 .then(response => response)
                 .catch(error => error.response);
 
+            console.log('getDataRest:', getDataRest)
+
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
                     getDataRest.data.data.map(async item => await handleListDataCatalogue(item))

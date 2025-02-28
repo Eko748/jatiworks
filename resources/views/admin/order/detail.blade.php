@@ -151,16 +151,7 @@
                 @else
                     <div class="timeline position-relative">
                         <div class="timeline-line"></div>
-                        @php
-                            $hasInProgressStep = false;
-                        @endphp
                         @foreach ($order->orderTracking->sortBy('trackingStep.step_order') as $index => $tracking)
-                            @php
-                                if ($tracking->status === 'in_progress') {
-                                    $hasInProgressStep = true;
-                                }
-                                $isDisabled = $hasInProgressStep && $tracking->status === 'pending';
-                            @endphp
                             <div class="timeline-item {{ $tracking->status }} d-flex align-items-start mb-4">
                                 <div
                                     class="timeline-marker rounded-circle me-3 d-flex align-items-center justify-content-center
@@ -188,106 +179,103 @@
                                         </div>
                                     </div>
                                     <hr>
-
-                                    @if ($tracking->notes)
-                                        <p class="mt-2 mb-0"><strong><i class="fas fa-sticky-note me-1"></i>
-                                                Notes:</strong>
-                                            {{ $tracking->notes }}</p>
-                                    @endif
-
-                                    @if ($tracking->file_name)
-                                        <p class="mt-2 mb-2 neu-text">
-                                            <strong><i class="fas fa-paperclip me-1"></i> Attachment:</strong>
-                                        </p>
-                                        <div class="d-flex align-items-center gap-2 flex-wrap ms-4">
-                                            @php
-                                                $decodedFiles = json_decode($tracking->file_name, true);
-                                                $files = is_array($decodedFiles)
-                                                    ? $decodedFiles
-                                                    : [$tracking->file_name];
-                                            @endphp
-
-                                            @foreach ($files as $file)
-                                                <div class="position-relative" style="display: inline-block;">
-                                                    <img src="{{ asset('storage/uploads/tracking/' . $file) }}"
-                                                        class="img-thumbnail card-radius"
-                                                        style="max-width: 100px; cursor: pointer;"
-                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
-                                                    <button
-                                                        class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1"
-                                                        style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;"
-                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
-                                                        <i class="fas fa-eye text-white"></i>
+                                    @if ($tracking->status !== 'pending')
+                                        <form action="{{ route('order.updateTracking', $tracking->id_order) }}"
+                                            class="mt-3 addDataForm">
+                                            @method('PUT')
+                                            <input type="hidden" name="id_order_tracking" value="{{ $tracking->id }}">
+                                            <input type="hidden" name="id_tracking_step"
+                                                value="{{ $tracking->id_tracking_step }}">
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label class="form-label">
+                                                        @if ($tracking->status !== 'completed')
+                                                            <i class="fas fa-edit me-1"></i>
+                                                            Update Note
+                                                        @else
+                                                            <i class="fas fa-sticky-note me-1"></i>
+                                                            Add Note
+                                                        @endif
+                                                    </label>
+                                                    <textarea name="notes" class="form-control neumorphic-card" rows="2" placeholder="Enter note">{{ $tracking->notes }}</textarea>
+                                                </div>
+                                                <div class="col-md-12 mb-3">
+                                                    @if ($tracking->status !== 'completed')
+                                                        <label class="form-label"><i class="fas fa-paperclip me-1"></i>
+                                                            Upload
+                                                            Image</label>
+                                                        <input type="file" id="imageInput"
+                                                            class="form-control neumorphic-card" accept="image/*" multiple>
+                                                        <small class="ms-1">You can upload maximum 3 images</small>
+                                                        <div id="imagePreviewContainer" class="ms-1 mt-3"></div>
+                                                    @endif
+                                                    @if ($tracking->file_name)
+                                                        <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>
+                                                            Attachment:</p>
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap ms-4">
+                                                            @php
+                                                                $decodedFiles = json_decode($tracking->file_name, true);
+                                                                $files = is_array($decodedFiles)
+                                                                    ? $decodedFiles
+                                                                    : [$tracking->file_name];
+                                                            @endphp
+                                                            @foreach ($files as $file)
+                                                                <div class="position-relative"
+                                                                    style="display: inline-block;">
+                                                                    <img src="{{ asset('storage/uploads/tracking/' . $file) }}"
+                                                                        class="img-thumbnail card-radius"
+                                                                        style="max-width: 100px; cursor: pointer;"
+                                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
+                                                                    <button
+                                                                        class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1"
+                                                                        style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;"
+                                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
+                                                                        <i class="fas fa-eye text-white"></i>
+                                                                    </button>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        @if ($tracking->status === 'completed')
+                                                            <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>No
+                                                                attachments
+                                                                available.</p>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                                @if ($tracking->status !== 'completed')
+                                                    <div class="col-md-12 mb-3">
+                                                        <label class="form-label"><i class="fas fa-tasks me-1"></i> Update
+                                                            Status</label>
+                                                        <select name="status" class="form-select neumorphic-card">
+                                                            <option value="pending"
+                                                                {{ $tracking->status === 'pending' ? 'selected' : '' }}>
+                                                                Pending
+                                                            </option>
+                                                            <option value="in_progress"
+                                                                {{ $tracking->status === 'in_progress' ? 'selected' : '' }}>
+                                                                In
+                                                                Progress</option>
+                                                            <option value="completed"
+                                                                {{ $tracking->status === 'completed' ? 'selected' : '' }}>
+                                                                Completed</option>
+                                                        </select>
+                                                    </div>
+                                                @endif
+                                                <div class="col-md-12 mb-3 text-center text-md-end">
+                                                    <button type="submit"
+                                                        class="btn neumorphic-btn-success fw-bold save-data">
+                                                        <i class="fas fa-save me-1"></i> Save Changes
                                                     </button>
                                                 </div>
-                                            @endforeach
-                                        </div>
-                                    @elseif (!$isDisabled)
-                                        @if ($tracking->status === 'completed' && $tracking->notes && $tracking->file_name)
-                                        @else
-                                            <form action="{{ route('order.updateTracking', $tracking->id_order) }}"
-                                                class="mt-3 addDataForm">
-                                                @method('PUT')
-                                                <input type="hidden" name="id_order_tracking" value="{{ $tracking->id }}">
-                                                <input type="hidden" name="id_tracking_step"
-                                                    value="{{ $tracking->id_tracking_step }}">
-                                                <div class="row">
-                                                    @if ($tracking->status !== 'completed' || !$tracking->notes)
-                                                        <div class="col-md-12 mb-3">
-                                                            <label class="form-label"><i
-                                                                    class="fas fa-sticky-note me-1"></i>
-                                                                Add Note (Optional)</label>
-                                                            <textarea name="notes" class="form-control neumorphic-card" rows="2" placeholder="Enter note">{{ $tracking->notes }}</textarea>
-                                                        </div>
-                                                    @endif
-                                                    @if ($tracking->status !== 'completed' || !$tracking->file_name)
-                                                        <div class="col-md-12 mb-3">
-                                                            <label class="form-label"><i class="fas fa-paperclip me-1"></i>
-                                                                Upload Image</label>
-                                                            <input type="file" id="imageInput"
-                                                                class="form-control neumorphic-card" accept="image/*"
-                                                                multiple>
-                                                            <small class="neu-text ms-1">You can upload maximum 3
-                                                                images</small>
-                                                            <div id="imagePreviewContainer" class="ms-1 mt-3"></div>
-                                                        </div>
-                                                    @endif
-                                                    @if ($tracking->status !== 'completed')
-                                                        <div class="col-md-12 mb-3">
-                                                            <label class="form-label"><i class="fas fa-tasks me-1"></i>
-                                                                Update
-                                                                Status</label>
-                                                            <select name="status" class="form-select neumorphic-card">
-                                                                @if ($tracking->status !== 'in_progress')
-                                                                    <option value="pending"
-                                                                        {{ $tracking->status === 'pending' ? 'selected' : '' }}>
-                                                                        Pending</option>
-                                                                @endif
-                                                                <option value="in_progress"
-                                                                    {{ $tracking->status === 'in_progress' ? 'selected' : '' }}>
-                                                                    In Progress</option>
-                                                                <option value="completed"
-                                                                    {{ $tracking->status === 'completed' ? 'selected' : '' }}>
-                                                                    Completed</option>
-                                                            </select>
-                                                        </div>
-                                                    @endif
-                                                    @if ($tracking->status !== 'completed' || !$tracking->notes || !$tracking->file_name)
-                                                        <div class="col-md-12 mb-3 text-center text-md-end">
-                                                            <button type="submit"
-                                                                class="btn neumorphic-btn-success fw-bold save-data">
-                                                                <i class="fas fa-save me-1"></i>Save Changes
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </form>
-                                        @endif
+                                            </div>
+                                        </form>
                                     @else
-                                        <div class="neumorphic-card2">
-                                            <div class="alert alert-warning mt-3" role="alert">
-                                                <i class="fas fa-lock me-1"></i> This step is locked. Please wait until the
-                                                worker has finished the previous step.
+                                        <div class="neumorphic-card2 p-3">
+                                            <div class="text-center">
+                                                <i class="fa fa-lock fa-2x mb-2"></i>
+                                                <h5>Complete the Previous Steps</h5>
+                                                <p>Make sure you have completed the previous steps before proceeding.</p>
                                             </div>
                                         </div>
                                     @endif
@@ -297,6 +285,7 @@
                     </div>
                 @endif
             </div>
+
         </div>
         <div class="col-md-4">
             <div class="row">
