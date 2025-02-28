@@ -189,7 +189,7 @@
                                             <div class="row">
                                                 <div class="col-md-12 mb-3">
                                                     <label class="form-label">
-                                                        @if ($tracking->status !== 'completed')
+                                                        @if ($tracking->status === 'completed')
                                                             <i class="fas fa-edit me-1"></i>
                                                             Update Note
                                                         @else
@@ -248,10 +248,6 @@
                                                         <label class="form-label"><i class="fas fa-tasks me-1"></i> Update
                                                             Status</label>
                                                         <select name="status" class="form-select neumorphic-card">
-                                                            <option value="pending"
-                                                                {{ $tracking->status === 'pending' ? 'selected' : '' }}>
-                                                                Pending
-                                                            </option>
                                                             <option value="in_progress"
                                                                 {{ $tracking->status === 'in_progress' ? 'selected' : '' }}>
                                                                 In
@@ -263,10 +259,19 @@
                                                     </div>
                                                 @endif
                                                 <div class="col-md-12 mb-3 text-center text-md-end">
-                                                    <button type="submit"
-                                                        class="btn neumorphic-btn-success fw-bold save-data">
-                                                        <i class="fas fa-save me-1"></i> Save Changes
-                                                    </button>
+                                                    @if ($tracking->status === 'completed')
+                                                        <button type="submit"
+                                                            class="btn neumorphic-button fw-bold save-data">
+                                                            <i class="fas fa-edit me-1"></i>
+                                                            Edit Changes
+                                                        </button>
+                                                    @else
+                                                        <button type="submit"
+                                                            class="btn neumorphic-btn-success fw-bold save-data">
+                                                            <i class="fas fa-save me-1"></i>
+                                                            Save Changes
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </form>
