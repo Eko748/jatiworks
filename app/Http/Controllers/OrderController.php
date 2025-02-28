@@ -226,7 +226,7 @@ class OrderController extends Controller
                     OrderTracking::create([
                         'id_order' => $order->id,
                         'id_tracking_step' => $step->id,
-                        'status' => 'pending',
+                        'status' => $step->id === 1 ? 'in_progress' : 'pending',
                     ]);
                 }
             }
@@ -245,6 +245,85 @@ class OrderController extends Controller
                 'status_code'  => 500,
                 'errors'       => true,
                 'message'      => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateTrackingStep(Request $request, $id)
+    {
+        // dd($request);
+        try {
+            DB::beginTransaction();
+
+            // Validate the request data with custom error messages
+            $validator = validator($request->all(), [
+                'id_tracking_step' => 'required|exists:tracking_step,id',
+                'status' => 'required|in:pending,in_progress,completed',
+                'notes' => 'nullable|string',
+                'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+            ], [
+                'id_tracking_step.required' => 'The tracking step ID is required.',
+                'id_tracking_step.exists' => 'The selected tracking step does not exist.',
+                'status.required' => 'The status field is required.',
+                'status.in' => 'The status must be one of: pending, in_progress, completed.'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status_code' => 422,
+                    'errors' => true,
+                    'message' => 'Validation failed',
+                    'error_detail' => $validator->errors()->first()
+                ], 422);
+            }
+
+            $orderTracking = OrderTracking::where('id_order', $id)
+                ->where('id_tracking_step', $request->id_tracking_step)
+                ->firstOrFail();
+
+            $data = [
+                'status' => $request->status,
+                'notes' => $request->notes,
+                'completed_at' => $request->status === 'completed' ? now() : null
+            ];
+
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('uploads/tracking', $filename, 'public');
+                $data['file_name'] = $filename;
+            }
+
+            $orderTracking->update($data);
+
+            // If current step is marked as completed, update the next step to in_progress
+            if ($request->status === 'completed') {
+                $currentStep = TrackingStep::find($request->id_tracking_step);
+                $nextStep = TrackingStep::where('step_order', '>', $currentStep->step_order)
+                    ->orderBy('step_order')
+                    ->first();
+
+                if ($nextStep) {
+                    OrderTracking::where('id_order', $id)
+                        ->where('id_tracking_step', $nextStep->id)
+                        ->update(['status' => 'in_progress']);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Tracking step updated successfully!',
+                'data' => $orderTracking
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors' => true,
+                'message' => 'Something went wrong!',
                 'error_detail' => $e->getMessage()
             ], 500);
         }

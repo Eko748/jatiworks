@@ -163,7 +163,16 @@
                     </div>
                 @else
                     <div class="timeline position-relative">
+                        @php
+                            $hasInProgressStep = false;
+                        @endphp
                         @foreach ($order->orderTracking->sortBy('trackingStep.step_order') as $index => $tracking)
+                            @php
+                                if ($tracking->status === 'in_progress') {
+                                    $hasInProgressStep = true;
+                                }
+                                $isDisabled = $hasInProgressStep && $tracking->status === 'pending';
+                            @endphp
                             <div class="timeline-item d-flex align-items-start mb-4">
                                 <div
                                     class="timeline-marker rounded-circle me-3 d-flex align-items-center justify-content-center
@@ -176,7 +185,7 @@
                                         {{ $tracking->trackingStep->step_name }}</h6>
                                     <small class="d-block">
                                         <i class="fas fa-info-circle me-1"></i> Status: <span
-                                            class="neumorphic-card px-2 py-1 {{ $tracking->status === 'completed' ? 'bg-success' : ($tracking->status === 'in_progress' ? 'bg-primary' : 'bg-info') }}"">{{ ucfirst($tracking->status) }}</span>
+                                            class="neumorphic-card px-2 py-1 {{ $tracking->status === 'completed' ? 'bg-success' : ($tracking->status === 'in_progress' ? 'bg-primary' : 'bg-info') }}">{{ ucfirst($tracking->status) }}</span>
                                     </small>
                                     @if ($tracking->completed_at)
                                         <small class="text-muted d-block mt-1"><i class="fas fa-calendar-check me-1"></i>
@@ -193,10 +202,62 @@
                                     @if ($tracking->file_name)
                                         <p class="mt-2 mb-0 text-muted"><strong><i class="fas fa-paperclip me-1"></i>
                                                 Attachment:</strong></p>
-                                        <button class="btn btn-sm neumorphic-button mt-2"
-                                            onclick="showFilePreview('{{ asset('storage/uploads/order/' . $tracking->file_name) }}')">
-                                            <i class="fas fa-file me-1"></i> View File
-                                        </button>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <img src="{{ asset('storage/uploads/tracking/' . $tracking->file_name) }}"
+                                                 class="img-thumbnail" style="max-width: 100px;"
+                                                 onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $tracking->file_name) }}')">
+                                            <button class="btn btn-sm neumorphic-button"
+                                                onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $tracking->file_name) }}' . $tracking->file_name) }}')">
+                                                <i class="fas fa-eye me-1"></i> View Full Size
+                                            </button>
+                                        </div>
+                                    @elseif (!$isDisabled)
+                                        @if ($tracking->status === 'completed' && $tracking->notes && $tracking->file_name)
+                                            <!-- All information is complete, no form needed -->
+                                        @else
+                                            <form action="{{ route('order.updateTracking', $tracking->id_order) }}"
+                                                  method="POST"
+                                                  enctype="multipart/form-data"
+                                                  class="mt-3">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="id_order_tracking" value="{{ $tracking->id }}">
+                                                <input type="hidden" name="id_tracking_step" value="{{ $tracking->id_tracking_step }}">
+                                                @if ($tracking->status !== 'completed' || !$tracking->notes)
+                                                <div class="mb-2">
+                                                    <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Add Note</label>
+                                                    <textarea name="notes" class="form-control" rows="2">{{ $tracking->notes }}</textarea>
+                                                </div>
+                                                @endif
+                                                @if ($tracking->status !== 'completed' || !$tracking->file_name)
+                                                <div class="mb-2">
+                                                    <label class="form-label"><i class="fas fa-paperclip me-1"></i> Upload Image</label>
+                                                    <input type="file" name="file" class="form-control" accept="image/*">
+                                                </div>
+                                                @endif
+                                                @if ($tracking->status !== 'completed')
+                                                <div class="mb-2">
+                                                    <label class="form-label"><i class="fas fa-tasks me-1"></i> Update Status</label>
+                                                    <select name="status" class="form-select">
+                                                        @if($tracking->status !== 'in_progress')
+                                                            <option value="pending" {{ $tracking->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                                        @endif
+                                                        <option value="in_progress" {{ $tracking->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                                                        <option value="completed" {{ $tracking->status === 'completed' ? 'selected' : '' }}>Completed</option>
+                                                    </select>
+                                                </div>
+                                                @endif
+                                                @if ($tracking->status !== 'completed' || !$tracking->notes || !$tracking->file_name)
+                                                <button type="submit" class="btn btn-primary neumorphic-button">
+                                                    <i class="fas fa-save me-1"></i> Save Changes
+                                                </button>
+                                                @endif
+                                            </form>
+                                        @endif
+                                    @else
+                                        <div class="alert alert-warning mt-3" role="alert">
+                                            <i class="fas fa-lock me-1"></i> This step is locked. Complete the previous in-progress step first.
+                                        </div>
                                     @endif
                                 </div>
                             </div>
