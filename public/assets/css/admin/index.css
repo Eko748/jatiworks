@@ -77,6 +77,13 @@ body {
     transition: all 0.3s ease-in-out;
 }
 
+.neumorphic-card2 {
+    background: var(--bg-color);
+    box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
 .neumorphic-modal {
     background: var(--bg-color);
     box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
