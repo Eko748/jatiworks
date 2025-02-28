@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('katalog', function (Blueprint $table) {
             $table->id();
             $table->string('item_name');
+            $table->string('code');
             $table->string('material');
             $table->decimal('length');
             $table->decimal('width');

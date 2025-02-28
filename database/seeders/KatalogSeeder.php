@@ -15,6 +15,7 @@ class KatalogSeeder extends Seeder
     {
         Katalog::create([
             'item_name' => 'Park Bench',
+            'code' => 'CDA001',
             'material' => 'Jati Wood',
             'length' => 10,
             'width' => 4,
@@ -25,6 +26,7 @@ class KatalogSeeder extends Seeder
 
         Katalog::create([
             'item_name' => 'Dining Table',
+            'code' => 'PAX001',
             'material' => 'Common Wood',
             'length' => 8,
             'width' => 3,
@@ -35,6 +37,7 @@ class KatalogSeeder extends Seeder
 
         Katalog::create([
             'item_name' => 'AK47',
+            'code' => 'CCO001',
             'material' => 'Uranium',
             'length' => 9.5,
             'width' => 5,
@@ -45,6 +48,7 @@ class KatalogSeeder extends Seeder
 
         Katalog::create([
             'item_name' => 'Furina Furina Furina Furina Furina Furina',
+            'code' => 'GI02X',
             'material' => 'Furina, Furina, Mavuika',
             'length' => 7.5,
             'width' => 7,

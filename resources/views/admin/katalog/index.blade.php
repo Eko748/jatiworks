@@ -83,6 +83,7 @@
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
                             <th class="text-wrap align-top">Image</th>
+                            <th class="text-wrap align-top">Code</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Material</th>
                             <th class="text-wrap align-top">Weight (kg)</th>
@@ -330,6 +331,7 @@
         async function handleListData(data) {
             return {
                 id: data?.id ?? '-',
+                code: data?.code ?? '-',
                 item_name: data?.item_name ?? '-',
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
@@ -372,6 +374,7 @@
                 <tr class="neumorphic-tr">
                     <td class="text-center">${display_from + index}.</td>
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
+                    <td>${element.code}</td>
                     <td>${element.item_name}</td>
                     <td>${element.material}</td>
                     <td>${element.weight}</td>

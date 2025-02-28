@@ -40,6 +40,7 @@ class KatalogController extends Controller
         if (!empty($request['search'])) {
             $searchTerm = trim(strtolower($request['search']));
             $query->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
+            $query->orwhereRaw("LOWER(code) LIKE ?", ["%$searchTerm%"]);
         }
 
         if ($request->has('id_category') && is_array($request->id_category) && count($request->id_category) > 0) {
@@ -61,13 +62,14 @@ class KatalogController extends Controller
             return response()->json([
                 'status_code' => 400,
                 'errors' => true,
-                'message' => 'Tidak ada data'
+                'message' => 'Data Not Found'
             ], 400);
         }
 
         $mappedData = collect($data->items())->map(function ($item) {
             return [
                 'id'         => $item->id,
+                'code'       => $item->code,
                 'item_name'  => $item->item_name,
                 'material'   => $item->material,
                 'length'     => $item->length,
