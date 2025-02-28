@@ -111,11 +111,14 @@ async function confirmSubmitData(saveButton) {
         cancelButtonText: 'Cancel',
         reverseButtons: true
     });
-    if (!result.isConfirmed) return;
+
+    if (!result.isConfirmed) return false;
 
     saveButton.disabled = true;
     saveButton.innerHTML =
         `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...`;
+
+    return true;
 }
 
 function multiSelectData(isParameter, isPlaceholder) {

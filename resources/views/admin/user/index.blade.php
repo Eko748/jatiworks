@@ -251,7 +251,8 @@
                 const saveButton = document.getElementById('submitBtn');
                 if (saveButton.disabled) return;
 
-                await confirmSubmitData(saveButton);
+                const confirmed = await confirmSubmitData(saveButton);
+                if (!confirmed) return;
 
                 const originalContent = saveButton.innerHTML;
                 const formData = new FormData(document.getElementById('addDataForm'));

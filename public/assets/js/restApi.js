@@ -1,5 +1,5 @@
 async function restAPI(method,url,body) {
-    const auth_token = '{{ crsf_token }}';
+    const auth_token = document.querySelector('meta[name="csrf-token"]').content;
     let header;
     if(auth_token == null) {
         header = {

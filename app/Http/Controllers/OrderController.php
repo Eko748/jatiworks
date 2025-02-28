@@ -259,7 +259,7 @@ class OrderController extends Controller
             // Validate the request data with custom error messages
             $validator = validator($request->all(), [
                 'id_tracking_step' => 'required|exists:tracking_step,id',
-                'status' => 'required|in:pending,in_progress,completed',
+                'status' => 'nullable|in:pending,in_progress,completed',
                 'notes' => 'nullable|string',
                 'file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
             ], [
