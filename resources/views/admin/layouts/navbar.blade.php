@@ -9,6 +9,7 @@
     </div>
 
     <div class="d-flex gap-2">
+        @yield('back')
         <button id="toggleFullscreen" class="btn neumorphic-button btn-sm p-2" data-bs-toggle="tooltip"
             data-bs-placement="top" title="Fullscreen Mode" onclick="hideTooltip(this)">
             <i class="fas fa-expand"></i>

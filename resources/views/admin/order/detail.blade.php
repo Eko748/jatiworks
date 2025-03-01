@@ -127,19 +127,15 @@
     </style>
 @endsection
 
+@section('back')
+    <a href="{{ route('admin.custom.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
+        data-bs-placement="top" title="Back to {{ $title }} page" onclick="hideTooltip(this)">
+        <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
+    </a>
+@endsection
+
 @section('content')
     <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex align-items-center justify-content-between neumorphic-card p-3 mb-3">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-receipt fa-2x me-3"></i>
-                    <h4 class="fw-bold mb-0">{{ $title }} - {{ $order->code_order }}</h4>
-                </div>
-                <a href="{{ route('admin.order.index') }}" class="btn btn-outline-dark neumorphic-button">
-                    <i class="fas fa-circle-chevron-left me-1"></i>Back
-                </a>
-            </div>
-        </div>
         <div class="col-md-8">
             <div class="neumorphic-card p-3 mb-3">
                 <h5 class="fw-bold">Order Progress</h5>
