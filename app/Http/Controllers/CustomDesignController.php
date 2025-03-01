@@ -60,7 +60,7 @@ class CustomDesignController extends Controller
     public function getDetailDataDesign(Request $request)
     {
         try {
-            $decryptedId = Crypt::decryptString($request->decode);
+            $decryptedId = Crypt::decryptString($request->encrypt);
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 400,

@@ -205,12 +205,13 @@
 
 @section('js')
     <script>
+        let title = '{{ $title }}';
         let urlParams = new URLSearchParams(window.location.search);
         let dataParams = urlParams.get('r');
 
         async function getDetailData() {
             let requestParams = {
-                decode: dataParams
+                encrypt: dataParams
             };
 
             let getDataRest = await restAPI('GET', '{{ route('admin.custom.data') }}', requestParams)
@@ -220,8 +221,9 @@
             if (getDataRest && getDataRest.status == 200) {
                 await setDetailData(getDataRest.data.data);
                 await handleViewTimeline();
+                await uploadMultiImage();
             } else {
-                console.log(getDataRest);
+                notyf.error(`Failed to fetch data ${title}`);
             }
         }
 
