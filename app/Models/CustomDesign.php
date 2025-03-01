@@ -17,4 +17,9 @@ class CustomDesign extends Model
     {
         return $this->hasMany(File::class, 'id_custom', 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }

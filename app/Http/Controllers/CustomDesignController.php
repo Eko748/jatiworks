@@ -50,38 +50,10 @@ class CustomDesignController extends Controller
             'total_pages'  => $data->lastPage()
         ];
 
-        if ($data->isEmpty()) {
-            return response()->json([
-                'status_code' => 400,
-                'errors' => true,
-                'message' => 'Data Not Found'
-            ], 400);
-        }
-
-        $mappedData = collect($data->items())->map(function ($item) {
-            return [
-                'buyer_name'    => $item->user->name ?? null,
-                'id'            => $item->id,
-                'code_design'   => $item->code_design,
-                'price'         => $item->price,
-                'desc'          => $item->desc,
-                'item_name'     => $item->item_name,
-                'status'        => $item->status->label(),
-                'file'          => $item->file->map(function ($file) {
-                    return [
-                        'id'        => $file->id,
-                        'file_name' => $file->file_name,
-                    ];
-                })
-            ];
-        });
-
         return response()->json([
-            'data'       => $mappedData,
-            'status_code' => 200,
-            'errors'     => false,
-            'message'    => 'Success',
+            'status' => 200,
+            'data' => $data->items(),
             'pagination' => $paginationMeta
-        ], 200);
+        ]);
     }
 }

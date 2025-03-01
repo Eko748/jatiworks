@@ -64,13 +64,13 @@
                     <thead>
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
+                            <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Design</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Price</th>
                             <th class="text-wrap align-top">Description</th>
                             <th class="text-wrap align-top">Status</th>
-                            <th class="text-wrap align-top">Files</th>
-                            <th class="text-wrap align-top">Action</th>
+                            {{-- <th class="text-wrap align-top">Action</th> --}}
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -99,169 +99,164 @@
 
 @section('js')
     <script>
-        let title = '{{ $title }}'
-        let defaultLimitPage = 10
-        let currentPage = 1
-        let totalPage = 1
-        let defaultAscending = 0
-        let defaultSearch = ''
-        let customFilter = {}
+        let storageUrl = '{{ asset('storage/uploads/custom/') }}';
+        let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}';
 
-        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
-            let requestParams = {
-                page: currentPage,
-                limit: defaultLimitPage,
-                ascending: defaultAscending,
-                ...customFilter
-            };
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentPage = 1;
+            let itemsPerPage = 10;
+            let searchQuery = '';
 
-            if (defaultSearch.trim() !== '') {
-                requestParams.search = defaultSearch;
-            }
-
-            loadListData();
-
-            let getDataRest = await restAPI('GET', '{{ route('getdatadesign') }}', requestParams)
-                .then(response => response)
-                .catch(error => error.response);
-
-            if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
-                let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleListData(item))
-                );
-                await setListData(handleDataArray, getDataRest.data.pagination);
-            } else {
-                errorListData(getDataRest);
-            }
-        }
-
-        async function handleListData(data) {
-            return {
-                id: data?.id ?? '-',
-                code_design: data?.code_design ?? '-',
-                item_name: data?.item_name ?? '-',
-                price: data?.price ?? '-',
-                desc: data?.desc ?? '-',
-                status: data?.status ?? '-',
-                files: data?.file?.map(f => `<a href="/storage/files/${f.file_name}" target="_blank">${f.file_name}</a>`).join('<br>') ?? '-'
-            };
-        }
-
-        async function setListData(data, pagination) {
-            let html = '';
-            data.forEach((item, index) => {
-                html += `
+            function loadData() {
+                const loadingHtml = `
                     <tr>
-                        <td class="text-center">${(pagination.current_page - 1) * pagination.per_page + index + 1}</td>
-                        <td>${item.code_design}</td>
-                        <td>${item.item_name}</td>
-                        <td>${item.price}</td>
-                        <td>${item.desc}</td>
-                        <td>${item.status}</td>
-                        <td>${item.files}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary edit-btn" data-id="${item.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <td colspan="8" class="text-center">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span>Loading data...</span>
+                            </div>
                         </td>
                     </tr>
                 `;
-            });
-            $('#listData').html(html);
-            updatePagination(pagination);
-        }
+                document.getElementById('listData').innerHTML = loadingHtml;
 
-        async function loadListData() {
-            $('#listData').html(`
-                <tr>
-                    <td colspan="8" class="text-center">
-                        <div class="d-flex align-items-center justify-content-center gap-2">
-                            <div class="spinner-border spinner-border-sm" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <span>Loading data...</span>
-                        </div>
-                    </td>
-                </tr>
-            `);
-        }
+                const url = new URL('{{ route("getdatadesign") }}', window.location.origin);
+                url.searchParams.append('page', currentPage);
+                url.searchParams.append('limit', itemsPerPage);
+                url.searchParams.append('search', searchQuery);
 
-        function errorListData(error) {
-            $('#listData').html(`
-                <tr>
-                    <td colspan="8" class="text-center text-danger">
-                        <i class="fas fa-circle-exclamation me-2"></i>
-                        ${error?.data?.message || 'Failed to load data'}
-                    </td>
-                </tr>
-            `);
-        }
-
-        function updatePagination(pagination) {
-            $('#countPage').text(pagination.total);
-            $('#totalPage').text(pagination.total);
-            
-            let paginationHtml = '';
-            const currentPage = pagination.current_page;
-            const lastPage = pagination.last_page;
-
-            // Previous button
-            paginationHtml += `
-                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            `;
-
-            // Page numbers
-            for (let i = 1; i <= lastPage; i++) {
-                paginationHtml += `
-                    <li class="page-item ${i === currentPage ? 'active' : ''}">
-                        <a class="page-link" href="#" data-page="${i}">${i}</a>
-                    </li>
-                `;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 200 || data.status === "success") {
+                            renderTable(data.data);
+                            updatePagination(data.pagination);
+                        } else {
+                            showError(data.message || 'Failed to load data');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to load data');
+                    });
             }
 
-            // Next button
-            paginationHtml += `
-                <li class="page-item ${currentPage === lastPage ? 'disabled' : ''}">
-                    <a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            `;
+            function renderTable(data) {
+                const tableBody = document.getElementById('listData');
+                let html = '';
 
-            $('#pagination').html(paginationHtml);
+                data.forEach((item, index) => {
+                    const images = item.file ? item.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
+                    const imageCarousel = `
+                        <div id="carousel${item.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
+                            <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
+                                ${images.map((img, i) => `
+                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${images.length > 1 ? `
+                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${item.id}" data-bs-slide="prev">
+                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                </button>
+                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${item.id}" data-bs-slide="next">
+                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
 
-            // Add click event listeners to pagination
-            $('.page-link').on('click', function(e) {
-                e.preventDefault();
-                const page = $(this).data('page');
-                if (page && !$(this).parent().hasClass('disabled')) {
-                    currentPage = page;
-                    getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                    html += `
+                        <tr>
+                            <td class="text-center">${(currentPage - 1) * itemsPerPage + index + 1}</td>
+                            <td>${imageCarousel}</td>
+                            <td>${item.code_design || '-'}</td>
+                            <td>${item.item_name || '-'}</td>
+                            <td>${item.price || '-'}</td>
+                            <td>${item.desc || '-'}</td>
+                            <td>${item.status || '-'}</td>
+                        </tr>
+                    `;
+                });
+
+                tableBody.innerHTML = html;
+            }
+
+            function updatePagination(pagination) {
+                document.getElementById('countPage').textContent = pagination.total;
+                document.getElementById('totalPage').textContent = pagination.total;
+
+                const paginationContainer = document.getElementById('pagination');
+                let paginationHtml = '';
+
+                // Previous button
+                paginationHtml += `
+                    <li class="page-item ${pagination.current_page === 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#" data-page="${pagination.current_page - 1}">&laquo;</a>
+                    </li>
+                `;
+
+                // Page numbers
+                for (let i = 1; i <= pagination.last_page; i++) {
+                    paginationHtml += `
+                        <li class="page-item ${i === pagination.current_page ? 'active' : ''}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>
+                    `;
                 }
-            });
-        }
 
-        $(document).ready(function() {
-            getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                // Next button
+                paginationHtml += `
+                    <li class="page-item ${pagination.current_page === pagination.last_page ? 'disabled' : ''}">
+                        <a class="page-link" href="#" data-page="${pagination.current_page + 1}">&raquo;</a>
+                    </li>
+                `;
 
-            $('#searchPage').on('input', function() {
-                defaultSearch = $(this).val();
+                paginationContainer.innerHTML = paginationHtml;
+
+                // Add click events to pagination links
+                paginationContainer.querySelectorAll('.page-link').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const page = parseInt(this.dataset.page);
+                        if (page && !this.parentElement.classList.contains('disabled')) {
+                            currentPage = page;
+                            loadData();
+                        }
+                    });
+                });
+            }
+
+            function showError(message) {
+                const errorHtml = `
+                    <tr>
+                        <td colspan="8" class="text-center text-danger">
+                            <i class="fas fa-circle-exclamation me-2"></i>
+                            ${message}
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('listData').innerHTML = errorHtml;
+            }
+
+            // Event Listeners
+            document.getElementById('searchPage').addEventListener('input', function() {
+                searchQuery = this.value;
                 currentPage = 1;
-                getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                loadData();
             });
 
-            $('#limitPage').on('change', function() {
-                defaultLimitPage = $(this).val();
+            document.getElementById('limitPage').addEventListener('change', function() {
+                itemsPerPage = parseInt(this.value);
                 currentPage = 1;
-                getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                loadData();
             });
+
+            // Initial load
+            loadData();
         });
     </script>
 @endsection
