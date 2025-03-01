@@ -64,12 +64,12 @@
                     <thead>
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
+                            <th class="text-wrap align-top">Status</th>
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Design</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Price</th>
                             <th class="text-wrap align-top">Description</th>
-                            <th class="text-wrap align-top">Status</th>
                             {{-- <th class="text-wrap align-top">Action</th> --}}
                         </tr>
                     </thead>
@@ -172,12 +172,12 @@
                     html += `
                         <tr>
                             <td class="text-center">${(currentPage - 1) * itemsPerPage + index + 1}</td>
+                            <td>${item.status || '-'}</td>
                             <td>${imageCarousel}</td>
                             <td>${item.code_design || '-'}</td>
                             <td>${item.item_name || '-'}</td>
                             <td>${item.price || '-'}</td>
                             <td>${item.desc || '-'}</td>
-                            <td>${item.status || '-'}</td>
                         </tr>
                     `;
                 });
