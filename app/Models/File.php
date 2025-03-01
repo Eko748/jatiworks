@@ -24,6 +24,6 @@ class File extends Model
 
     public function custom_design()
     {
-        return $this->belongsTo(Katalog::class, 'id_custom', 'id');
+        return $this->belongsTo(CustomDesign::class, 'id_design', 'id');
     }
 }

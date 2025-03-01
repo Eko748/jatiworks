@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('id_katalog')->nullable();
             $table->string('id_order')->nullable();
-            $table->string('id_design')->nullable();
+            $table->string('id_custom')->nullable();
             $table->string('file_name')->nullable();
             $table->timestamps();
             $table->softDeletes();

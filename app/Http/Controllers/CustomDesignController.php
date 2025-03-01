@@ -22,16 +22,17 @@ class CustomDesignController extends Controller
     {
         $title = $this->title[0];
         $user = User::where('id_role', 2)->get();
+        $customDesigns = CustomDesign::with(['file'])->orderBy('id', 'desc')->get();
 
-        return view('admin.custom.index', compact('title', 'user',));
+        return view('admin.custom.index', compact('title', 'user', 'customDesigns'));
     }
 
-    public function getdatadesgin(Request $request)
+    public function getdatadesign(Request $request)
     {
         $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
         $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
 
-        $query = CustomDesign::with(['file'])
+        $query = CustomDesign::with(['file', 'user'])
             ->orderBy('id', $meta['orderBy']);
 
         if (!empty($request['search'])) {
@@ -59,6 +60,7 @@ class CustomDesignController extends Controller
 
         $mappedData = collect($data->items())->map(function ($item) {
             return [
+                'buyer_name'    => $item->user->name ?? null,
                 'id'            => $item->id,
                 'code_design'   => $item->code_design,
                 'price'         => $item->price,

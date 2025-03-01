@@ -104,6 +104,7 @@ class KatalogController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request);
         try {
             $request->validate([
                 'item_name'  => 'required|string|max:255',
@@ -114,36 +115,34 @@ class KatalogController extends Controller
                 'weight'     => 'nullable|string',
                 'desc'       => 'nullable|string',
                 'unit'       => 'string',
-                'id_category' => 'nullable|integer', // Jika kategori lama ada, bisa dikirim sebagai ID
-                'name_category' => 'nullable|array', // Kategori baru dikirim sebagai array
-                'name_category.*' => 'nullable|string', // Setiap kategori baru harus string
+                'code'       => 'string',
+                'id_category' => 'nullable|integer',
+                'name_category' => 'nullable|array',
+                'name_category.*' => 'nullable|string',
                 'file'       => 'nullable|array',
                 'file.*'     => 'file|mimes:jpg,jpeg,png|max:2048'
             ]);
 
             DB::beginTransaction();
 
-            // Simpan katalog baru
             $katalog = Katalog::create([
                 'item_name' => $request->item_name,
+                'code'      => $request->code,
                 'material'  => $request->material,
                 'length'    => $request->length,
                 'width'     => $request->width,
                 'height'    => $request->height,
                 'weight'    => $request->weight,
-                'desc'      => $request->desc,
+                'desc'     => $request->desc,
                 'unit'      => $request->unit,
             ]);
 
-            // Menyimpan kategori
             $categoryIds = [];
 
-            // Jika ID kategori lama dikirim, tambahkan ke array kategori
             if (!empty($request->id_category)) {
                 $categoryIds[] = $request->id_category;
             }
 
-            // Jika ada kategori baru, cek dan tambahkan ke database
             if (!empty($request->name_category)) {
                 foreach ($request->name_category as $catName) {
                     if (!empty(trim($catName))) { // Abaikan input kosong
@@ -153,10 +152,8 @@ class KatalogController extends Controller
                 }
             }
 
-            // Hubungkan katalog dengan kategori yang sudah ada dan baru dibuat
             $katalog->category()->sync($categoryIds);
 
-            // Simpan file jika ada
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
