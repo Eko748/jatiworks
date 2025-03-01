@@ -149,24 +149,22 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <div class="neumorphic-card p-3">
-                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
-                            <h5 class="mb-0 fw-bold">Design Information</h5>
-                            <span>#Code Design: <strong id="codeData"
-                                    class="neumorphic-card2 text-white px-2 py-1 bg-success"></strong></span>
-                        </div>
-                        <hr>
-                        <div id="informationContainer" class="row"></div>
+            <div class="col-md-12 mb-3">
+                <div class="neumorphic-card p-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                        <h5 class="mb-0 fw-bold">Design Information</h5>
+                        <span>#Code Design: <strong id="codeData"
+                                class="neumorphic-card2 text-white px-2 py-1 bg-success"></strong></span>
                     </div>
+                    <hr>
+                    <div id="informationContainer" class="row"></div>
                 </div>
-                <div class="col-md-12">
-                    <div class="neumorphic-card p-3">
-                        <h5 class="fw-bold">Buyer Information</h5>
-                        <hr>
-                        <div id="buyerContainer" class="row"></div>
-                    </div>
+            </div>
+            <div class="col-md-12">
+                <div class="neumorphic-card p-3">
+                    <h5 class="fw-bold">Buyer Information</h5>
+                    <hr>
+                    <div id="buyerContainer" class="row"></div>
                 </div>
             </div>
         </div>
@@ -309,22 +307,22 @@
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         ${data.status !== 'completed' ? `
-                                                                                    <label class="form-label"><i class="fas fa-paperclip me-1"></i> Upload Image</label>
-                                                                                    <input type="file" id="imageInput" class="form-control neumorphic-card" accept="image/*" multiple>
-                                                                                    <small class="ms-1">You can upload maximum 3 images</small>
-                                                                                    <div id="imagePreviewContainer" class="ms-1 mt-3"></div>
-                                                                                ` : ''}
+                                                                                        <label class="form-label"><i class="fas fa-paperclip me-1"></i> Upload Image</label>
+                                                                                        <input type="file" id="imageInput" class="form-control neumorphic-card" accept="image/*" multiple>
+                                                                                        <small class="ms-1">You can upload maximum 3 images</small>
+                                                                                        <div id="imagePreviewContainer" class="ms-1 mt-3"></div>
+                                                                                    ` : ''}
                                         ${data.file_name ? setAttachments(data.file_name) : data.status === 'completed' ? '<p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>No attachments available.</p>' : ''}
                                     </div>
                                     ${data.status !== 'completed' ? `
-                                                                                <div class="col-md-12 mb-3">
-                                                                                    <label class="form-label"><i class="fas fa-tasks me-1"></i> Update Status</label>
-                                                                                    <select name="status" class="form-select neumorphic-card">
-                                                                                        <option value="in_progress" ${data.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                                                                                        <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            ` : ''}
+                                                                                    <div class="col-md-12 mb-3">
+                                                                                        <label class="form-label"><i class="fas fa-tasks me-1"></i> Update Status</label>
+                                                                                        <select name="status" class="form-select neumorphic-card">
+                                                                                            <option value="in_progress" ${data.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                                                                            <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                ` : ''}
                                     <div class="col-md-12 mb-3 text-center text-md-end">
                                         <button type="submit" class="btn ${data.status === 'completed' ? 'neumorphic-button' : 'neumorphic-btn-success'} fw-bold save-data">
                                             <i class="fas ${data.status === 'completed' ? 'fa-edit' : 'fa-save'} me-1"></i>
@@ -342,13 +340,13 @@
                             <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>Attachment:</p>
                             <div class="d-flex align-items-center gap-2 flex-wrap ms-4">
                                 ${files.map(file => `
-                                                                            <div class="position-relative" style="display: inline-block;">
-                                                                                <img src="/storage/uploads/tracking/${file}" class="img-thumbnail card-radius" style="max-width: 100px; cursor: pointer;" onclick="showFilePreview('/storage/uploads/tracking/${file}')">
-                                                                                <button class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1" style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;" onclick="showFilePreview('/storage/uploads/tracking/${file}')">
-                                                                                    <i class="fas fa-eye text-white"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        `).join('')}
+                                                                                <div class="position-relative" style="display: inline-block;">
+                                                                                    <img src="/storage/uploads/tracking/${file}" class="img-thumbnail card-radius" style="max-width: 100px; cursor: pointer;" onclick="showFilePreview('/storage/uploads/tracking/${file}')">
+                                                                                    <button class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1" style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;" onclick="showFilePreview('/storage/uploads/tracking/${file}')">
+                                                                                        <i class="fas fa-eye text-white"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            `).join('')}
                             </div>
                         `;
                 }

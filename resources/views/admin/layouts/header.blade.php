@@ -11,7 +11,7 @@
             <button
                 class="btn border-0 shadow-sm rounded-circle p-3 d-flex align-items-center dropdown-toggle bg-green neumorphic"
                 type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-sign-out-alt"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                 <li>
