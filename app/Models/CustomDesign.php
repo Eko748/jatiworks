@@ -22,4 +22,9 @@ class CustomDesign extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+
+    public function designTracking()
+    {
+        return $this->hasMany(DesignTracking::class, 'id_custom_design', 'id');
+    }
 }

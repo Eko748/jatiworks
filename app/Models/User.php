@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class, 'id_user');
+    }
 }

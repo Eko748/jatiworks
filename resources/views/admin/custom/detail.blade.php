@@ -133,7 +133,7 @@
             <div class="d-flex align-items-center justify-content-between neumorphic-card p-3 mb-3">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-receipt fa-2x me-3"></i>
-                    <h4 class="fw-bold mb-0">{{ $title }} - {{ $order->code_order }}</h4>
+                    <h4 class="fw-bold mb-0">{{ $title }} - <span id="codeData" class="data"></span></h4>
                 </div>
                 <a href="{{ route('admin.order.index') }}" class="btn btn-outline-dark neumorphic-button">
                     <i class="fas fa-circle-chevron-left me-1"></i>Back
@@ -142,275 +142,39 @@
         </div>
         <div class="col-md-8">
             <div class="neumorphic-card p-3 mb-3">
-                <h5 class="fw-bold">Order Progress</h5>
+                <h5 class="fw-bold">Design Progress</h5>
                 <hr>
-                @if ($order->status->label() === 'Waiting for Payment')
-                    <div class="text-center fw-bold">
-                        {{ $order->status->label() }}
-                    </div>
-                @else
-                    <div class="timeline position-relative">
-                        <div class="timeline-line"></div>
-                        @foreach ($order->orderTracking->sortBy('trackingStep.step_order') as $index => $tracking)
-                            <div class="timeline-item {{ $tracking->status }} d-flex align-items-start mb-4">
-                                <div
-                                    class="timeline-marker rounded-circle me-3 d-flex align-items-center justify-content-center
-                                    {{ $tracking->status === 'completed' ? 'bg-success shadow-success' : ($tracking->status === 'in_progress' ? 'bg-primary shadow-primary' : 'bg-secondary') }}">
-                                    <i
-                                        class="fas {{ $tracking->status === 'completed' ? 'fa-check' : ($tracking->status === 'in_progress' ? 'fa-spinner fa-spin' : 'fa-hourglass-start') }} text-white"></i>
-                                </div>
-                                <div class="timeline-content neumorphic-card2 p-3">
-                                    <div class="d-flex flex-column flex-sm-row justify-content-between">
-                                        <h6><i class="fas fa-step-forward me-1"></i> Step {{ $index + 1 }}:
-                                            {{ $tracking->trackingStep->step_name }}
-                                        </h6>
-                                        <div
-                                            class="d-flex flex-row flex-sm-column align-items-center align-items-sm-end gap-2 mt-2 mt-sm-0">
-                                            <small
-                                                class="neumorphic-card2 text-white px-2 py-1
-                                                {{ $tracking->status === 'completed' ? 'bg-success' : ($tracking->status === 'in_progress' ? 'bg-primary' : 'bg-secondary') }}">
-                                                {{ ucfirst($tracking->status) }}
-                                            </small>
-                                            @if ($tracking->completed_at)
-                                                <small class="text-success fw-bold" style="font-size: 11px;">
-                                                    {{ $tracking->completed_at->format('d M Y H:i') }}
-                                                </small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    @if ($tracking->status !== 'pending')
-                                        <form action="{{ route('order.updateTracking', $tracking->id_order) }}"
-                                            class="mt-3 addDataForm">
-                                            @method('PUT')
-                                            <input type="hidden" name="id_order_tracking" value="{{ $tracking->id }}">
-                                            <input type="hidden" name="id_tracking_step"
-                                                value="{{ $tracking->id_tracking_step }}">
-                                            <div class="row">
-                                                <div class="col-md-12 mb-3">
-                                                    <label class="form-label">
-                                                        @if ($tracking->status === 'completed')
-                                                            <i class="fas fa-edit me-1"></i>
-                                                            Update Note
-                                                        @else
-                                                            <i class="fas fa-sticky-note me-1"></i>
-                                                            Add Note
-                                                        @endif
-                                                    </label>
-                                                    <textarea name="notes" class="form-control neumorphic-card" rows="2" placeholder="Enter note">{{ $tracking->notes }}</textarea>
-                                                </div>
-                                                <div class="col-md-12 mb-3">
-                                                    @if ($tracking->status !== 'completed')
-                                                        <label class="form-label"><i class="fas fa-paperclip me-1"></i>
-                                                            Upload
-                                                            Image</label>
-                                                        <input type="file" id="imageInput"
-                                                            class="form-control neumorphic-card" accept="image/*" multiple>
-                                                        <small class="ms-1">You can upload maximum 3 images</small>
-                                                        <div id="imagePreviewContainer" class="ms-1 mt-3"></div>
-                                                    @endif
-                                                    @if ($tracking->file_name)
-                                                        <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>
-                                                            Attachment:</p>
-                                                        <div class="d-flex align-items-center gap-2 flex-wrap ms-4">
-                                                            @php
-                                                                $decodedFiles = json_decode($tracking->file_name, true);
-                                                                $files = is_array($decodedFiles)
-                                                                    ? $decodedFiles
-                                                                    : [$tracking->file_name];
-                                                            @endphp
-                                                            @foreach ($files as $file)
-                                                                <div class="position-relative"
-                                                                    style="display: inline-block;">
-                                                                    <img src="{{ asset('storage/uploads/tracking/' . $file) }}"
-                                                                        class="img-thumbnail card-radius"
-                                                                        style="max-width: 100px; cursor: pointer;"
-                                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
-                                                                    <button
-                                                                        class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1"
-                                                                        style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;"
-                                                                        onclick="showFilePreview('{{ asset('storage/uploads/tracking/' . $file) }}')">
-                                                                        <i class="fas fa-eye text-white"></i>
-                                                                    </button>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        @if ($tracking->status === 'completed')
-                                                            <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>No
-                                                                attachments
-                                                                available.</p>
-                                                        @endif
-                                                    @endif
-                                                </div>
-                                                @if ($tracking->status !== 'completed')
-                                                    <div class="col-md-12 mb-3">
-                                                        <label class="form-label"><i class="fas fa-tasks me-1"></i> Update
-                                                            Status</label>
-                                                        <select name="status" class="form-select neumorphic-card">
-                                                            <option value="in_progress"
-                                                                {{ $tracking->status === 'in_progress' ? 'selected' : '' }}>
-                                                                In
-                                                                Progress</option>
-                                                            <option value="completed"
-                                                                {{ $tracking->status === 'completed' ? 'selected' : '' }}>
-                                                                Completed</option>
-                                                        </select>
-                                                    </div>
-                                                @endif
-                                                <div class="col-md-12 mb-3 text-center text-md-end">
-                                                    @if ($tracking->status === 'completed')
-                                                        <button type="submit"
-                                                            class="btn neumorphic-button fw-bold save-data">
-                                                            <i class="fas fa-edit me-1"></i>
-                                                            Edit Changes
-                                                        </button>
-                                                    @else
-                                                        <button type="submit"
-                                                            class="btn neumorphic-btn-success fw-bold save-data">
-                                                            <i class="fas fa-save me-1"></i>
-                                                            Save Changes
-                                                        </button>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </form>
-                                    @else
-                                        <div class="neumorphic-card2 p-3">
-                                            <div class="text-center">
-                                                <i class="fa fa-lock fa-2x mb-2"></i>
-                                                <h5>Complete the Previous Steps</h5>
-                                                <p>Make sure you have completed the previous steps before proceeding.</p>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+                <div id="statusData" class="text-center fw-bold">
+                </div>
+                <div class="timeline position-relative">
+                    <div class="timeline-line"></div>
+                    <div id="timelineContainer"></div>
+                </div>
             </div>
-
         </div>
         <div class="col-md-4">
             <div class="row">
                 <div class="col-md-12 mb-3">
                     <div class="neumorphic-card p-3">
-                        <div class="d-flex flex-column flex-sm-row justify-content-between">
-                            <h5 class="mb-0 fw-bold">Order Information</h5>
-                            <span>#Code Order: <strong
-                                    class="neumorphic-card2 text-white px-2 py-1 bg-success">{{ $order->code_order }}</strong></span>
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                            <h5 class="mb-0 fw-bold">Design Information</h5>
+                            <span>#Code Design: <strong id="code2Data"
+                                    class="neumorphic-card2 text-white px-2 py-1 bg-success"></strong></span>
                         </div>
                         <hr>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-info-circle me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Status:</span>
-                                    <span
-                                        class="neumorphic-card2 fw-bold text-white px-2
-                                        {{ $order->status->label() === 'Not Completed'
-                                            ? 'bg-warning'
-                                            : ($order->status->label() === 'Waiting for Payment'
-                                                ? 'bg-info'
-                                                : 'bg-success') }}">
-                                        {{ $order->status->label() }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-cube me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Item Name:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->item_name : $order->item_name }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-industry me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Material:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-ruler-combined me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Dimensions:</span>
-                                    <span>
-                                        L
-                                        {{ $orderDetails['length'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                        x W
-                                        {{ $orderDetails['width'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                        x H
-                                        {{ $orderDetails['height'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-weight-hanging me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Weight:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }} kg</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-sticky-note me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Description:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</span>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="informationContainer" class="row"></div>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="neumorphic-card p-3">
                         <h5 class="fw-bold">Buyer Information</h5>
                         <hr>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-user-circle me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Name:</span>
-                                    <span>{{ $order->user->name }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-envelope me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Email:</span>
-                                    <span>{{ $order->user->email }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-phone me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Phone:</span>
-                                    <span>{{ $order->user->phone ?? '-' }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-map-marker-alt me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Address:</span>
-                                    <span>{{ $order->user->address ?? '-' }}</span>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="buyerContainer" class="row"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content neumorphic-modal p-3">
@@ -441,6 +205,237 @@
 
 @section('js')
     <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let dataParams = urlParams.get('r');
+
+        async function getDetailData() {
+            let requestParams = {
+                decode: dataParams
+            };
+
+            let getDataRest = await restAPI('GET', '{{ route('admin.custom.data') }}', requestParams)
+                .then(response => response)
+                .catch(error => error.response);
+
+            if (getDataRest && getDataRest.status == 200) {
+                await setDetailData(getDataRest.data.data);
+                await handleViewTimeline();
+            } else {
+                console.log(getDataRest);
+            }
+        }
+
+        function setData(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.innerHTML = value;
+            }
+        }
+
+        async function setDetailData(data) {
+            if (data.status !== 'Waiting for Payment') {
+                setData('codeData', data.code_design);
+                setData('code2Data', data.code_design);
+
+                setTimelineItems(data.tracking);
+                setInformation(data);
+                setBuyer(data.buyer);
+
+                function setTimelineItems(trackingData) {
+                    const timelineContainer = document.getElementById(
+                        "timelineContainer");
+                    timelineContainer.innerHTML = "";
+
+                    trackingData.forEach((data, index) => {
+                        const statusClass = data.status === "completed" ?
+                            "bg-success shadow-success" :
+                            (data.status === "in_progress" ? "bg-primary shadow-primary" : "bg-secondary");
+
+                        const iconClass = data.status === "completed" ?
+                            "fa-check" :
+                            (data.status === "in_progress" ? "fa-spinner fa-spin" : "fa-hourglass-start");
+
+                        const statusTextClass = data.status === "completed" ?
+                            "bg-success" :
+                            (data.status === "in_progress" ? "bg-primary" : "bg-secondary");
+
+                        const completedAt = data.completed_at ?
+                            `<small class="text-success fw-bold" style="font-size: 11px;">${new Date(data.completed_at).toLocaleString()}</small>` :
+                            "";
+
+                        const div = document.createElement("div");
+                        div.className = `timeline-item ${data.status} d-flex align-items-start mb-4`;
+                        div.innerHTML = `
+                            <div class="timeline-marker rounded-circle me-3 d-flex align-items-center justify-content-center ${statusClass}">
+                                <i class="fas ${iconClass} text-white"></i>
+                            </div>
+                            <div class="timeline-content neumorphic-card2 p-3">
+                                <div class="d-flex flex-column flex-sm-row justify-content-between">
+                                    <h6><i class="fas fa-step-forward me-1"></i> Step ${index + 1}: ${data.step_name}</h6>
+                                    <div class="d-flex flex-row flex-sm-column align-items-center align-items-sm-end gap-2 mt-2 mt-sm-0">
+                                        <small class="neumorphic-card2 text-white px-2 py-1 ${statusTextClass}">
+                                            ${data.status.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}
+                                        </small>
+                                        ${completedAt}
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="formContainer">${setTimelineForm(data)}</div>
+                            </div>
+                        `;
+                        timelineContainer.appendChild(div);
+                    });
+                }
+
+                function setTimelineForm(data) {
+                    if (data.status === 'pending') {
+                        return `
+                                <div class="neumorphic-card2 p-3 text-center">
+                                    <i class="fa fa-lock fa-2x mb-2"></i>
+                                    <h5>Complete the Previous Steps</h5>
+                                    <p>Make sure you have completed the previous steps before proceeding.</p>
+                                </div>
+                            `;
+                    }
+
+                    return `
+                            <form action="/design/updateTracking/${data.id_custom_design}" class="mt-3 addDataForm">
+                                <input type="hidden" name="_method" value="PUT">
+                                <input type="hidden" name="id_custom_design" value="${data.id}">
+                                <input type="hidden" name="id_tracking_step_design" value="${data.id_tracking_step}">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">
+                                            ${data.status === 'completed' ? '<i class="fas fa-edit me-1"></i> Update Note' : '<i class="fas fa-sticky-note me-1"></i> Add Note'}
+                                        </label>
+                                        <textarea name="notes" class="form-control neumorphic-card" rows="2" placeholder="Enter note">${data.notes || ''}</textarea>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        ${data.status !== 'completed' ? `
+                                                                            <label class="form-label"><i class="fas fa-paperclip me-1"></i> Upload Image</label>
+                                                                            <input type="file" id="imageInput" class="form-control neumorphic-card" accept="image/*" multiple>
+                                                                            <small class="ms-1">You can upload maximum 3 images</small>
+                                                                            <div id="imagePreviewContainer" class="ms-1 mt-3"></div>
+                                                                        ` : ''}
+                                        ${data.file_name ? setAttachments(data.file_name) : data.status === 'completed' ? '<p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>No attachments available.</p>' : ''}
+                                    </div>
+                                    ${data.status !== 'completed' ? `
+                                                                        <div class="col-md-12 mb-3">
+                                                                            <label class="form-label"><i class="fas fa-tasks me-1"></i> Update Status</label>
+                                                                            <select name="status" class="form-select neumorphic-card">
+                                                                                <option value="in_progress" ${data.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                                                                <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    ` : ''}
+                                    <div class="col-md-12 mb-3 text-center text-md-end">
+                                        <button type="submit" class="btn ${data.status === 'completed' ? 'neumorphic-button' : 'neumorphic-btn-success'} fw-bold save-data">
+                                            <i class="fas ${data.status === 'completed' ? 'fa-edit' : 'fa-save'} me-1"></i>
+                                            ${data.status === 'completed' ? 'Edit Changes' : 'Save Changes'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        `;
+                }
+
+                function setAttachments(data) {
+                    let files = Array.isArray(data) ? data : [data];
+                    return `
+                            <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>Attachment:</p>
+                            <div class="d-flex align-items-center gap-2 flex-wrap ms-4">
+                                ${files.map(file => `
+                                                                    <div class="position-relative" style="display: inline-block;">
+                                                                        <img src="/storage/uploads/tracking/${file}" class="img-thumbnail card-radius" style="max-width: 100px; cursor: pointer;" onclick="showFilePreview('/storage/uploads/tracking/${file}')">
+                                                                        <button class="btn btn-sm neumorphic-button position-absolute top-0 end-0 m-1 p-1" style="background: rgba(0, 0, 0, 0.6); border-radius: 50%;" onclick="showFilePreview('/storage/uploads/tracking/${file}')">
+                                                                            <i class="fas fa-eye text-white"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                `).join('')}
+                            </div>
+                        `;
+                }
+
+                function setInformation(data) {
+                    const content = `
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-info-circle me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Status:</span>
+                                    <span class="neumorphic-card2 fw-bold text-white px-2
+                                        ${data.status === 'Not Completed' ? 'bg-warning' :
+                                        (data.status === 'Waiting for Payment' ? 'bg-info' : 'bg-success')} ">
+                                        ${data.status}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-cube me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Item Name:</span>
+                                    <span>${data.item_name}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-dollar me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Price:</span>
+                                    <span>${data.price ?? '-'}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-sticky-note me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Description:</span>
+                                    <span>${data.desc ?? '-'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    informationContainer.innerHTML = content;
+                }
+
+                function setBuyer(data) {
+                    const content = `
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-user-circle me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Name:</span>
+                                    <span>${data.name ?? '-'}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-envelope me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Email:</span>
+                                    <span>${data.email ?? '-'}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-phone me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Phone:</span>
+                                    <span>${data.phone ?? '-'}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                                <i class="fas fa-map-marker-alt me-2 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Address:</span>
+                                    <span>${data.address ?? '-'}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                    buyerContainer.innerHTML = content;
+                }
+
+            } else {
+                setData('statusData', data.status);
+            }
+        }
+
         function showFilePreview(fileUrl) {
             document.getElementById('previewImage').src = fileUrl;
             var modal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
@@ -721,9 +716,7 @@
 
         async function initPageLoad() {
             await Promise.all([
-                handleViewTimeline(),
-                uploadMultiImage(),
-                addListData(),
+                getDetailData(),
             ]);
         }
     </script>

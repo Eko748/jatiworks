@@ -4,7 +4,7 @@
             <button id="mobileToggle" onclick="toggleSidebar()" class="toggle-btn neumorphic-card d-block d-md-none">
                 <i class="fas fa-bars"></i>
             </button>
-            <h1 class="fs-3 fw-bold mb-0">{{ $title }}</h1>
+            <h1 class="fs-3 fw-bold mb-0">Jatiworks</h1>
         </div>
         <div class="dropdown user-menu d-flex align-items-center gap-2">
             <span class="mb-0 fw-semibold d-none d-md-inline">{{ Auth::user()->name }}</span>

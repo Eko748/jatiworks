@@ -30,7 +30,7 @@ class DesignTracking extends Model
         return $this->belongsTo(CustomDesign::class, 'id_custom_design');
     }
 
-    public function trackingStepdesign()
+    public function trackingStepDesign()
     {
         return $this->belongsTo(TrackingStepDesign::class, 'id_tracking_step_design');
     }

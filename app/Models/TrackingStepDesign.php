@@ -17,7 +17,7 @@ class TrackingStepDesign extends Model
         'step_order'
     ];
 
-    public function orderTrackingdesign()
+    public function designTracking()
     {
         return $this->hasMany(DesignTracking::class, 'id_tracking_step_design');
     }

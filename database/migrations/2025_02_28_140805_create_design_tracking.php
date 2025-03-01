@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('design_tracking', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_order')->constrained('order')->onDelete('cascade');
+            $table->foreignId('id_custom_design')->constrained('custom_design')->onDelete('cascade');
             $table->foreignId('id_tracking_step_design')->constrained('tracking_step_design')->onDelete('cascade');
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->text('notes')->nullable();

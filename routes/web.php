@@ -140,6 +140,8 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     // Custom Design Management
     Route::get('/design', [CustomDesignController::class, 'index'])->name('admin.custom.index');
     Route::get('/getdatadesign', [CustomDesignController::class, 'getdatadesign'])->name('getdatadesign');
+    Route::get('/design-detail', [CustomDesignController::class, 'detail'])->name('admin.custom.detail');
+    Route::get('/design-detail-data', [CustomDesignController::class, 'getDetailDataDesign'])->name('admin.custom.data');
 });
 
 // Buyer Routes (buyer only)
