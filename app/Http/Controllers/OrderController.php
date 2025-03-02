@@ -22,7 +22,7 @@ class OrderController extends Controller
     {
         $this->menu;
         $this->title = [
-            'Orders',
+            'Order',
         ];
     }
     public function index()
@@ -357,7 +357,7 @@ class OrderController extends Controller
             'desc' => $order->id_katalog === null ? $order->desc : ($order->katalog->desc ?? null)
         ];
 
-        $title = 'Order Detail';
+        $title = $this->title[0];
 
         return view('admin.order.detail', compact('title', 'order', 'orderDetails'));
     }

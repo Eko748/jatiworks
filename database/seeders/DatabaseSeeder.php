@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,7 +20,6 @@ class DatabaseSeeder extends Seeder
             PostCategorySeeder::class,
             ArticleSeeder::class,
             OrderSeeder::class,
-            CustomDesignSeeder::class,
             TrackingStepSeeder::class,
             OrderTrackingSeeder::class,
             TrackingStepDesignSeeder::class,

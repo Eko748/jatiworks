@@ -58,7 +58,26 @@
                     </div>
                 </div>
             </div>
-
+            <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
+                <form id="filterForm">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="filterStatus" class="form-label">Status</label>
+                            <select id="filterStatus" class="form-control" multiple>
+                                @foreach ($status as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
+                            <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
+                                    class="fas fa-rotate me-1"></i>Reset</button>
+                            <button type="submit" id="applyFilter" class="btn neumorphic-button-outline fw-bold"><i
+                                    class="fas fa-circle-check me-1"></i>Apply</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <div class="table-responsive neumorphic-card p-3 mb-3">
                 <table class="table m-0">
                     <thead>
@@ -67,10 +86,11 @@
                             <th class="text-wrap align-top">Status</th>
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Design</th>
+                            <th class="text-wrap align-top">Buyer</th>
                             <th class="text-wrap align-top">Item Name</th>
-                            <th class="text-wrap align-top">Price</th>
                             <th class="text-wrap align-top">Description</th>
-                            {{-- <th class="text-wrap align-top">Action</th> --}}
+                            <th class="text-wrap align-top">Price</th>
+                            <th class="text-wrap align-top">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -83,8 +103,8 @@
                         <div>Show <span id="countPage">0</span> from <span id="totalPage">0</span> data</div>
                     </div>
                 </div>
-                <nav aria-label="Page navigation" class="d-flex justify-content-center">
-                    <ul class="pagination mb-0" id="pagination">
+                <nav class="text-center text-md-end">
+                    <ul class="pagination justify-content-center justify-content-md-end neumorphic p-2" id="pagination-js">
                     </ul>
                 </nav>
             </div>
@@ -95,168 +115,212 @@
 @section('assets_js')
     <script src="{{ asset('assets/js/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/js/cropper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pagination.js') }}"></script>
 @endsection
 
 @section('js')
     <script>
-        let storageUrl = '{{ asset('storage/uploads/custom/') }}';
-        let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}';
+        let title = '{{ $title }}'
+        let defaultLimitPage = 10
+        let currentPage = 1
+        let totalPage = 1
+        let defaultAscending = 0
+        let defaultSearch = ''
+        let customFilter = {}
+        let storageUrl = '{{ asset('storage/uploads/custom/') }}'
+        let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
-        document.addEventListener('DOMContentLoaded', function() {
-            let currentPage = 1;
-            let itemsPerPage = 10;
-            let searchQuery = '';
+        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
+            let requestParams = {
+                page: currentPage,
+                limit: defaultLimitPage,
+                ascending: defaultAscending,
+                ...customFilter
+            };
 
-            function loadData() {
-                const loadingHtml = `
-                    <tr>
-                        <td colspan="8" class="text-center">
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <div class="spinner-border spinner-border-sm" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <span>Loading data...</span>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                document.getElementById('listData').innerHTML = loadingHtml;
-
-                const url = new URL('{{ route("getdatadesign") }}', window.location.origin);
-                url.searchParams.append('page', currentPage);
-                url.searchParams.append('limit', itemsPerPage);
-                url.searchParams.append('search', searchQuery);
-
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 200 || data.status === "success") {
-                            renderTable(data.data);
-                            updatePagination(data.pagination);
-                        } else {
-                            showError(data.message || 'Failed to load data');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showError('Failed to load data');
-                    });
+            if (defaultSearch.trim() !== '') {
+                requestParams.search = defaultSearch;
             }
 
-            function renderTable(data) {
-                const tableBody = document.getElementById('listData');
-                let html = '';
+            loadListData();
 
-                data.forEach((item, index) => {
-                    const images = item.file ? item.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
-                    const imageCarousel = `
-                        <div id="carousel${item.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
-                            <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
-                                ${images.map((img, i) => `
+            let getDataRest = await restAPI('GET', '{{ route('getdatadesign') }}', requestParams)
+                .then(response => response)
+                .catch(error => error.response);
+
+            if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
+                let handleDataArray = await Promise.all(
+                    getDataRest.data.data.map(async item => await handleListData(item))
+                );
+                await setListData(handleDataArray, getDataRest.data.pagination);
+            } else {
+                errorListData(getDataRest);
+            }
+        }
+
+        async function updateStatus(idParameter, status) {
+            try {
+                const response = await restAPI('PUT', `/admin/custom/${idParameter}/update-status`, {
+                    status
+                });
+                if (response.status === 200) {
+                    notyf.success(`${title} status updated successfully`);
+                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                } else {
+                    notyf.error(`Failed to update ${title} status`);
+                }
+            } catch (error) {
+                notyf.error(`An error occurred while updating ${title} status`);
+            }
+        }
+
+        async function handleListData(data) {
+            let statusMapping = {
+                'Payment Completed': {
+                    class: 'text-green border-success neumorphic-button',
+                    icon: '<i class="fas fa-check-circle"></i>',
+                    dropdown: false
+                },
+                'Waiting for Payment': {
+                    class: 'text-info border-info neumorphic-button',
+                    icon: '<i class="fas fa-clock"></i>',
+                    dropdown: [{
+                            text: 'Not Completed',
+                            value: 'NC'
+                        },
+                        {
+                            text: 'Payment Completed',
+                            value: 'PC'
+                        }
+                    ]
+                },
+                'Not Completed': {
+                    class: 'text-warning border-warning neumorphic-button',
+                    icon: '<i class="fas fa-times-circle"></i>',
+                    dropdown: [{
+                        text: 'Payment Completed',
+                        value: 'PC'
+                    }]
+                }
+            };
+
+            let statusData = statusMapping[data.status] || {
+                class: 'text-secondary border-secondary',
+                icon: '<i class="fas fa-question-circle"></i>',
+                dropdown: false
+            };
+
+            let statusHtml = statusData.dropdown ? `
+                <div class="dropdown">
+                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ${statusData.icon} ${data?.status ?? '-'}
+                    </button>
+                    <ul class="dropdown-menu">
+                        ${statusData.dropdown.map(item => `
+                                    <li><a class="dropdown-item" href="#" onclick="updateStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                `).join('')}
+                    </ul>
+                </div>
+            ` :
+            `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
+
+            let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
+
+            let actions = `
+                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-button">
+                    <i class="fas fa-eye me-1"></i>Detail
+                </a>
+            `;
+            return {
+                id: data?.id ?? '-',
+                code_design: data?.code_design ?? '-',
+                item_name: data?.item_name ?? '-',
+                buyer_name: data?.buyer_name ?? '-',
+                price: data?.price ?? '-',
+                weight: data?.weight ?? '-',
+                desc: data?.desc ?? '-',
+                status: statusHtml,
+                images,
+                actions
+            }
+        }
+
+        async function setListData(dataList, pagination) {
+            totalPage = pagination.total_pages
+            currentPage = pagination.current_page
+            let display_from = (pagination.per_page * (currentPage - 1)) + 1
+            let display_to = Math.min(display_from + dataList.length - 1, pagination.total)
+
+            let getDataTable = ''
+            dataList.forEach((element, index) => {
+                let imageCarousel = `
+                    <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
+                        <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
+                            ${element.images.map((img, i) => `
                                     <div class="carousel-item ${i === 0 ? 'active' : ''}">
                                         <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
                                     </div>
                                 `).join('')}
-                            </div>
-                            ${images.length > 1 ? `
-                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${item.id}" data-bs-slide="prev">
+                        </div>
+                        ${element.images.length > 1 ? `
+                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
                                     <i class="fas fa-circle-chevron-left fs-3"></i>
                                 </button>
-                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${item.id}" data-bs-slide="next">
+                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
                                     <i class="fas fa-circle-chevron-right fs-3"></i>
                                 </button>
                             ` : ''}
-                        </div>
-                    `;
-
-                    html += `
-                        <tr>
-                            <td class="text-center">${(currentPage - 1) * itemsPerPage + index + 1}</td>
-                            <td>${item.status || '-'}</td>
-                            <td>${imageCarousel}</td>
-                            <td>${item.code_design || '-'}</td>
-                            <td>${item.item_name || '-'}</td>
-                            <td>${item.price || '-'}</td>
-                            <td>${item.desc || '-'}</td>
-                        </tr>
-                    `;
-                });
-
-                tableBody.innerHTML = html;
-            }
-
-            function updatePagination(pagination) {
-                document.getElementById('countPage').textContent = pagination.total;
-                document.getElementById('totalPage').textContent = pagination.total;
-
-                const paginationContainer = document.getElementById('pagination');
-                let paginationHtml = '';
-
-                // Previous button
-                paginationHtml += `
-                    <li class="page-item ${pagination.current_page === 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="#" data-page="${pagination.current_page - 1}">&laquo;</a>
-                    </li>
+                    </div>
                 `;
 
-                // Page numbers
-                for (let i = 1; i <= pagination.last_page; i++) {
-                    paginationHtml += `
-                        <li class="page-item ${i === pagination.current_page ? 'active' : ''}">
-                            <a class="page-link" href="#" data-page="${i}">${i}</a>
-                        </li>
-                    `;
-                }
+                getDataTable += `
+                <tr class="neumorphic-tr">
+                    <td class="text-center">${display_from + index}.</td>
+                    <td>${element.status}</td>
+                    <td style="width: 150px; text-align: center;">${imageCarousel}</td>
+                    <td>${element.code_design}</td>
+                    <td>${element.buyer_name}</td>
+                    <td>${element.item_name}</td>
+                    <td>${element.desc}</td>
+                    <td>${element.price}</td>
+                    <td>${element.actions}</td>
+                </tr>`
+            })
 
-                // Next button
-                paginationHtml += `
-                    <li class="page-item ${pagination.current_page === pagination.last_page ? 'disabled' : ''}">
-                        <a class="page-link" href="#" data-page="${pagination.current_page + 1}">&raquo;</a>
-                    </li>
-                `;
+            renderListData(getDataTable, pagination, display_from, display_to);
 
-                paginationContainer.innerHTML = paginationHtml;
+            document.querySelectorAll('.carousel').forEach(carousel => {
+                new bootstrap.Carousel(carousel, {
+                    interval: 2000,
+                    ride: 'carousel'
+                })
+            })
+        }
 
-                // Add click events to pagination links
-                paginationContainer.querySelectorAll('.page-link').forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const page = parseInt(this.dataset.page);
-                        if (page && !this.parentElement.classList.contains('disabled')) {
-                            currentPage = page;
-                            loadData();
-                        }
-                    });
-                });
-            }
+        async function getFilterListData() {
+            let selectedOptions = Array.from(document.getElementById("filterStatus").selectedOptions)
+                .map(option => option.value)
+                .filter(value => value !== "");
 
-            function showError(message) {
-                const errorHtml = `
-                    <tr>
-                        <td colspan="8" class="text-center text-danger">
-                            <i class="fas fa-circle-exclamation me-2"></i>
-                            ${message}
-                        </td>
-                    </tr>
-                `;
-                document.getElementById('listData').innerHTML = errorHtml;
-            }
+            let filterData = {
+                status: selectedOptions.length ? selectedOptions : null
+            };
 
-            // Event Listeners
-            document.getElementById('searchPage').addEventListener('input', function() {
-                searchQuery = this.value;
-                currentPage = 1;
-                loadData();
-            });
+            let resetActions = {
+                resetSelect: () => document.querySelectorAll(".ss-value-delete").forEach(el => el.click())
+            };
 
-            document.getElementById('limitPage').addEventListener('change', function() {
-                itemsPerPage = parseInt(this.value);
-                currentPage = 1;
-                loadData();
-            });
+            return [filterData, resetActions];
+        }
 
-            // Initial load
-            loadData();
-        });
+        async function initPageLoad() {
+            await Promise.all([
+                getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
+                searchListData(),
+                setFilterListData(),
+                toggleFilterButton(),
+                multiSelectData('#filterStatus', 'Select Status'),
+            ]);
+        }
     </script>
 @endsection
