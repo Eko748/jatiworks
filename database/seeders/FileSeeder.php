@@ -47,7 +47,7 @@ class FileSeeder extends Seeder
             'file_name'  => '1740402065_200104_240225_2.png'
         ]);
         DB::table('file')->insert([
-            'id_design' => 1,
+            'id_custom' => 1,
             'file_name'  => '1740402065_200104_240225_2.png'
         ]);
         DB::table('file')->insert([

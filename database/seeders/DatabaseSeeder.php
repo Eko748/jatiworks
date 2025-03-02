@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             CustomDesignSeeder::class,
             TrackingStepSeeder::class,
             OrderTrackingSeeder::class,
+            TrackingStepDesignSeeder::class,
         ]);
     }
 }

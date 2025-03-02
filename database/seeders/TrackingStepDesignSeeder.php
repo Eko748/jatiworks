@@ -17,7 +17,7 @@ class TrackingStepDesignSeeder extends Seeder
             ['step_name' => 'Sketch', 'step_order' => 1],
             ['step_name' => 'Design 2D', 'step_order' => 2],
             ['step_name' => 'Design 3D', 'step_order' => 3],
-            ['step_name' => 'Finish', 'step_order' => 3]
+            ['step_name' => 'Finishing', 'step_order' => 3]
         ];
 
         foreach ($steps as $step) {
