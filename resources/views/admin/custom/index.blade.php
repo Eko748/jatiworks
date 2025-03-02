@@ -61,14 +61,14 @@
             <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
                 <form id="filterForm">
                     <div class="row g-3">
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <label for="filterStatus" class="form-label">Status</label>
                             <select id="filterStatus" class="form-control" multiple>
                                 @foreach ($status as $key => $value)
                                     <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
                             <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
                                     class="fas fa-rotate me-1"></i>Reset</button>
@@ -160,7 +160,7 @@
 
         async function updateStatus(idParameter, status) {
             try {
-                const response = await restAPI('PUT', `/admin/custom/${idParameter}/update-status`, {
+                const response = await restAPI('PUT', `/admin/design/${idParameter}/update-status`, {
                     status
                 });
                 if (response.status === 200) {
@@ -227,7 +227,7 @@
             let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
             let actions = `
-                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-button">
+                <a href="/admin/design/${data?.id}/detail" class="btn btn-sm neumorphic-button">
                     <i class="fas fa-eye me-1"></i>Detail
                 </a>
             `;

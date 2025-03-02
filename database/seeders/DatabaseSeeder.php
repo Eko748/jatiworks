@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             TrackingStepSeeder::class,
             OrderTrackingSeeder::class,
             TrackingStepDesignSeeder::class,
+            CustomDesignSeeder::class,
+            DesignTrackingSeeder::class,
         ]);
     }
 }
