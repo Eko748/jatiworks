@@ -214,6 +214,8 @@
             if (getDataRest && getDataRest.status == 200) {
                 await setDetailData(getDataRest.data.data);
                 await handleViewTimeline();
+                await uploadMultiImage();
+                await addListData();
             } else {
                 console.log(getDataRest);
             }
@@ -230,11 +232,11 @@
             if (data.status !== 'Waiting for Payment') {
                 setData('codeData', data.code_design);
 
-                setTimelineItems(data.tracking);
+                setTimelineItems(encodeURIComponent(data.id), data.tracking);
                 setInformation(data);
                 setBuyer(data.buyer);
 
-                function setTimelineItems(trackingData) {
+                function setTimelineItems(id, trackingData) {
                     const timelineContainer = document.getElementById(
                         "timelineContainer");
                     timelineContainer.innerHTML = "";
@@ -273,14 +275,14 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="formContainer">${setTimelineForm(data)}</div>
+                                <div class="formContainer">${setTimelineForm(id, data)}</div>
                             </div>
                         `;
                         timelineContainer.appendChild(div);
                     });
                 }
 
-                function setTimelineForm(data) {
+                function setTimelineForm(id, data) {
                     if (data.status === 'pending') {
                         return `
                                 <div class="neumorphic-card2 p-3 text-center">
@@ -292,10 +294,11 @@
                     }
 
                     return `
-                            <form action="/design/updateTracking/${data.id_custom_design}" class="mt-3 addDataForm">
+                            <form action="{{ route('custom.updateTracking') }}" class="mt-3 addDataForm">
                                 <input type="hidden" name="_method" value="PUT">
-                                <input type="hidden" name="id_custom_design" value="${data.id}">
-                                <input type="hidden" name="id_tracking_step_design" value="${data.id_tracking_step}">
+                                <input type="hidden" name="encrypt" value="${id}">
+                                <input type="hidden" name="id_custom_design" value="${data.id_custom_design}">
+                                <input type="hidden" name="id_tracking_step_design" value="${data.id_tracking_step_design}">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">
@@ -656,7 +659,7 @@
 
                         const actionUrl = form.getAttribute("action");
 
-                        const postData = await restAPI("POST", actionUrl, formData);
+                        const postData = await restAPI("PUT", actionUrl, formData);
 
                         console.log("postData:", postData);
 
