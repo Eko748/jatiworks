@@ -11,21 +11,21 @@
         <div class="collapse navbar-collapse mr-auto" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto ">
                 <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.home') ? 'active' : '' }}"
-                        href="{{ route('index.home') }}">{{ __('localization.home') }}</a>
+                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.home.*') ? 'active' : '' }}"
+                        href="{{ route('index.home.index') }}">{{ __('localization.home') }}</a>
                 </li>
                 <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.catalogue') ? 'active' : '' }}"
-                        href="{{ route('index.catalogue') }}">Catalogue</a>
+                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.catalogue.*') ? 'active' : '' }}"
+                        href="{{ route('index.catalogue.index') }}">Catalogue</a>
                 </li>
                 @auth
                     <li class="nav-item pe-4">
-                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order') ? 'active' : '' }}"
-                            href="{{ route('index.order') }}">Order</a>
+                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order.*') ? 'active' : '' }}"
+                            href="{{ route('index.order.index') }}">Order</a>
                     </li>
                     <li class="nav-item pe-4">
-                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign') ? 'active' : '' }}"
-                            href="{{ route('index.customdesign') }}">Custom Design</a>
+                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign.*') ? 'active' : '' }}"
+                            href="{{ route('index.customdesign.index') }}">Custom Design</a>
                     </li>
                     <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->url() === route('profile.index') ? 'active' : '' }}"

@@ -81,14 +81,16 @@ Route::get('/detail-invest', function () {
     return view('buyer.layouts.pages.detail_inves');
 });
 
-Route::get('/', [IndexController::class, 'indexHome'])->name('index.home');
-Route::get('/catalogue', [IndexController::class, 'indexCatalogue'])->name('index.catalogue');
+Route::get('/', [IndexController::class, 'indexHome'])->name('index.home.index');
+Route::get('/catalogue', [IndexController::class, 'indexCatalogue'])->name('index.catalogue.index');
 Route::get('/catalogue-detail', [IndexController::class, 'detailCatalogue'])->name('index.catalogue.detail');
-Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign');
-Route::get('/order', [IndexController::class, 'indexCustomDesign'])->name('index.order');
+Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign.index');
+Route::get('/custom-design-detail', [IndexController::class, 'detailCustomDesign'])->name('index.customdesign.detail');
+Route::get('/order', [IndexController::class, 'indexCustomDesign'])->name('index.order.index');
 
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 Route::get('/datadesign', [CustomDesignController::class, 'getdatadesign'])->name('datadesign');
+Route::get('/datadesign-detail', [CustomDesignController::class, 'getDetailDataDesign'])->name('datadesign.detail');
 
 // Login Routes
 Route::prefix('login')->as('login.')->group(function () {

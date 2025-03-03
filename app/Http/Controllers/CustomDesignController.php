@@ -151,6 +151,10 @@ class CustomDesignController extends Controller
                     ->orWhereRaw("LOWER(code_design) LIKE ?", ["%$searchTerm%"]);
             }
 
+            if ($request->has('id_user')) {
+                $query->where('id_user', $request->id_user);
+            }
+
             $data = $query->paginate($meta['limit']);
 
             $formattedData = $data->map(function ($item) {
