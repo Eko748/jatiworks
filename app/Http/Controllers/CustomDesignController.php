@@ -191,29 +191,48 @@ class CustomDesignController extends Controller
     public function updateStatus(Request $request)
     {
         try {
-            $decryptedId = Crypt::decryptString($request->encrypt);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status'  => 400,
-                'message' => 'Invalid ID',
-                'error'   => true
-            ], 400);
-        }
-
-        try {
-            DB::beginTransaction();
-            $custom = CustomDesign::findOrFail($decryptedId);
-
-            $request->validate([
-                'status' => ['required', 'in:WP,NC,PC']
+            // Validate request data first
+            $validator = validator($request->all(), [
+                'encrypt' => 'required|string',
+                'status' => ['required', 'string', 'in:WP,NC,PC']
+            ], [
+                'encrypt.required' => 'ID is required',
+                'status.required' => 'Status is required',
+                'status.in' => 'Invalid status value'
             ]);
 
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->errors()->first(),
+                    'error' => true
+                ], 422);
+            }
+
+            try {
+                $decryptedId = Crypt::decryptString($request->encrypt);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Invalid encrypted ID',
+                    'error' => true
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            // Find the custom design
+            $custom = CustomDesign::findOrFail($decryptedId);
             $oldStatus = $custom->status;
+
+            // Update the status
             $custom->status = OrderStatus::from($request->status);
             $custom->save();
 
             // Create order tracking records when status changes from WP to NC or PC
-            if ($oldStatus === OrderStatus::WaitingForPayment && in_array($custom->status, [OrderStatus::NotCompleted, OrderStatus::PaymentCompleted])) {
+            if ($oldStatus === OrderStatus::WaitingForPayment &&
+                in_array($custom->status, [OrderStatus::NotCompleted, OrderStatus::PaymentCompleted])) {
+
                 $trackingSteps = TrackingStepDesign::orderBy('id')->get();
 
                 foreach ($trackingSteps as $step) {
@@ -226,19 +245,31 @@ class CustomDesignController extends Controller
             }
 
             DB::commit();
+
             return response()->json([
-                'status_code' => 200,
-                'message'     => 'Status updated successfully!',
-                'data'        => [
-                    'id'     => $custom->id,
-                    'status' => $custom->status->label(),
+                'status' => 200,
+                'message' => 'Status updated successfully!',
+                'error' => false,
+                'data' => [
+                    'id' => Crypt::encryptString($custom->id),
+                    'status' => $custom->status->label()
                 ]
             ], 200);
-        } catch (\Exception $e) {
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
             return response()->json([
-                'status_code'  => 500,
-                'errors'       => true,
-                'message'      => 'Something went wrong!',
+                'status' => 404,
+                'message' => 'Custom design not found',
+                'error' => true
+            ], 404);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 500,
+                'message' => 'An error occurred while updating status',
+                'error' => true,
                 'error_detail' => $e->getMessage()
             ], 500);
         }
