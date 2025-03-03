@@ -232,7 +232,7 @@
             if (data.status !== 'Waiting for Payment') {
                 setData('codeData', data.code_design);
 
-                setTimelineItems(btoa(data.id), data.tracking);
+                setTimelineItems(data.id, data.tracking);
                 setInformation(data);
                 setBuyer(data.buyer);
 
@@ -295,7 +295,7 @@
 
                     return `
                             <form action="{{ route('custom.updateTracking') }}" class="mt-3 addDataForm" method="PUT">
-                            <input type="hidden" name="encrypt" value="${encodeURIComponent(btoa(data.id))}">
+                            <input type="hidden" name="encrypt" value="${id}">
                             <input type="hidden" name="id_custom_design" value="${data.id_custom_design}">
                             <input type="hidden" name="id_tracking_step_design" value="${data.id_tracking_step_design}">
                                 <div class="row">
@@ -645,6 +645,7 @@
                         notyf.error("Encrypted ID is required");
                         return;
                     }
+                    // Use the encrypted ID directly from the form without additional encoding
                     formData.append('encrypt', encryptedId);
                     formData.append('_method', 'PUT'); // Tambahan ini
 

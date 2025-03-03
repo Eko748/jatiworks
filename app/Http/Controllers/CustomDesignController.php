@@ -260,95 +260,102 @@ class CustomDesignController extends Controller
     }
 
     public function updateTrackingStep(Request $request)
-{
-    if ($request->isMethod('put')) {
-        $request->merge($request->all());
-    }
+    {
+        $validator = validator($request->all(), [
+            'encrypt' => 'required|string',
+            'id_tracking_step_design' => 'required', // Remove string validation since it can be numeric
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'notes' => 'nullable|string',
+            'file.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-    $validator = validator($request->all(), [
-        'encrypt' => 'required|string', // Pastikan 'encrypt' ada dalam request
-        'id_tracking_step_design' => 'required|exists:tracking_step_design,id',
-        'status' => 'nullable|in:pending,in_progress,completed',
-        'notes' => 'nullable|string',
-        'file.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status_code' => 422,
-            'errors' => true,
-            'message' => 'Validation failed',
-            'error_detail' => $validator->errors()->first()
-        ], 422);
-    }
-
-    // Decode ID dari Base64
-    $encodedId = $request->input('encrypt');
-    $decodedId = base64_decode(urldecode($encodedId), true);
-
-    if (!$decodedId || !is_numeric($decodedId)) {
-        return response()->json([
-            'status_code' => 400,
-            'message' => 'Invalid ID format',
-            'error' => true
-        ], 400);
-    }
-
-    // Cek apakah tracking step ada
-    $designTracking = DesignTracking::where('id_custom_design', $decodedId)
-        ->where('id_tracking_step_design', $request->id_tracking_step_design)
-        ->first();
-
-    if (!$designTracking) {
-        return response()->json([
-            'status_code' => 404,
-            'message' => 'Tracking step design not found',
-            'error' => true
-        ], 404);
-    }
-
-    // Gunakan status sebelumnya jika tidak ada request status
-    $status = $request->status ?? $designTracking->status;
-
-    $data = [
-        'status' => $status,
-        'notes' => $request->notes,
-        'completed_at' => $status === 'completed' ? now() : null
-    ];
-
-    // Handle multiple file uploads
-    if ($request->hasFile('file')) {
-        $fileNames = [];
-        foreach ($request->file('file') as $file) {
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('uploads/tracking', $filename, 'public');
-            $fileNames[] = $filename;
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'message' => $validator->errors()->first(),
+                'error' => true
+            ], 422);
         }
-        $data['file_name'] = json_encode($fileNames);
-    }
 
-    $designTracking->update($data);
+        try {
+            $decryptedCustomDesignId = Crypt::decryptString($request->encrypt);
+            // Handle both encrypted and non-encrypted tracking step ID
+            $decryptedTrackingStepId = is_numeric($request->id_tracking_step_design)
+                ? $request->id_tracking_step_design
+                : Crypt::decryptString($request->id_tracking_step_design);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Invalid encrypted ID',
+                'error' => true
+            ], 400);
+        }
 
-    // Jika step saat ini selesai, update step berikutnya jadi in_progress
-    if ($status === 'completed') {
-        $currentStep = TrackingStepDesign::find($request->id_tracking_step_design);
-        $nextStep = TrackingStepDesign::where('step_order', '>', $currentStep->step_order)
-            ->orderBy('step_order')
+        // Check if tracking step exists
+        $designTracking = DesignTracking::where('id_custom_design', $decryptedCustomDesignId)
+            ->where('id_tracking_step_design', $decryptedTrackingStepId)
             ->first();
 
-        if ($nextStep) {
-            DesignTracking::where('id_custom_design', $decodedId)
-                ->where('id_tracking_step_design', $nextStep->id)
-                ->update(['status' => 'in_progress']);
+        if (!$designTracking) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Tracking step design not found',
+                'error' => true
+            ], 404);
         }
+
+        // Use previous status if no new status provided
+        $status = $request->status ?? $designTracking->status;
+
+        $data = [
+            'status' => $status,
+            'notes' => $request->notes,
+            'completed_at' => $status === 'completed' ? now() : null
+        ];
+
+        // Handle multiple file uploads
+        if ($request->hasFile('file')) {
+            $fileNames = [];
+            foreach ($request->file('file') as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('uploads/tracking', $filename, 'public');
+                $fileNames[] = $filename;
+            }
+            $data['file_name'] = json_encode($fileNames);
+        }
+
+        $designTracking->update($data);
+
+        // If current step is completed, update next step to in_progress
+        if ($status === 'completed') {
+            $currentStep = TrackingStepDesign::find($decryptedTrackingStepId);
+            $nextStep = TrackingStepDesign::where('step_order', '>', $currentStep->step_order)
+                ->orderBy('step_order')
+                ->first();
+
+            if ($nextStep) {
+                DesignTracking::where('id_custom_design', $decryptedCustomDesignId)
+                    ->where('id_tracking_step_design', $nextStep->id)
+                    ->update(['status' => 'in_progress']);
+            }
+        }
+
+        // Format response data with encrypted IDs
+        $responseData = [
+            'id' => Crypt::encryptString($designTracking->id),
+            'id_custom_design' => $request->encrypt,
+            'id_tracking_step_design' => $request->id_tracking_step_design,
+            'status' => $designTracking->status,
+            'notes' => $designTracking->notes,
+            'file_name' => $designTracking->file_name,
+            'completed_at' => $designTracking->completed_at
+        ];
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Tracking step updated successfully!',
+            'error' => false,
+            'data' => $responseData
+        ], 200);
     }
-
-    DB::commit();
-    return response()->json([
-        'status_code' => 200,
-        'message' => 'Tracking step updated successfully!',
-        'data' => $designTracking
-    ], 200);
-}
-
 }
