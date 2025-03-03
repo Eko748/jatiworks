@@ -61,14 +61,14 @@
             <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
                 <form id="filterForm">
                     <div class="row g-3">
-                        {{-- <div class="col-md-12">
+                        <div class="col-md-12">
                             <label for="filterStatus" class="form-label">Status</label>
                             <select id="filterStatus" class="form-control" multiple>
                                 @foreach ($status as $key => $value)
                                     <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
                             </select>
-                        </div> --}}
+                        </div>
                         <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
                             <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
                                     class="fas fa-rotate me-1"></i>Reset</button>
@@ -130,16 +130,16 @@
         let storageUrl = '{{ asset('storage/uploads/custom/') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
-        async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
             let requestParams = {
-                page: page,
-                limit: limit,
-                ascending: ascending,
+                page: currentPage,
+                limit: defaultLimitPage,
+                ascending: defaultAscending,
                 ...customFilter
             };
 
-            if (search.trim() !== '') {
-                requestParams.search = search;
+            if (defaultSearch.trim() !== '') {
+                requestParams.search = defaultSearch;
             }
 
             loadListData();
@@ -155,22 +155,6 @@
                 await setListData(handleDataArray, getDataRest.data.pagination);
             } else {
                 errorListData(getDataRest);
-            }
-        }
-
-        async function updateStatus(idParameter, status) {
-            try {
-                const response = await restAPI('PUT', `/admin/design/${idParameter}/update-status`, {
-                    status
-                });
-                if (response.status === 200) {
-                    notyf.success(`${title} status updated successfully`);
-                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
-                } else {
-                    notyf.error(`Failed to update ${title} status`);
-                }
-            } catch (error) {
-                notyf.error(`An error occurred while updating ${title} status`);
             }
         }
 
@@ -227,7 +211,7 @@
             let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
             let actions = `
-                <a href="/admin/design/${data?.id}/detail" class="btn btn-sm neumorphic-button">
+                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-button">
                     <i class="fas fa-eye me-1"></i>Detail
                 </a>
             `;

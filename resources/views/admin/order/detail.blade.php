@@ -128,7 +128,7 @@
 @endsection
 
 @section('back')
-    <a href="{{ route('admin.custom.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
+    <a href="{{ route('admin.order.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
         data-bs-placement="top" title="Back to {{ $title }} page" onclick="hideTooltip(this)">
         <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
     </a>
@@ -289,116 +289,114 @@
 
         </div>
         <div class="col-md-4">
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <div class="neumorphic-card p-3">
-                        <div class="d-flex flex-column flex-sm-row justify-content-between">
-                            <h5 class="mb-0 fw-bold">Order Information</h5>
-                            <span>#Code Order: <strong
-                                    class="neumorphic-card2 text-white px-2 py-1 bg-success">{{ $order->code_order }}</strong></span>
-                        </div>
-                        <hr>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-info-circle me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Status:</span>
-                                    <span
-                                        class="neumorphic-card2 fw-bold text-white px-2
+            <div class="col-md-12 mb-3">
+                <div class="neumorphic-card p-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between">
+                        <h5 class="mb-0 fw-bold">Order Information</h5>
+                        <span>#Code Order: <strong
+                                class="neumorphic-card2 text-white px-2 py-1 bg-success">{{ $order->code_order }}</strong></span>
+                    </div>
+                    <hr>
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-info-circle me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Status:</span>
+                                <span
+                                    class="neumorphic-card2 fw-bold text-white px-2
                                         {{ $order->status->label() === 'Not Completed'
                                             ? 'bg-warning'
                                             : ($order->status->label() === 'Waiting for Payment'
                                                 ? 'bg-info'
                                                 : 'bg-success') }}">
-                                        {{ $order->status->label() }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-cube me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Item Name:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->item_name : $order->item_name }}</span>
-                                </div>
+                                    {{ $order->status->label() }}
+                                </span>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-industry me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Material:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-ruler-combined me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Dimensions:</span>
-                                    <span>
-                                        L
-                                        {{ $orderDetails['length'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                        x W
-                                        {{ $orderDetails['width'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                        x H
-                                        {{ $orderDetails['height'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-weight-hanging me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Weight:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }} kg</span>
-                                </div>
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-cube me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Item Name:</span>
+                                <span>{{ $order->id_katalog ? $order->katalog->item_name : $order->item_name }}</span>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-sticky-note me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Description:</span>
-                                    <span>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</span>
-                                </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-industry me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Material:</span>
+                                <span>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-ruler-combined me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Dimensions:</span>
+                                <span>
+                                    L
+                                    {{ $orderDetails['length'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                    x W
+                                    {{ $orderDetails['width'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                    x H
+                                    {{ $orderDetails['height'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-weight-hanging me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Weight:</span>
+                                <span>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }} kg</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-sticky-note me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Description:</span>
+                                <span>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="neumorphic-card p-3">
-                        <h5 class="fw-bold">Buyer Information</h5>
-                        <hr>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-user-circle me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Name:</span>
-                                    <span>{{ $order->user->name }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-envelope me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Email:</span>
-                                    <span>{{ $order->user->email }}</span>
-                                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="neumorphic-card p-3">
+                    <h5 class="fw-bold">Buyer Information</h5>
+                    <hr>
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-user-circle me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Name:</span>
+                                <span>{{ $order->user->name }}</span>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-phone me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Phone:</span>
-                                    <span>{{ $order->user->phone ?? '-' }}</span>
-                                </div>
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-envelope me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Email:</span>
+                                <span>{{ $order->user->email }}</span>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
-                                <i class="fas fa-map-marker-alt me-2 mt-1"></i>
-                                <div>
-                                    <span class="fw-bold d-block">Address:</span>
-                                    <span>{{ $order->user->address ?? '-' }}</span>
-                                </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-phone me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Phone:</span>
+                                <span>{{ $order->user->phone ?? '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-map-marker-alt me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Address:</span>
+                                <span>{{ $order->user->address ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
