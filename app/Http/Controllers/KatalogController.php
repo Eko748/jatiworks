@@ -184,4 +184,64 @@ class KatalogController extends Controller
             ], 500);
         }
     }
+    private function baseQuery()
+    {
+        return Katalog::select([
+            'id',
+            'code',
+            'item_name',
+            'length',
+            'width',
+            'height',
+            'weight',
+            'desc',
+            'unit',
+        ]);
+    }
+
+    public function getDetailDataKatalog(Request $request)
+    {
+        try {
+            $decryptedId = Crypt::decryptString($request->encrypt);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 400,
+                'message' => 'Invalid ID',
+                'error'   => true
+            ], 400);
+        }
+
+        $data = $this->baseQuery()->findOrFail($decryptedId);
+
+        $formattedData = [
+            'id'          => Crypt::encryptString($data->id),
+            'code'        => $data->code,
+            'item_name'   => $data->item_name,
+            'length'       => $data->length,
+            'width'       => $data->width,
+            'height'       => $data->height,
+            'weight'       => $data->weight,
+            'desc'        => $data->desc,
+            'unit'        => $data->unit,
+            'category'   => $data->category->map(function ($category) {
+                    return [
+                        'id_category'   => $category->id,
+                        'name_category' => $category->name_category,
+                    ];
+                }),
+                'file'       => $data->file->map(function ($file) {
+                    return [
+                        'id'        => $file->id,
+                        'file_name' => $file->file_name,
+                    ];
+                })
+            ];
+
+        return response()->json([
+            'status'  => 200,
+            'data'    => $formattedData,
+            'message' => 'Successfully',
+            'error'   => false
+        ], 200);
+    }
 }

@@ -123,6 +123,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::get('/katalog', [KatalogController::class, 'index'])->name('admin.katalog.index');
     Route::post('/katalog-store', [KatalogController::class, 'store'])->name('admin.katalog.store');
     Route::get('/getdatakatalog', [KatalogController::class, 'getdatakatalog'])->name('getdatakatalog');
+    Route::get('/katalog-detail-data', [KatalogController::class, 'getDetailDataKatalog'])->name('admin.katalog.data');
 
     // Article Management
     Route::get('/article', [ArticleController::class, 'index'])->name('admin.article.index');
