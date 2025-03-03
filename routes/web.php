@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Content\KatalogLandingController;
 use App\Http\Controllers\CustomDesignController;
+use App\Http\Controllers\Home\IndexController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -80,13 +81,9 @@ Route::get('/detail-invest', function () {
     return view('buyer.layouts.pages.detail_inves');
 });
 
-Route::get('/', function () {
-    return view('buyer.pages.home.index');
-});
-
-Route::get('/catalogue', function () {
-    return view('buyer.pages.katalog.index');
-});
+Route::get('/', [IndexController::class, 'indexHome'])->name('index.home');
+Route::get('/catalogue', [IndexController::class, 'indexCatalogue'])->name('index.catalogue');
+Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign');
 
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 
@@ -149,5 +146,5 @@ Route::middleware(['auth', IsBuyer::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/catalogue', [KatalogLandingController::class, 'index'])->name('katalog.index');
+    // Route::get('/catalogue', [KatalogLandingController::class, 'index'])->name('katalog.index');
 });

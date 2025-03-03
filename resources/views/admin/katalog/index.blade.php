@@ -302,7 +302,7 @@
 @section('js')
     <script>
         let title = '{{ $title }}'
-        let defaultLimitPage = 10
+        let defaultLimitPage = 1
         let currentPage = 1
         let totalPage = 1
         let defaultAscending = 0
@@ -310,16 +310,16 @@
         let customFilter = {}
         let storageUrl = '{{ asset('storage/uploads/katalog/') }}'
 
-        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
+        async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
-                page: currentPage,
-                limit: defaultLimitPage,
-                ascending: defaultAscending,
+                page: page,
+                limit: limit,
+                ascending: ascending,
                 ...customFilter
             };
 
-            if (defaultSearch.trim() !== '') {
-                requestParams.search = defaultSearch;
+            if (search.trim() !== '') {
+                requestParams.search = search;
             }
 
             loadListData();

@@ -35,21 +35,16 @@
     <main>
         @yield('content')
     </main>
+    @include('buyer.layouts.partials.footer')
+    @include('buyer.layouts.script.botscript')
+    <script src="{{ asset('assets/js/navbar.js') }}"></script>
+    <script src="{{ asset('assets/js/owlcarousel.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/axios.js') }}"></script>
     <script src="{{ asset('assets/js/restAPI.js') }}"></script>
     <script src="{{ asset('assets/js/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/notyf.min.js') }}"></script>
-    <script>
-        const notyf = new Notyf({
-            position: {
-                x: 'center',
-                y: 'top'
-            }
-        });
-    </script>
-    @include('buyer.layouts.partials.footer')
-    @include('buyer.layouts.script.botscript')
+    @yield('assets_js')
     @yield('js')
     <script>
         document.addEventListener("DOMContentLoaded", async function() {

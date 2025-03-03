@@ -11,16 +11,16 @@
         <div class="collapse navbar-collapse mr-auto" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto ">
                 <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/') ? 'active' : '' }}"
-                        href="/">{{ __('localization.home') }}</a>
+                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.home') ? 'active' : '' }}"
+                        href="{{ route('index.home') }}">{{ __('localization.home') }}</a>
                 </li>
                 <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/investing') ? 'active' : '' }}"
-                        href="#">Catalogue</a>
+                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.catalogue') ? 'active' : '' }}"
+                        href="{{ route('index.catalogue') }}">Catalogue</a>
                 </li>
                 <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->url() === url('/publishing') ? 'active' : '' }}"
-                        href="#">Custom Design</a>
+                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign') ? 'active' : '' }}"
+                        href="{{ route('index.customdesign') }}">Custom Design</a>
                 </li>
                 @auth
                     <li class="nav-item pe-4">
