@@ -232,6 +232,7 @@
         async function updateStatus(orderId, status) {
             try {
                 const response = await restAPI('PUT', `/admin/custom/${orderId}/update-status`, {
+                    encrypt: orderId,
                     status
                 });
                 if (response.status === 200) {
