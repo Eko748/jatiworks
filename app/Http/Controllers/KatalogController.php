@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\File;
 use App\Models\Katalog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class KatalogController extends Controller
@@ -68,7 +69,7 @@ class KatalogController extends Controller
 
         $mappedData = collect($data->items())->map(function ($item) {
             return [
-                'id'         => $item->id,
+                'id'         => Crypt::encryptString($item->id),
                 'code'       => $item->code,
                 'item_name'  => $item->item_name,
                 'material'   => $item->material,

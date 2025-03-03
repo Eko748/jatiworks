@@ -18,11 +18,11 @@
                     <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.catalogue') ? 'active' : '' }}"
                         href="{{ route('index.catalogue') }}">Catalogue</a>
                 </li>
-                <li class="nav-item pe-4">
-                    <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign') ? 'active' : '' }}"
-                        href="{{ route('index.customdesign') }}">Custom Design</a>
-                </li>
                 @auth
+                    <li class="nav-item pe-4">
+                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign') ? 'active' : '' }}"
+                            href="{{ route('index.customdesign') }}">Custom Design</a>
+                    </li>
                     <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->url() === route('profile.index') ? 'active' : '' }}"
                             href="{{ route('profile.index') }}">Profile</a>

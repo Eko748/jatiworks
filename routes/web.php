@@ -83,7 +83,9 @@ Route::get('/detail-invest', function () {
 
 Route::get('/', [IndexController::class, 'indexHome'])->name('index.home');
 Route::get('/catalogue', [IndexController::class, 'indexCatalogue'])->name('index.catalogue');
+Route::get('/catalogue-detail', [IndexController::class, 'detailCatalogue'])->name('index.catalogue.detail');
 Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign');
+Route::get('/order', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign');
 
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 

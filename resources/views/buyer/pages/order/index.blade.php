@@ -174,7 +174,6 @@
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
-                code: data?.code ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : []
@@ -193,36 +192,35 @@
                 let carouselId = `carousel${element.id}-${index}`;
 
                 let imageCarousel = element.images.length ? `
-            <div class="position-relative w-100 overflow-hidden">
-                <div class="ribbon ribbon-top-right" style="position: absolute; top: -8px; right: -8px; z-index: 10;">
-                    <span>New</span>
-                </div>
-                <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner" style="height: 300px;">
-                        ${element.images.map((img, i) => `
-                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                        <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                                    </div>
-                                                `).join('')}
+                    <div class="position-relative w-100 overflow-hidden">
+                        <div class="ribbon ribbon-top-right" style="position: absolute; top: -8px; right: -8px; z-index: 10;">
+                            <span>New</span>
+                        </div>
+                        <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" style="height: 300px;">
+                                ${element.images.map((img, i) => `
+                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                                            </div>
+                                                        `).join('')}
+                            </div>
+                            ${element.images.length > 1 ? `
+                                                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                            <span class="carousel-control-prev-icon"></span>
+                                                        </button>
+                                                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                            <span class="carousel-control-next-icon"></span>
+                                                        </button>
+                                                    ` : ''}
+                        </div>
                     </div>
-                    ${element.images.length > 1 ? `
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            ` : ''}
-                </div>
-            </div>
-        ` : '-';
+                ` : '-';
 
                 getDataHtml += `
             <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 300px;">
                 <div class="card-body d-flex flex-column">
                     ${imageCarousel}
                     <div class="mt-2">
-                        <small class="text-white">Code: ${element.code}</small>
                         <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
                             ${element.item_name}
                         </h5>
@@ -247,11 +245,6 @@
                         <p class="fw-bold text-white mb-1">Category:</p>
                         <div class="d-flex flex-wrap gap-1">
                             ${element.category.split(', ').map(cat => `<span class="badge bg-light text-dark">${cat}</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <div class="d-flex flex-wrap gap-1 justify-content-end">
-                            <a href="{{ route('index.catalogue.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Read More...</a>
                         </div>
                     </div>
                 </div>
