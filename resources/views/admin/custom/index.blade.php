@@ -130,16 +130,16 @@
         let storageUrl = '{{ asset('storage/uploads/custom/') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
-        async function getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter = {}) {
+        async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
-                page: currentPage,
-                limit: defaultLimitPage,
-                ascending: defaultAscending,
+                page: page,
+                limit: limit,
+                ascending: ascending,
                 ...customFilter
             };
 
-            if (defaultSearch.trim() !== '') {
-                requestParams.search = defaultSearch;
+            if (search.trim() !== '') {
+                requestParams.search = search;
             }
 
             loadListData();
@@ -226,6 +226,22 @@
                 status: statusHtml,
                 images,
                 actions
+            }
+        }
+
+        async function updateStatus(orderId, status) {
+            try {
+                const response = await restAPI('PUT', `/admin/custom/${orderId}/update-status`, {
+                    status
+                });
+                if (response.status === 200) {
+                    notyf.success('Order status updated successfully');
+                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                } else {
+                    notyf.error('Failed to update order status');
+                }
+            } catch (error) {
+                notyf.error('An error occurred while updating order status');
             }
         }
 
