@@ -13,7 +13,7 @@ class DesignTracking extends Model
     protected $table = 'design_tracking';
 
     protected $fillable = [
-        'id_order',
+        'id_custom_design',
         'id_tracking_step_design',
         'status',
         'notes',

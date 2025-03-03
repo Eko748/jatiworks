@@ -190,7 +190,6 @@ class CustomDesignController extends Controller
 
     public function updateStatus(Request $request)
     {
-        try {
             // Validate request data first
             $validator = validator($request->all(), [
                 'encrypt' => 'required|string',
@@ -255,29 +254,19 @@ class CustomDesignController extends Controller
                     'status' => $custom->status->label()
                 ]
             ], 200);
-
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 404,
-                'message' => 'Custom design not found',
-                'error' => true
-            ], 404);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 500,
-                'message' => 'An error occurred while updating status',
-                'error' => true,
-                'error_detail' => $e->getMessage()
-            ], 500);
-        }
     }
 
-    public function updateTrackingStep(Request $request, $decryptedId)
+    public function updateTrackingStep(Request $request)
     {
         try {
+            $decryptedId = Crypt::decryptString($request->encrypt);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Invalid encrypted ID',
+                'error' => true
+            ], 400);
+        }
             DB::beginTransaction();
 
             // Validate the request data with custom error messages
@@ -350,14 +339,5 @@ class CustomDesignController extends Controller
                 'message' => 'Tracking step updated successfully!',
                 'data' => $designTracking
             ], 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status_code' => 500,
-                'errors' => true,
-                'message' => 'Something went wrong!',
-                'error_detail' => $e->getMessage()
-            ], 500);
-        }
     }
 }
