@@ -85,9 +85,10 @@ Route::get('/', [IndexController::class, 'indexHome'])->name('index.home');
 Route::get('/catalogue', [IndexController::class, 'indexCatalogue'])->name('index.catalogue');
 Route::get('/catalogue-detail', [IndexController::class, 'detailCatalogue'])->name('index.catalogue.detail');
 Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign');
-Route::get('/order', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign');
+Route::get('/order', [IndexController::class, 'indexCustomDesign'])->name('index.order');
 
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
+Route::get('/datadesign', [CustomDesignController::class, 'getdatadesign'])->name('datadesign');
 
 // Login Routes
 Route::prefix('login')->as('login.')->group(function () {

@@ -20,6 +20,10 @@
                 </li>
                 @auth
                     <li class="nav-item pe-4">
+                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order') ? 'active' : '' }}"
+                            href="{{ route('index.order') }}">Order</a>
+                    </li>
+                    <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign') ? 'active' : '' }}"
                             href="{{ route('index.customdesign') }}">Custom Design</a>
                     </li>

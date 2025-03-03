@@ -136,11 +136,12 @@
             `;
         }
 
-        async function getListDataCatalogue(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getListDataCustomDesign(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
                 limit: limit,
                 ascending: ascending,
+                id_user: {{ Auth::user()->id }},
                 ...customFilter
             };
 
@@ -148,15 +149,15 @@
                 requestParams.search = search;
             }
 
-            let getDataRest = await restAPI('GET', '{{ route('datakatalog') }}', requestParams)
+            let getDataRest = await restAPI('GET', '{{ route('datadesign') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleListDataCatalogue(item))
+                    getDataRest.data.data.map(async item => await handleListDataCustomDesign(item))
                 )
-                await setListDataCatalogue(handleDataArray, getDataRest.data.pagination)
+                await setListDataCustomDesign(handleDataArray, getDataRest.data.pagination)
             } else {
                 let errorMessage = "Data gagal dimuat";
                 if (getDataRest && getDataRest.data && getDataRest.data.message) {
@@ -167,20 +168,21 @@
             }
         }
 
-        async function handleListDataCatalogue(data) {
+        async function handleListDataCustomDesign(data) {
             return {
                 id: data?.id ?? '-',
                 item_name: data?.item_name ?? '-',
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
+                code: data?.code ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : []
             };
         }
 
-        async function setListDataCatalogue(dataList, pagination) {
+        async function setListDataCustomDesign(dataList, pagination) {
             totalPage1 = pagination.total_pages;
             currentPage1 = pagination.current_page;
             let display_from = (pagination.per_page * (currentPage1 - 1)) + 1;
@@ -221,6 +223,7 @@
                 <div class="card-body d-flex flex-column">
                     ${imageCarousel}
                     <div class="mt-2">
+                        <small class="text-white">Code: ${element.code}</small>
                         <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
                             ${element.item_name}
                         </h5>
@@ -247,11 +250,15 @@
                             ${element.category.split(', ').map(cat => `<span class="badge bg-light text-dark">${cat}</span>`).join('')}
                         </div>
                     </div>
+                    <div class="mt-3">
+                        <div class="d-flex flex-wrap gap-1 justify-content-end">
+                            <a href="{{ route('index.catalogue.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Read More...</a>
+                        </div>
+                    </div>
                 </div>
             </div>`;
             });
 
-            // Pastikan div tetap di tengah walaupun hanya satu item
             document.getElementById('catalogue-data').innerHTML = getDataHtml;
             document.getElementById('totalPage').textContent = pagination.total;
             document.getElementById('countPage').textContent = `${display_from} - ${display_to}`;
@@ -327,7 +334,7 @@
                     const newPage = parseInt(e.target.closest('button').dataset.page);
                     if (!isNaN(newPage)) {
                         currentPage1 = newPage;
-                        await getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1,
+                        await getListDataCustomDesign(defaultLimitPage1, currentPage1, defaultAscending1,
                             defaultSearch1,
                             customFilter1);
                     }
@@ -335,11 +342,11 @@
             });
         }
 
-        async function searchListDataCatalogue() {
+        async function searchListDataCustomDesign() {
             document.getElementById('limitPage').addEventListener('change', async function() {
                 defaultLimitPage1 = parseInt(this.value);
                 currentPage1 = 1;
-                await getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1,
+                await getListDataCustomDesign(defaultLimitPage1, currentPage1, defaultAscending1,
                     defaultSearch1,
                     customFilter1);
             });
@@ -348,7 +355,7 @@
                 input.addEventListener('input', debounce(async () => {
                     defaultSearch1 = input.value;
                     currentPage1 = 1;
-                    await getListDataCatalogue(defaultLimitPage1, currentPage1,
+                    await getListDataCustomDesign(defaultLimitPage1, currentPage1,
                         defaultAscending1, defaultSearch1,
                         customFilter1);
                 }, 500));
@@ -365,9 +372,9 @@
 
         async function initPageLoad() {
             await Promise.all([
-                getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
+                getListDataCustomDesign(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
                     customFilter1),
-                searchListDataCatalogue(),
+                searchListDataCustomDesign(),
             ])
         }
     </script>

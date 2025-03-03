@@ -231,7 +231,7 @@
 
         async function updateStatus(orderId, status) {
             try {
-                const response = await restAPI('PUT', `/admin/custom/${orderId}/update-status`, {
+                const response = await restAPI('PUT', '{{ route('custom.updateTracking') }}', {
                     encrypt: orderId,
                     status
                 });
