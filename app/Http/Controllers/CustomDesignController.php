@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Models\CustomDesign;
+use App\Models\DesignTracking;
+use App\Models\TrackingStepDesign;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class CustomDesignController extends Controller
 {
@@ -181,6 +184,148 @@ class CustomDesignController extends Controller
                 'status'  => 500,
                 'message' => $e->getMessage(),
                 'error'   => true
+            ], 500);
+        }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            $decryptedId = Crypt::decryptString($request->encrypt);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 400,
+                'message' => 'Invalid ID',
+                'error'   => true
+            ], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+            $custom = CustomDesign::findOrFail($decryptedId);
+
+            $request->validate([
+                'status' => ['required', 'in:WP,NC,PC']
+            ]);
+
+            $oldStatus = $custom->status;
+            $custom->status = OrderStatus::from($request->status);
+            $custom->save();
+
+            // Create order tracking records when status changes from WP to NC or PC
+            if ($oldStatus === OrderStatus::WaitingForPayment && in_array($custom->status, [OrderStatus::NotCompleted, OrderStatus::PaymentCompleted])) {
+                $trackingSteps = TrackingStepDesign::orderBy('id')->get();
+
+                foreach ($trackingSteps as $step) {
+                    DesignTracking::create([
+                        'id_custom_design' => $custom->id,
+                        'id_tracking_step_design' => $step->id,
+                        'status' => $step->id === 1 ? 'in_progress' : 'pending',
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'status_code' => 200,
+                'message'     => 'Status updated successfully!',
+                'data'        => [
+                    'id'     => $custom->id,
+                    'status' => $custom->status->label(),
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code'  => 500,
+                'errors'       => true,
+                'message'      => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateTrackingStep(Request $request, $decryptedId)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Validate the request data with custom error messages
+            $validator = validator($request->all(), [
+                'id_tracking_step_design' => 'required|exists:tracking_step,id',
+                'status' => 'nullable|in:pending,in_progress,completed',
+                'notes' => 'nullable|string',
+                'file.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048' // Allow multiple files
+            ], [
+                'id_tracking_step_design.required' => 'The tracking step ID is required.',
+                'id_tracking_step_design.exists' => 'The selected tracking step does not exist.',
+                'status.in' => 'The status must be one of: pending, in_progress, completed.',
+                'file.*.mimes' => 'Each file must be a JPG, JPEG, or PNG.',
+                'file.*.max' => 'Each file must not exceed 2MB.'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status_code' => 422,
+                    'errors' => true,
+                    'message' => 'Validation failed',
+                    'error_detail' => $validator->errors()->first()
+                ], 422);
+            }
+
+            // Ambil data tracking order
+            $designTracking = DesignTracking::where('id_custom_design', $decryptedId)
+                ->where('id_tracking_step_design', $request->id_tracking_step_design)
+                ->firstOrFail();
+
+            // Gunakan status sebelumnya jika tidak ada request status
+            $status = $request->status ?? $designTracking->status;
+
+            $data = [
+                'status' => $status,
+                'notes' => $request->notes,
+                'completed_at' => $status === 'completed' ? now() : null
+            ];
+
+            // Handle multiple file uploads
+            if ($request->hasFile('file')) {
+                $fileNames = [];
+                foreach ($request->file('file') as $file) {
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('uploads/tracking', $filename, 'public');
+                    $fileNames[] = $filename;
+                }
+                $data['file_name'] = json_encode($fileNames);
+            }
+
+            $designTracking->update($data);
+
+            // If current step is marked as completed, update the next step to in_progress
+            if ($status === 'completed') {
+                $currentStep = TrackingStepDesign::find($request->id_tracking_step);
+                $nextStep = TrackingStepDesign::where('step_order', '>', $currentStep->step_order)
+                    ->orderBy('step_order')
+                    ->first();
+
+                if ($nextStep) {
+                    DesignTracking::where('id_custom_design', $decryptedId)
+                        ->where('id_tracking_step_design', $nextStep->id)
+                        ->update(['status' => 'in_progress']);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Tracking step updated successfully!',
+                'data' => $designTracking
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors' => true,
+                'message' => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
             ], 500);
         }
     }
