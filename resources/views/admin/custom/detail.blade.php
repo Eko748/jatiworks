@@ -232,7 +232,7 @@
             if (data.status !== 'Waiting for Payment') {
                 setData('codeData', data.code_design);
 
-                setTimelineItems(encodeURIComponent(data.id), data.tracking);
+                setTimelineItems(btoa(data.id), data.tracking);
                 setInformation(data);
                 setBuyer(data.buyer);
 
@@ -294,11 +294,10 @@
                     }
 
                     return `
-                            <form action="{{ route('custom.updateTracking') }}" class="mt-3 addDataForm">
-                                <input type="hidden" name="_method" value="PUT">
-                                <input type="hidden" name="encrypt" value="${id}">
-                                <input type="hidden" name="id_custom_design" value="${data.id_custom_design}">
-                                <input type="hidden" name="id_tracking_step_design" value="${data.id_tracking_step_design}">
+                            <form action="{{ route('custom.updateTracking') }}" class="mt-3 addDataForm" method="PUT">
+                            <input type="hidden" name="encrypt" value="${encodeURIComponent(btoa(data.id))}">
+                            <input type="hidden" name="id_custom_design" value="${data.id_custom_design}">
+                            <input type="hidden" name="id_tracking_step_design" value="${data.id_tracking_step_design}">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">
@@ -638,9 +637,35 @@
                     const confirmed = await confirmSubmitData(saveButton);
                     if (!confirmed) return;
 
-                    const formData = new FormData(form);
-                    const croppedImages = form.querySelectorAll('.cropped-preview');
+                    const formData = new FormData();
 
+                    // Get the encrypted ID from the hidden input
+                    const encryptedId = form.querySelector('input[name="encrypt"]').value;
+                    if (!encryptedId) {
+                        notyf.error("Encrypted ID is required");
+                        return;
+                    }
+                    formData.append('encrypt', encryptedId);
+                    formData.append('_method', 'PUT'); // Tambahan ini
+
+                    // Add tracking step ID
+                    const trackingStepId = form.querySelector('input[name="id_tracking_step_design"]').value;
+                    formData.append('id_tracking_step_design', trackingStepId);
+
+                    // Add notes if present
+                    const notes = form.querySelector('textarea[name="notes"]');
+                    if (notes) {
+                        formData.append('notes', notes.value);
+                    }
+
+                    // Add status if present
+                    const status = form.querySelector('select[name="status"]');
+                    if (status) {
+                        formData.append('status', status.value);
+                    }
+
+                    // Handle image uploads
+                    const croppedImages = form.querySelectorAll('.cropped-preview');
                     try {
                         await Promise.all(
                             Array.from(croppedImages).map(async (img, index) => {
@@ -658,10 +683,7 @@
                         );
 
                         const actionUrl = form.getAttribute("action");
-
-                        const postData = await restAPI("PUT", actionUrl, formData);
-
-                        console.log("postData:", postData);
+                        const postData = await restAPI("POST", actionUrl, formData);
 
                         if (postData.status >= 200 && postData.status < 300) {
                             await notyf.success("Data saved successfully.");
@@ -670,9 +692,10 @@
                                 window.location.reload();
                             }, 1000);
                         } else {
-                            notyf.error("An error occurred while saving data.");
+                            notyf.error(postData.message || "An error occurred while saving data.");
                         }
                     } catch (error) {
+                        console.error(error);
                         notyf.error("Failed to save data. Please try again.");
                     } finally {
                         saveButton.disabled = false;
