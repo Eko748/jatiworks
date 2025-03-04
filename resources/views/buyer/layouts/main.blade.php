@@ -20,6 +20,11 @@
         .bg-green-old {
             background: #055940;
         }
+
+        .dropdown {
+            position: relative;
+            z-index: 1050;
+        }
     </style>
     @yield('css')
 </head>

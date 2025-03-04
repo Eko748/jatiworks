@@ -164,7 +164,6 @@
                 if (getDataRest && getDataRest.data && getDataRest.data.message) {
                     errorMessage = getDataRest.data.message;
                 }
-
                 await showErrorMessage(errorMessage);
             }
         }

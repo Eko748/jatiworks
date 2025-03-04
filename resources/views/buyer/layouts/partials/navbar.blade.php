@@ -35,14 +35,6 @@
             </ul>
             <div class="d-flex" role="search">
                 <div class="dropdown-center">
-                    {{-- <a class="btn border-0 fw-bold dropdown-toggle me-2 py-2" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        @if (App::getLocale() == 'id')
-                            <img src="{{ asset('assets/img/lang/ID.png') }}" alt="">
-                        @else
-                            <img src="{{ asset('assets/img/lang/GB.png') }}" alt="">
-                        @endif
-                    </a> --}}
                     <ul class="dropdown-menu" style="min-width: auto">
                         <li>
                             <a class="dropdown-item fw-bold text-old-blue"
@@ -60,32 +52,14 @@
                 </div>
 
                 @guest
-                    <a class="btn btn-outline-old-blue me-2 py-2 px-3 fw-bold" href="{{ route('login.index') }}">Login</a>
+                    <a class="btn bg-green-young me-2 py-2 px-3 fw-bold" href="{{ route('login.index') }}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
                 @endguest
                 @auth
-                    <div class="dropdown">
-                        <button class="btn btn-old-blue dropdown-toggle d-flex align-items-center gap-2 py-2 px-3 fw-bold"
-                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @if (Auth::user()->avatar)
-                                <img src="{{ Auth::user()->avatar }}" alt="Avatar" class="rounded-circle" width="30"
-                                    height="30">
-                            @else
-                                <i class="fas fa-user-circle fa-lg"></i>
-                            @endif
-                            <span>{{ Auth::user()->name }}</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fas fa-user"></i>
-                                    Profile</a></li>
-                            <li>
-                                <form method="POST" action="{{ route('login.logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i>
-                                        Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+                    <form method="POST" action="{{ route('login.logout') }}">
+                        @csrf
+                        <button type="submit" class="btn bg-green-young fw-bold"><i class="fas fa-sign-out-alt"></i>
+                            Logout</button>
+                    </form>
                 @endauth
             </div>
         </div>
