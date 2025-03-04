@@ -110,6 +110,89 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="addDataModal" tabindex="-1" data-bs-focus="false" aria-labelledby="addDataModalLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Custom Design</h5>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDataForm">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="id_user" class="form-label">Buyer</label>
+                                <select id="id_user" class="form-control neumorphic-card" name="id_user">
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="item_name" class="form-label fw-bold">Item Name</label>
+                                <input type="text" class="form-control neumorphic-card" id="item_name"
+                                    name="item_name" placeholder="Enter item name" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="code_design" class="form-label fw-bold">Code Design</label>
+                                <input type="text" class="form-control neumorphic-card" id="code_design"
+                                    name="code_design" placeholder="Enter code design" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="price" class="form-label fw-bold">Price</label>
+                                <input type="number" class="form-control neumorphic-card" id="price" name="price"
+                                    placeholder="Enter price" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="desc" class="form-label fw-bold">Description</label>
+                                <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description"
+                                    rows="4" required></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="imageInput" class="form-label fw-bold">Upload Image</label>
+                                <input type="file" class="form-control neumorphic-card" id="imageInput"
+                                    accept="image/*" multiple>
+                                <small>You can upload multiple images</small>
+                                <div id="imagePreviewContainer" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-end">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">
+                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                    </button>
+                    <button type="submit" form="addDataForm" id="submitBtn"
+                        class="btn neumorphic-button-outline fw-bold">
+                        <i class="fas fa-save me-1"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imagePreview">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
+                            class="fas fa-circle-xmark me-1"></i>Cancel</button>
+                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
+                            class="fas fa-upload me-1"></i>Crop &
+                        Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('assets_js')
@@ -201,12 +284,12 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                    <li><a class="dropdown-item" href="#" onclick="updateStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                `).join('')}
+                                                <li><a class="dropdown-item" href="#" onclick="updateStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                            `).join('')}
                     </ul>
                 </div>
             ` :
-            `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
+                `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
 
             let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
@@ -258,19 +341,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                    </div>
-                                `).join('')}
+                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                </div>
+                                            `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                    <i class="fas fa-circle-chevron-left fs-3"></i>
-                                </button>
-                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                    <i class="fas fa-circle-chevron-right fs-3"></i>
-                                </button>
-                            ` : ''}
+                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                <i class="fas fa-circle-chevron-left fs-3"></i>
+                                            </button>
+                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                <i class="fas fa-circle-chevron-right fs-3"></i>
+                                            </button>
+                                        ` : ''}
                     </div>
                 `;
 
@@ -314,6 +397,226 @@
             return [filterData, resetActions];
         }
 
+        async function addListData() {
+            document.getElementById("addDataForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const saveButton = document.getElementById('submitBtn');
+                if (saveButton.disabled) return;
+
+                const confirmed = await confirmSubmitData(saveButton);
+                if (!confirmed) return;
+
+                const originalContent = saveButton.innerHTML;
+                const formData = new FormData(document.getElementById('addDataForm'));
+                const croppedImages = document.querySelectorAll('.cropped-preview');
+
+                try {
+                    await Promise.all(
+                        Array.from(croppedImages).map(async (img, index) => {
+                            const response = await fetch(img.src);
+                            const blob = await response.blob();
+
+                            const now = new Date();
+                            const timestamp =
+                                `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
+
+                            const fileName = `${timestamp}_${index}.png`.replace(/\s+/g, '');
+                            formData.append(`file[]`, blob, fileName);
+                        })
+                    );
+
+                    const postData = await restAPI('POST', '{{ route('admin.custom.store') }}', formData);
+
+                    if (postData.status >= 200 && postData.status < 300) {
+                        await notyf.success('Data saved successfully.');
+
+                        setTimeout(async () => {
+                            await getListData(defaultLimitPage, currentPage, defaultAscending,
+                                defaultSearch, customFilter);
+                        }, 1000);
+
+                        const modalElement = document.getElementById('addDataModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            await modalInstance.hide();
+                        }
+
+                        await resetForm();
+                    } else {
+                        notyf.error('An error occurred while saving data.');
+                    }
+                } catch (error) {
+                    notyf.error('Failed to save data. Please try again.');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = originalContent;
+                }
+            });
+        }
+
+        function resetForm() {
+            const form = document.getElementById("addDataForm");
+
+            if (!form) return;
+
+            form.reset();
+
+            form.querySelectorAll('.ss-main select').forEach(select => {
+                const instance = select.slim;
+                if (instance) {
+                    instance.set('');
+                }
+            });
+
+            form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+
+            const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
+            if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+
+            form.querySelectorAll("input[type='file']").forEach(input => {
+                input.value = '';
+            });
+        }
+
+        async function uploadMultiImage() {
+            let cropper;
+            let imageFiles = [];
+            let croppedImages = [];
+            let currentImageIndex = 0;
+
+            const imageInput = document.getElementById("imageInput");
+            const imagePreview = document.getElementById("imagePreview");
+            const cropImageModal = new bootstrap.Modal(document.getElementById("cropImageModal"));
+            const cropImageBtn = document.getElementById("cropImageBtn");
+            const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+            imageInput.addEventListener("change", function(event) {
+                const newFiles = Array.from(event.target.files);
+                imageFiles = [...imageFiles, ...newFiles];
+                if (newFiles.length > 0) {
+                    currentImageIndex = imageFiles.length - newFiles.length;
+                    showCropModal(imageFiles[currentImageIndex]);
+                }
+            });
+
+            function showCropModal(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    cropImageModal.show();
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    let containerWidth = Math.min(window.innerWidth * 0.9, 750);
+                    let containerHeight = (containerWidth / 750) * 400;
+
+                    setTimeout(() => {
+                        cropper = new Cropper(imagePreview, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            dragMode: "move",
+                            minCanvasWidth: containerWidth,
+                            minCanvasHeight: containerHeight,
+                            minContainerWidth: containerWidth,
+                            minContainerHeight: containerHeight,
+                            responsive: true,
+                            ready() {
+                                let containerData = cropper.getContainerData();
+                                cropper.setCanvasData({
+                                    left: 0,
+                                    top: 0,
+                                    width: containerWidth,
+                                    height: containerHeight
+                                });
+
+                                cropper.setCropBoxData({
+                                    left: containerData.width / 2 - containerWidth / 2,
+                                    top: containerData.height / 2 - containerHeight / 2,
+                                    width: containerWidth,
+                                    height: containerHeight
+                                });
+
+                                document.querySelector('.cropper-container').style.width =
+                                    containerWidth +
+                                    'px';
+                                document.querySelector('.cropper-container').style.height =
+                                    containerHeight +
+                                    'px';
+                            }
+                        });
+                    }, 100);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            cropImageBtn.addEventListener("click", function() {
+                if (!cropper) return;
+
+                cropper.getCroppedCanvas({
+                    width: 500,
+                    height: 500
+                }).toBlob(function(blob) {
+                    const index = croppedImages.length;
+                    croppedImages.push(blob);
+
+                    let wrapper = document.createElement("div");
+                    wrapper.classList.add("cropped-image-wrapper", "position-relative",
+                        "d-inline-block",
+                        "me-2");
+                    wrapper.style.width = "100px";
+                    wrapper.style.height = "100px";
+
+                    let imgElement = document.createElement("img");
+                    imgElement.src = URL.createObjectURL(blob);
+                    imgElement.classList.add("cropped-preview");
+                    imgElement.style.width = "100px";
+                    imgElement.style.height = "100px";
+                    imgElement.style.borderRadius = "5px";
+
+                    let deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "position-absolute");
+                    deleteBtn.style.top = "5px";
+                    deleteBtn.style.right = "5px";
+                    deleteBtn.style.borderRadius = "50%";
+                    deleteBtn.style.width = "20px";
+                    deleteBtn.style.height = "20px";
+                    deleteBtn.style.display = "flex";
+                    deleteBtn.style.alignItems = "center";
+                    deleteBtn.style.justifyContent = "center";
+
+                    deleteBtn.addEventListener("click", function() {
+                        croppedImages.splice(index, 1);
+                        wrapper.remove();
+                    });
+
+                    wrapper.appendChild(imgElement);
+                    wrapper.appendChild(deleteBtn);
+                    imagePreviewContainer.appendChild(wrapper);
+
+                    currentImageIndex++;
+                    if (currentImageIndex < imageFiles.length) {
+                        showCropModal(imageFiles[currentImageIndex]);
+                    } else {
+                        cropImageModal.hide();
+                        imageInput.value = "";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('cropImageModal');
+
+            if (modal && imageInput) {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    imageInput.value = '';
+                });
+            }
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
@@ -321,6 +624,9 @@
                 setFilterListData(),
                 toggleFilterButton(),
                 multiSelectData('#filterStatus', 'Select Status'),
+                multiSelectData('#id_user', 'Select User Buyer'),
+                addListData(),
+                uploadMultiImage(),
             ]);
         }
     </script>

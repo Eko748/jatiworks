@@ -145,11 +145,6 @@
                     <form id="addDataForm">
                         <div class="wizard-content" id="step-1">
                             <div class="row g-3">
-                                {{-- <div class="col-md-12">
-                                    <label for="itemName" class="form-label fw-bold">Item Name</label>
-                                    <input type="text" class="form-control neumorphic-card" id="itemName"
-                                        name="item_name" placeholder="Enter item name" required>
-                                </div> --}}
                                 <div class="col-md-9">
                                     <label for="itemName" class="form-label fw-bold">Item Name</label>
                                     <textarea class="form-control neumorphic-card" id="itemName" name="item_name" rows="1"
@@ -285,8 +280,10 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
+                            class="fas fa-circle-xmark me-1"></i>Cancel</button>
+                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
+                            class="fas fa-upload me-1"></i>Crop &
                         Upload</button>
                 </div>
             </div>
