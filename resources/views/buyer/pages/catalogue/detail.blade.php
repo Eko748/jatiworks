@@ -142,7 +142,7 @@
             let category = data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-';
 
             setData('itemNameData', data.item_name);
-            setData('codeData', data.code);
+            setData('codeData',`Code Catalogue : ${data.code}`);
             setData('materialData', data.material);
             setData('lengthData', data.length ? `Length: ${data.length}${data.unit}` : '-');
             setData('widthData', data.width ? `Width: ${data.width}${data.unit}` : '-');
