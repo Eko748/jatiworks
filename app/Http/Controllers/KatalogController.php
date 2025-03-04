@@ -194,6 +194,7 @@ class KatalogController extends Controller
             'width',
             'height',
             'weight',
+            'material',
             'desc',
             'unit',
         ]);
@@ -219,6 +220,7 @@ class KatalogController extends Controller
             'item_name'   => $data->item_name,
             'length'       => $data->length,
             'width'       => $data->width,
+            'material'       => $data->material,
             'height'       => $data->height,
             'weight'       => $data->weight,
             'desc'        => $data->desc,

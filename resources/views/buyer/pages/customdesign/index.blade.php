@@ -71,7 +71,8 @@
     <section id="main-section" class="main-section bg-green-white">
         <div class="container pt-5 pb-5">
             <h3 class="heading fw-bold">Tracking Your Design is here</h3>
-            <h6 class="subtitle h6 mb-5">Please click on the show details to view the tracking details of your custom design</h6>
+            <h6 class="subtitle h6 mb-5" id="noteData">
+            </h6>
             <div class="d-flex align-items-center gap-1 flex-wrap">
                 <button type="button" id="toggleFilter" class="filter-data btn-success btn btn-md" data-bs-toggle="collapse"
                     data-bs-target="#filterContainer">
@@ -128,13 +129,25 @@
         let storageUrl = '{{ asset('storage/uploads/custom') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
-        function showErrorMessage(message) {
+        function showErrorMessage(message, type = 'danger', showWhatsApp = false) {
             let catalogueData = document.getElementById("listData");
+
+            let whatsappButton = showWhatsApp ?
+                `<div class="mt-3">
+                        <a href="https://wa.me/6282217101985?text=Hello,%20I%20am%20interested%20in%20creating%20a%20custom%20design."
+                        target="_blank"
+                        class="btn btn-success d-flex align-items-center justify-content-center gap-2">
+                            <i class="fab fa-whatsapp"></i> Chat us on WhatsApp
+                        </a>
+                    </div>` :
+                '';
+
             catalogueData.innerHTML = `
-                <div class="alert alert-danger text-center w-100">
-                    ${message}
-                </div>
-            `;
+                    <div class="alert alert-${type} text-center w-100">
+                        ${message}
+                        ${whatsappButton}
+                    </div>
+                `;
         }
 
         async function getListDataCustomDesign(limit = 8, page = 1, ascending = 0, search = '', customFilter = {}) {
@@ -157,13 +170,23 @@
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
                     getDataRest.data.data.map(async item => await handleListDataCustomDesign(item))
-                )
-                await setListDataCustomDesign(handleDataArray, getDataRest.data.pagination)
+                );
+                const msg = 'Please click on the show details to view the tracking details of your custom design.'
+                document.getElementById('noteData').innerHTML = msg;
+                await setListDataCustomDesign(handleDataArray, getDataRest.data.pagination);
             } else {
-                let errorMessage = "Data gagal dimuat";
+                let errorMessage = "Failed to load data";
+
                 if (getDataRest && getDataRest.data && getDataRest.data.message) {
                     errorMessage = getDataRest.data.message;
+
+                    if (getDataRest.data.id_user === false) {
+                        const msg = 'Your history is not found, but you can create a Custom Design right now!';
+                        await showErrorMessage(msg, "warning", true);
+                        return;
+                    }
                 }
+
                 await showErrorMessage(errorMessage);
             }
         }
@@ -209,19 +232,19 @@
                 <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner" style="height: 300px;">
                         ${element.images.map((img, i) => `
-                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                    <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                </div>
-                            `).join('')}
+                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                            </div>
+                                        `).join('')}
                     </div>
                     ${element.images.length > 1 ? `
-                            <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        ` : ''}
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
+                                    ` : ''}
                 </div>
             </div>
         ` : '-';
@@ -258,8 +281,8 @@
                         ${shortDesc}
                     </p>
                     ${element.desc.length > 20 ? `
-                            <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
-                        ` : ''}
+                                        <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
+                                    ` : ''}
                 </div>
                 <div class="mt-3">
                     <div class="d-flex flex-wrap gap-1 justify-content-end">

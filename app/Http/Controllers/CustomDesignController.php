@@ -147,12 +147,23 @@ class CustomDesignController extends Controller
 
             if (!empty($request['search'])) {
                 $searchTerm = trim(strtolower($request['search']));
-                $query->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"])
-                    ->orWhereRaw("LOWER(code_design) LIKE ?", ["%$searchTerm%"]);
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"])
+                        ->orWhereRaw("LOWER(code_design) LIKE ?", ["%$searchTerm%"]);
+                });
             }
 
             if ($request->has('id_user')) {
                 $query->where('id_user', $request->id_user);
+
+                if (!$query->exists()) {
+                    return response()->json([
+                        'status'  => 400,
+                        'message' => 'User ID not found',
+                        'error'   => true,
+                        'id_user' => false
+                    ], 400);
+                }
             }
 
             $data = $query->paginate($meta['limit']);
@@ -169,6 +180,14 @@ class CustomDesignController extends Controller
                     'file'        => optional($item->file)->pluck('file_name')->toArray()
                 ];
             });
+
+            if ($formattedData->isEmpty()) {
+                return response()->json([
+                    'status'  => 400,
+                    'message' => 'No data found',
+                    'error'   => true
+                ], 400);
+            }
 
             $paginationMeta = [
                 'total'        => $data->total(),

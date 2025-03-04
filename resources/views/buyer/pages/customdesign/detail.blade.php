@@ -1,187 +1,22 @@
 @extends('buyer.layouts.main')
 
 @section('css')
-    <style>
-        .scrollable-cards {
-            display: flex;
-            justify-content: center;
-            overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            padding: 1rem 0;
-        }
-
-        #listData {
-            display: flex;
-            justify-content: center;
-            align-items: start;
-            gap: 1rem;
-            min-height: 300px;
-            width: fit-content;
-            margin: auto;
-        }
-
-        #listData .card {
-            min-width: 250px;
-            max-width: 300px;
-            flex: 0 0 auto;
-        }
-
-        /* Pastikan scroll hanya muncul jika perlu */
-        .scrollable-cards::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .scrollable-cards::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
-
-        .scrollable-cards::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-color);
-            pointer-events: none;
-        }
-
-        .select-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-color);
-            pointer-events: none;
-        }
-
-        .neumorphic-card {
-            box-shadow: 2px 2px 5px #b8bcc4, -2px -2px 5px #ffffff;
-            border-radius: 12px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .timeline-item.completed .timeline-line {
-            background: #28a745;
-        }
-
-        .timeline-item.in_progress .timeline-line {
-            background: #ffc107;
-        }
-
-        .timeline-item.pending .timeline-line {
-            background: #6c757d;
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .timeline-line {
-            position: absolute;
-            width: 4px;
-            background: #b9b9b9;
-            top: 0;
-            height: 100%;
-            left: 45px;
-            z-index: 1;
-        }
-
-        .timeline::after {
-            content: none !important;
-        }
-
-        .timeline-item {
-            position: relative;
-            display: flex;
-            align-items: start;
-        }
-
-        .timeline-marker {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            box-shadow: inset 1px 1px 2px var(--shadow-dark), inset -1px -1px 2px var(--shadow-light);
-            position: relative;
-            z-index: 2;
-            background: white;
-            border: 4px solid #ccc;
-        }
-
-        .timeline-marker i {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .timeline-marker:hover i {
-            transform: scale(1.2);
-        }
-
-        .timeline-marker {
-            animation: fadeInScale 0.5s ease-in-out;
-        }
-
-        @keyframes fadeInScale {
-            0% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @media (max-width: 576px) {
-            .timeline {
-                padding-left: 15px;
-            }
-
-            .timeline-line {
-                left: 10px;
-            }
-
-            .timeline-marker {
-                left: -25px;
-                width: 24px;
-                height: 24px;
-                border-width: 3px;
-            }
-
-            .timeline-item {
-                flex-direction: column;
-                align-items: start;
-                text-align: start;
-                margin-left: 10px;
-            }
-
-            .timeline-content {
-                width: 100%;
-                max-width: 90%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('assets/css/detail.css') }}">
 @endsection
 
 @section('content')
     <section id="main-section" class="main-section bg-green-white">
         <div class="container pt-5 pb-5">
-            <h3 class="heading fw-bold" id="itemNameData"></h3>
-            <h6 class="subtitle h6 mb-3" id="codeData"></h6>
+            <div id="skeletonItemName" class="skeleton-text"></div>
+            <h3 class="heading fw-bold d-none" id="itemNameData"></h3>
+            <div id="skeletonCodeData" class="skeleton-text w-50"></div>
+            <h6 class="subtitle h6 mb-3 d-none" id="codeData"></h6>
             <hr>
             <div class="row">
                 <div class="col-md-7 mb-3">
                     <div id="carouselContainer" class="mb-3">
-                        <img id="imageData" src="{{ asset('assets/img/public/image_null.webp') }}" alt="Image Custom Design"
-                            class="img-fluid card-radius">
+                        <div id="skeletonLoader" class="skeleton-box"></div>
+                        <img id="imageData" src="" alt="Image Custom Design" class="img-fluid card-radius d-none">
                     </div>
                     <div class="d-flex gap-3">
                         <h6 class="fw-bold text-old-blue" id="statusData"></h6>
@@ -233,10 +68,24 @@
                 .then(response => response)
                 .catch(error => error.response);
 
-            if (getDataRest && getDataRest.status == 200) {
+                if (getDataRest && getDataRest.status == 200) {
+                let itemNameData = document.getElementById("itemNameData");
+                let codeData = document.getElementById("codeData");
+
+                let skeletonItemName = document.getElementById("skeletonItemName");
+                let skeletonCodeData = document.getElementById("skeletonCodeData");
+
+                itemNameData.innerText = getDataRest.data.data.item_name || "No Name";
+                codeData.innerText = getDataRest.data.data.code || "No Code";
+
+                skeletonItemName.remove();
+                skeletonCodeData.remove();
+
+                itemNameData.classList.remove("d-none");
+                codeData.classList.remove("d-none");
+
                 await setDetailData(getDataRest.data.data);
                 await handleViewTimeline();
-                // await uploadMultiImage();
                 await addListData();
             } else {
                 console.log(getDataRest);
@@ -272,6 +121,14 @@
                                         </div>
                                     `).join('')}
                             </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
                     `;
                     carouselContainer.innerHTML = carouselHTML;

@@ -13,6 +13,8 @@ class KatalogSeeder extends Seeder
      */
     public function run(): void
     {
+        $desc = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+
         Katalog::create([
             'item_name' => 'Park Bench',
             'code' => 'CDA001',
@@ -21,7 +23,7 @@ class KatalogSeeder extends Seeder
             'width' => 4,
             'height' => 2,
             'weight' => 6,
-            'desc' => 'Best Park Wood',
+            'desc' => $desc,
         ]);
 
         Katalog::create([
@@ -32,7 +34,7 @@ class KatalogSeeder extends Seeder
             'width' => 3,
             'height' => 1,
             'weight' => 3,
-            'desc' => 'Omaygoto',
+            'desc' => $desc,
         ]);
 
         Katalog::create([
@@ -43,7 +45,7 @@ class KatalogSeeder extends Seeder
             'width' => 5,
             'height' => 2.5,
             'weight' => 4,
-            'desc' => 'LoremPisum',
+            'desc' => $desc,
         ]);
 
         Katalog::create([
@@ -54,7 +56,7 @@ class KatalogSeeder extends Seeder
             'width' => 7,
             'height' => 2.5,
             'weight' => 7,
-            'desc' => 'Anime',
+            'desc' => $desc,
         ]);
     }
 }
