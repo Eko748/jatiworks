@@ -122,7 +122,7 @@
         let defaultAscending1 = 0
         let defaultSearch1 = ''
         let customFilter1 = {}
-        // let storageUrl = '{{ asset('storage/uploads/custom') }}'
+        let storageUrl = '{{ asset('storage/uploads/custom') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         function showErrorMessage(message, type = 'danger', showWhatsApp = false) {
