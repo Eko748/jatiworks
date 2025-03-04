@@ -86,12 +86,19 @@ class OrderController extends Controller
                 'price' => $item->price,
                 'status' => $item->status->label(),
                 'detail_url' => route('admin.order.detail', $item->id),
-                'file'       => $item->file->map(function ($file) {
-                    return [
-                        'id'        => $file->id,
-                        'file_name' => $file->file_name,
-                    ];
-                })
+                'file'       => $item->id_katalog
+                    ? ($item->katalog->file->map(function ($file) {
+                        return [
+                            'id'        => $file->id,
+                            'file_name' => $file->file_name,
+                        ];
+                    })->toArray())
+                    : ($item->file->map(function ($file) {
+                        return [
+                            'id'        => $file->id,
+                            'file_name' => $file->file_name,
+                        ];
+                    })->toArray())
             ];
         });
 
