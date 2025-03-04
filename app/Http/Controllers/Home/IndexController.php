@@ -54,7 +54,15 @@ class IndexController extends Controller
             'katalog',
             'user',
             'file'
-        ])->findOrFail($id);
+        ])
+            ->where('id', $id) // Cari order berdasarkan ID
+            ->where('id_user', auth()->id()) // Hanya yang sesuai dengan user login
+            ->first(); // Ambil hasil pertama
+
+        // Jika order tidak ditemukan (bukan milik user), maka tampilkan Forbidden
+        if (!$order) {
+            abort(403, 'Unauthorized access');
+        }
 
         $orderDetails = [
             'material' => $order->id_katalog === null ? $order->material : ($order->katalog->material ?? null),
