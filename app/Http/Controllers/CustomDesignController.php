@@ -39,7 +39,9 @@ class CustomDesignController extends Controller
         ])->with([
             'user:id,name,email',
             'user.profile:id,id_user,address,phone',
-            'file:id,file_name'
+            'file' => function($query) {
+                $query->select(['id', 'id_custom', 'file_name']);
+            }
         ]);
     }
 
@@ -240,7 +242,12 @@ class CustomDesignController extends Controller
                     'status'      => method_exists($item->status, 'label') ? $item->status->label() : $item->status,
                     'desc'        => $item->desc,
                     'buyer_name'  => optional($item->user)->name,
-                    'file'        => optional($item->file)->pluck('file_name')->toArray()
+                    'file'        => $item->file->map(function($file) {
+                        return [
+                            'id' => $file->id,
+                            'file_name' => $file->file_name
+                        ];
+                    })->toArray()
                 ];
             });
 
