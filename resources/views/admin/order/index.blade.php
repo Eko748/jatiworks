@@ -938,6 +938,538 @@
             });
         }
 
+        async function uploadMultiImage() {
+            let cropper;
+            let imageFiles = [];
+            let croppedImages = [];
+            let currentImageIndex = 0;
+
+            const imageInput = document.getElementById("imageInput");
+            const imagePreview = document.getElementById("imagePreview");
+            const cropImageModal = new bootstrap.Modal(document.getElementById("cropImageModal"));
+            const cropImageBtn = document.getElementById("cropImageBtn");
+            const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+            imageInput.addEventListener("change", function(event) {
+                const newFiles = Array.from(event.target.files);
+                imageFiles = [...imageFiles, ...newFiles];
+                if (newFiles.length > 0) {
+                    currentImageIndex = imageFiles.length - newFiles.length;
+                    showCropModal(imageFiles[currentImageIndex]);
+                }
+            });
+
+            function showCropModal(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    cropImageModal.show();
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    let containerWidth = Math.min(window.innerWidth * 0.9, 750);
+                    let containerHeight = (containerWidth / 750) * 400;
+
+                    setTimeout(() => {
+                        cropper = new Cropper(imagePreview, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            dragMode: "move",
+                            minCanvasWidth: containerWidth,
+                            minCanvasHeight: containerHeight,
+                            minContainerWidth: containerWidth,
+                            minContainerHeight: containerHeight,
+                            responsive: true,
+                            ready() {
+                                let containerData = cropper.getContainerData();
+                                cropper.setCanvasData({
+                                    left: 0,
+                                    top: 0,
+                                    width: containerWidth,
+                                    height: containerHeight
+                                });
+
+                                cropper.setCropBoxData({
+                                    left: containerData.width / 2 - containerWidth / 2,
+                                    top: containerData.height / 2 - containerHeight / 2,
+                                    width: containerWidth,
+                                    height: containerHeight
+                                });
+
+                                document.querySelector('.cropper-container').style.width =
+                                    containerWidth +
+                                    'px';
+                                document.querySelector('.cropper-container').style.height =
+                                    containerHeight +
+                                    'px';
+                            }
+                        });
+                    }, 100);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            cropImageBtn.addEventListener("click", function() {
+                if (!cropper) return;
+
+                cropper.getCroppedCanvas({
+                    width: 500,
+                    height: 500
+                }).toBlob(function(blob) {
+                    const index = croppedImages.length;
+                    croppedImages.push(blob);
+
+                    let wrapper = document.createElement("div");
+                    wrapper.classList.add("cropped-image-wrapper", "position-relative",
+                        "d-inline-block",
+                        "me-2");
+                    wrapper.style.width = "100px";
+                    wrapper.style.height = "100px";
+
+                    let imgElement = document.createElement("img");
+                    imgElement.src = URL.createObjectURL(blob);
+                    imgElement.classList.add("cropped-preview");
+                    imgElement.style.width = "100px";
+                    imgElement.style.height = "100px";
+                    imgElement.style.borderRadius = "5px";
+
+                    let deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "position-absolute");
+                    deleteBtn.style.top = "5px";
+                    deleteBtn.style.right = "5px";
+                    deleteBtn.style.borderRadius = "50%";
+                    deleteBtn.style.width = "20px";
+                    deleteBtn.style.height = "20px";
+                    deleteBtn.style.display = "flex";
+                    deleteBtn.style.alignItems = "center";
+                    deleteBtn.style.justifyContent = "center";
+
+                    deleteBtn.addEventListener("click", function() {
+                        croppedImages.splice(index, 1);
+                        wrapper.remove();
+                    });
+
+                    wrapper.appendChild(imgElement);
+                    wrapper.appendChild(deleteBtn);
+                    imagePreviewContainer.appendChild(wrapper);
+
+                    currentImageIndex++;
+                    if (currentImageIndex < imageFiles.length) {
+                        showCropModal(imageFiles[currentImageIndex]);
+                    } else {
+                        cropImageModal.hide();
+                        imageInput.value = "";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('cropImageModal');
+
+            if (modal && imageInput) {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    imageInput.value = '';
+                });
+            }
+        }
+
+        function resetForm() {
+            const form = document.getElementById("addDataForm");
+
+            if (!form) return;
+
+            form.reset();
+
+            form.querySelectorAll('.ss-main select').forEach(select => {
+                const instance = select.slim;
+                if (instance) {
+                    instance.set('');
+                }
+            });
+
+            form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+
+            const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
+            if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+
+            form.querySelectorAll("input[type='file']").forEach(input => {
+                input.value = '';
+            });
+        }
+
+        function dateRangeInput(isParameter) {
+            flatpickr(isParameter, {
+                mode: "range",
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                locale: "en"
+            });
+        }
+
+        function setMethodAddListData() {
+            let currentStep = 1;
+
+            document.querySelectorAll('input[name="catalogue_option"]').forEach((radio) => {
+                radio.addEventListener("change", function() {
+                    const container = document.getElementById("formContainer");
+                    container.innerHTML = "";
+                    const modalFooter = document.getElementById("btnContainer");
+
+                    document.querySelectorAll('input[name="catalogue_option"]').forEach((el) => {
+                        el.closest("label").classList.remove("active");
+                    });
+
+                    this.closest("label").classList.add("active");
+
+                    if (this.value === "with-catalogue") {
+                        renderWithCatalogue(container);
+                        modalFooter.innerHTML = `
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                </button>
+                                <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                    <i class="fas fa-save me-1"></i>Submit
+                                </button>
+                            </div>
+                        `;
+                    } else if (this.value === "without-catalogue") {
+                        modalCrop();
+                        renderWithoutCatalogue(container);
+                        setupWizardFooter(1, 4);
+                    }
+                });
+            });
+
+            function modalCrop() {
+                const modalCrop = document.getElementById('cropImageModal');
+                modalCrop.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content neumorphic-modal p-3">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Crop Image</h5>
+                            <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img id="imagePreview">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
+                                Upload</button>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            function renderWithCatalogue(container) {
+                container.innerHTML = `
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="id_user" class="form-label">Buyer</label>
+                            <select id="id_user" class="form-control neumorphic-card" name="id_user">
+                                ${getUserOptions()}
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="id_katalog" class="form-label">Catalogue</label>
+                            <select id="id_katalog" class="form-control neumorphic-card" name="id_katalog">
+                                ${getCatalogueOptions()}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="qty" class="form-label">Qty</label>
+                            <input type="number" class="form-control neumorphic-card" name="qty" placeholder="Enter qty">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control neumorphic-card" name="price" placeholder="Enter price">
+                        </div>
+                    </div>
+                `;
+                multiSelectData('#id_katalog', 'Select Catalogue');
+                multiSelectData('#id_user', 'Select User Buyer');
+            }
+
+            function renderWithoutCatalogue(container) {
+                const steps = [
+                    "Information Order",
+                    "Item Details",
+                    "Description Contents",
+                    "Upload Images"
+                ];
+
+                let navTabs = steps.map((step, index) => `
+                    <li class="nav-item">
+                        <button class="neumorphic-button text-green nav-link wizard-step ${index === 0 ? 'active' : ''}"
+                            data-step="${index + 1}">
+                            ${index + 1} . ${step}
+                        </button>
+                    </li>
+                `).join('');
+
+                let stepContents = [
+                    `<div class="wizard-content" id="step-1">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="id_user" class="form-label">Buyer</label>
+                                <select id="id_user" class="form-control required-input neumorphic-card" name="id_user">
+                                    ${getUserOptions()}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="qty" class="form-label">Qty</label>
+                                <input type="number" class="form-control required-input neumorphic-card" name="qty" placeholder="Enter qty">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">Price</label>
+                                <input type="number" class="form-control required-input neumorphic-card" name="price" placeholder="Enter price">
+                            </div>
+                        </div>
+                    </div>`,
+                    `<div class="wizard-content d-none" id="step-2">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="itemName" class="form-label fw-bold">Item Name</label>
+                                <input type="text" class="form-control required-input neumorphic-card" id="itemName"
+                                    name="item_name" placeholder="Enter item name" required>
+                            </div>
+                            <div class="col-md-9">
+                                <label for="material" class="form-label fw-bold">Material</label>
+                                <textarea class="form-control required-input neumorphic-card" id="material" name="material" rows="1"
+                                    placeholder="Enter material details" required></textarea>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="weight" class="form-label fw-bold">Weight (kg)</label>
+                                <input type="number" class="form-control required-input neumorphic-card" id="weight"
+                                    name="weight" placeholder="Enter weight" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Dimensions (L × W × H):</label>
+                                <div class="row g-2">
+                                    <div class="col-md-3">
+                                        <label for="length" class="form-label">Length</label>
+                                        <input type="number" step="0.01" class="form-control required-input neumorphic-card"
+                                            id="length" name="length" placeholder="Enter length" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="width" class="form-label">Width</label>
+                                        <input type="number" step="0.01" class="form-control required-input neumorphic-card"
+                                            id="width" name="width" placeholder="Enter width" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="height" class="form-label">Height</label>
+                                        <input type="number" step="0.01" class="form-control required-input neumorphic-card"
+                                            id="height" name="height" placeholder="Enter height" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="unit" class="form-label">Unit</label>
+                                        <select id="unit" class="form-control required-input neumorphic-card" name="unit"
+                                            required>
+                                            <option value="m">m (Meter)</option>
+                                            <option value="cm">cm (Centimeter)</option>
+                                            <option value="mm">mm (Milimeter)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`,
+                    `<div class="wizard-content d-none" id="step-3">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="desc" class="form-label fw-bold">Description</label>
+                                <textarea class="form-control required-input neumorphic-card" id="desc" name="desc" placeholder="Enter description"
+                                    required></textarea>
+                            </div>
+                        </div>
+                    </div>`,
+                    `<div class="wizard-content d-none" id="step-4">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="imageInput" class="form-label fw-bold">Upload Images</label>
+                                <input type="file" accept="image/*" class="form-control required-input neumorphic-card"
+                                    id="imageInput" multiple>
+                                <small class="neu-text">You can upload multiple images</small>
+                                <div id="imagePreviewContainer" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>`
+                ].join('');
+
+                container.innerHTML = `
+                    <ul class="nav nav-tabs border-0 mb-3 gap-2" id="wizardTabs">
+                        ${navTabs}
+                    </ul>
+                    <hr>
+                    ${stepContents}
+                `;
+
+                initWizard(steps.length);
+                multiSelectData('#id_user', 'Select User Buyer');
+                multiSelectData('#unit', 'Select Unit');
+                uploadMultiImage();
+            }
+
+            function initWizard(totalSteps) {
+                currentStep = 1;
+                setupWizardFooter(currentStep, totalSteps);
+
+                document.getElementById("wizardTabs").addEventListener("click", function(event) {
+                    if (event.target.classList.contains("wizard-step")) {
+                        event.preventDefault();
+                        let step = parseInt(event.target.dataset.step);
+
+                        if (step !== currentStep) {
+                            document.getElementById(`step-${currentStep}`).classList.add("d-none");
+                            document.getElementById(`step-${step}`).classList.remove("d-none");
+
+                            document.querySelectorAll(".wizard-step").forEach(btn => btn.classList.remove(
+                                "active"));
+                            event.target.classList.add("active");
+
+                            currentStep = step;
+                            setupWizardFooter(currentStep, totalSteps);
+                        }
+                    }
+                });
+
+                document.addEventListener("click", function(event) {
+                    if (event.target.id === "nextBtn" && currentStep < totalSteps) {
+                        document.getElementById(`step-${currentStep}`).classList.add("d-none");
+                        currentStep++;
+                        document.getElementById(`step-${currentStep}`).classList.remove("d-none");
+
+                        document.querySelectorAll(".wizard-step").forEach(btn => btn.classList.remove("active"));
+                        document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add("active");
+
+                        setupWizardFooter(currentStep, totalSteps);
+                    }
+
+                    if (event.target.id === "prevBtn" && currentStep > 1) {
+                        document.getElementById(`step-${currentStep}`).classList.add("d-none");
+                        currentStep--;
+                        document.getElementById(`step-${currentStep}`).classList.remove("d-none");
+
+                        document.querySelectorAll(".wizard-step").forEach(btn => btn.classList.remove("active"));
+                        document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add("active");
+
+                        setupWizardFooter(currentStep, totalSteps);
+                    }
+                });
+            }
+
+
+            function setupWizardFooter(currentStep, totalSteps = 4) {
+                const modalFooter = document.querySelector(".modal-footer");
+
+                modalFooter.innerHTML = `
+                    <div class="d-flex justify-content-between w-100">
+                        <div>
+                            ${currentStep > 1 ? `
+                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                </button>` : ''
+                        }
+                        </div>
+                        <div class="d-flex gap-2">
+                            ${currentStep < totalSteps ? `
+                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                        <i class="fas fa-forward me-1"></i>Next
+                                                                                                                    </button>` : ''
+                            }
+                            ${currentStep === totalSteps ? `
+                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                    </button>
+                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                        <i class="fas fa-save me-1"></i>Submit
+                                                                                                                    </button>
+                                                                                                                ` : ''
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+
+            function getUserOptions() {
+                return `
+                @foreach ($user as $usr)
+                    <option value="{{ $usr->id }}">{{ $usr->name }}</option>
+                @endforeach`;
+            }
+
+            function getCatalogueOptions() {
+                return `
+                @foreach ($katalog as $cat)
+                    <option value="{{ $cat->id }}">{{ $cat->item_name }}</option>
+                @endforeach`;
+            }
+        }
+
+        async function addListData() {
+            document.getElementById("addDataForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const saveButton = document.getElementById('submitBtn');
+                if (saveButton.disabled) return;
+
+                await confirmSubmitData(saveButton);
+
+                const originalContent = saveButton.innerHTML;
+                const formData = new FormData(document.getElementById('addDataForm'));
+                const croppedImages = document.querySelectorAll('.cropped-preview');
+
+                try {
+                    await Promise.all(
+                        Array.from(croppedImages).map(async (img, index) => {
+                            const response = await fetch(img.src);
+                            const blob = await response.blob();
+
+                            const now = new Date();
+                            const timestamp =
+                                `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
+
+                            const fileName = `${timestamp}_${index}.png`.replace(/\s+/g, '');
+                            formData.append(`file[]`, blob, fileName);
+                        })
+                    );
+
+                    const postData = await restAPI('POST', '{{ route('admin.order.store') }}', formData);
+
+                    if (postData.status >= 200 && postData.status < 300) {
+                        await notyf.success('Data saved successfully.');
+
+                        setTimeout(async () => {
+                            await getListData(defaultLimitPage, currentPage, defaultAscending,
+                                defaultSearch, customFilter);
+                        }, 1000);
+
+                        const modalElement = document.getElementById('addDataModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            await modalInstance.hide();
+                        }
+
+                        await resetForm();
+                    } else {
+                        notyf.error('An error occurred while saving data.');
+                    }
+                } catch (error) {
+                    notyf.error('Failed to save data. Please try again.');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = originalContent;
+                }
+            });
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,

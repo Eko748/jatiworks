@@ -292,7 +292,7 @@
                     </div>
                     <div class="mt-3">
                         <div class="d-flex flex-wrap gap-1 justify-content-end">
-                            <a href="{{ route('index.order.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Read More...</a>
+                            <a href="/order/detail/${element.id}" class="btn btn-sm btn-success">Read More...</a>
                         </div>
                     </div>
                 </div>

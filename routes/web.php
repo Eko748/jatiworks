@@ -87,8 +87,8 @@ Route::get('/catalogue-detail', [IndexController::class, 'detailCatalogue'])->na
 Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign.index');
 Route::get('/custom-design-detail', [IndexController::class, 'detailCustomDesign'])->name('index.customdesign.detail');
 Route::get('/order', [IndexController::class, 'indexOrder'])->name('index.order.index');
-Route::get('/orderdetail', [IndexController::class, 'indexOrderDetail'])->name('index.order.detail');
 
+Route::get('/order/detail/{id}', [IndexController::class, 'detailOrder'])->name('index.order.detail');
 Route::get('/dataorder', [OrderController::class, 'getdataorder'])->name('dataorder');
 Route::get('/dataorder/{id}', [OrderController::class, 'detail'])->name('dataorder.detail');
 Route::get('/datadetailorder', [OrderController::class, 'detail'])->name('datadetailorder');

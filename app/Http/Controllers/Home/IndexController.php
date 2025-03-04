@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Enums\OrderStatus;
 
 class IndexController extends Controller
 {
@@ -43,9 +45,27 @@ class IndexController extends Controller
         return view('buyer.pages.order.index', compact('title'));
     }
 
-    public function indexOrdeDetail()
+    public function detailOrder($id)
     {
-        $title = 'Detail Order';
-        return view('buyer.pages.order.detail', compact('title'));
+        $order = Order::with([
+            'orderTracking.trackingStep' => function ($query) {
+                $query->orderBy('step_order', 'asc');
+            },
+            'katalog',
+            'user',
+            'file'
+        ])->findOrFail($id);
+
+        $orderDetails = [
+            'material' => $order->id_katalog === null ? $order->material : ($order->katalog->material ?? null),
+            'length' => $order->id_katalog === null ? $order->length : ($order->katalog->length ?? null),
+            'width' => $order->id_katalog === null ? $order->width : ($order->katalog->width ?? null),
+            'height' => $order->id_katalog === null ? $order->height : ($order->katalog->height ?? null),
+            'weight' => $order->id_katalog === null ? $order->weight : ($order->katalog->weight ?? null),
+            'unit' => $order->id_katalog === null ? $order->unit : ($order->katalog->unit ?? null),
+            'desc' => $order->id_katalog === null ? $order->desc : ($order->katalog->desc ?? null)
+        ];
+
+        return view('buyer.pages.order.detail', compact('order', 'orderDetails'));
     }
 }
