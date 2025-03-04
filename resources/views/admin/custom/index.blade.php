@@ -126,6 +126,9 @@
                             <div class="col-md-12">
                                 <label for="id_user" class="form-label">Buyer</label>
                                 <select id="id_user" class="form-control neumorphic-card" name="id_user">
+                                    @foreach ($user as $usr)
+                                        <option value="{{ $usr->id }}">{{ $usr->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -210,7 +213,7 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
-        let storageUrl = '{{ asset('storage/uploads/custom/') }}'
+        let storageUrl = '{{ asset('storage/uploads/custom') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
@@ -284,8 +287,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                <li><a class="dropdown-item" href="#" onclick="updateStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                            `).join('')}
+                                                        <li><a class="dropdown-item" href="#" onclick="updateStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                    `).join('')}
                     </ul>
                 </div>
             ` :
@@ -341,19 +344,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                </div>
-                                            `).join('')}
+                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                    </div>
+                                `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                <i class="fas fa-circle-chevron-left fs-3"></i>
-                                            </button>
-                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                <i class="fas fa-circle-chevron-right fs-3"></i>
-                                            </button>
-                                        ` : ''}
+                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                </button>
+                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                </button>
+                            ` : ''}
                     </div>
                 `;
 
