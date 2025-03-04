@@ -86,8 +86,12 @@ Route::get('/catalogue', [IndexController::class, 'indexCatalogue'])->name('inde
 Route::get('/catalogue-detail', [IndexController::class, 'detailCatalogue'])->name('index.catalogue.detail');
 Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign.index');
 Route::get('/custom-design-detail', [IndexController::class, 'detailCustomDesign'])->name('index.customdesign.detail');
-Route::get('/order', [IndexController::class, 'indexCustomDesign'])->name('index.order.index');
+Route::get('/order', [IndexController::class, 'indexOrder'])->name('index.order.index');
+Route::get('/orderdetail', [IndexController::class, 'indexOrderDetail'])->name('index.order.detail');
 
+Route::get('/dataorder', [OrderController::class, 'getdataorder'])->name('dataorder');
+Route::get('/dataorder/{id}', [OrderController::class, 'detail'])->name('dataorder.detail');
+Route::get('/datadetailorder', [OrderController::class, 'detail'])->name('datadetailorder');
 Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('datakatalog');
 Route::get('/datadesign', [CustomDesignController::class, 'getdatadesign'])->name('datadesign');
 Route::get('/datadesign-detail', [CustomDesignController::class, 'getDetailDataDesign'])->name('datadesign.detail');

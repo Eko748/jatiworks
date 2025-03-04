@@ -125,7 +125,7 @@
         let defaultAscending1 = 0
         let defaultSearch1 = ''
         let customFilter1 = {}
-        let storageUrlCatalogue = '{{ asset('storage/uploads/katalog') }}'
+        let storageUrlOrder = '{{ asset('storage/uploads/order') }}'
 
         function showErrorMessage(message) {
             let catalogueData = document.getElementById("catalogue-data");
@@ -136,11 +136,12 @@
             `;
         }
 
-        async function getListDataCatalogue(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getListDataOrder(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
                 limit: limit,
                 ascending: ascending,
+                user_id: '{{ Auth::id() }}',
                 ...customFilter
             };
 
@@ -148,15 +149,15 @@
                 requestParams.search = search;
             }
 
-            let getDataRest = await restAPI('GET', '{{ route('datakatalog') }}', requestParams)
+            let getDataRest = await restAPI('GET', '{{ route('dataorder') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleListDataCatalogue(item))
+                    getDataRest.data.data.map(async item => await handleListDataOrder(item))
                 )
-                await setListDataCatalogue(handleDataArray, getDataRest.data.pagination)
+                await setListDataOrder(handleDataArray, getDataRest.data.pagination)
             } else {
                 let errorMessage = "Data gagal dimuat";
                 if (getDataRest && getDataRest.data && getDataRest.data.message) {
@@ -167,21 +168,58 @@
             }
         }
 
-        async function handleListDataCatalogue(data) {
+        async function handleListDataOrder(data) {
+            let statusMapping = {
+                'Payment Completed': {
+                    class: 'text-green border-success neumorphic-button',
+                    icon: '<i class="fas fa-check-circle"></i>',
+                    dropdown: false
+                },
+                'Waiting for Payment': {
+                    class: 'text-info border-info neumorphic-button',
+                    icon: '<i class="fas fa-clock"></i>',
+                    dropdown: [{
+                            text: 'Not Completed',
+                            value: 'NC'
+                        },
+                        {
+                            text: 'Payment Completed',
+                            value: 'PC'
+                        }
+                    ]
+                },
+                'Not Completed': {
+                    class: 'text-warning border-warning neumorphic-button',
+                    icon: '<i class="fas fa-times-circle"></i>',
+                    dropdown: [{
+                        text: 'Payment Completed',
+                        value: 'PC'
+                    }]
+                }
+            };
+
+            let statusData = statusMapping[data.status] || {
+                class: 'text-secondary border-secondary',
+                icon: '<i class="fas fa-question-circle"></i>',
+                dropdown: false
+            };
+
+            let statusHtml = `<span class="${statusData.class}">${statusData.icon} ${data.status}</span>`;
+            let images = data.images || [];
+
             return {
                 id: data?.id ?? '-',
+                buyer_name: data?.buyer_name ?? '-',
                 item_name: data?.item_name ?? '-',
-                material: data?.material ?? '-',
-                unit: data?.unit ?? '-',
-                weight: data?.weight ?? '-',
-                code: data?.code ?? '-',
-                dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
-                category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
-                images: data?.file.length ? data.file.map(f => f.file_name) : []
+                code_order: data?.code_order ?? '-',
+                qty: data?.qty ?? '-',
+                price: data?.price ?? '-',
+                status: statusHtml,
+                images: images
             };
         }
 
-        async function setListDataCatalogue(dataList, pagination) {
+        async function setListDataOrder(dataList, pagination) {
             totalPage1 = pagination.total_pages;
             currentPage1 = pagination.current_page;
             let display_from = (pagination.per_page * (currentPage1 - 1)) + 1;
@@ -222,36 +260,39 @@
                 <div class="card-body d-flex flex-column">
                     ${imageCarousel}
                     <div class="mt-2">
-                        <small class="text-white">Code: ${element.code}</small>
+                        <small class="text-white">Code: ${element.code_order}</small>
                         <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
                             ${element.item_name}
                         </h5>
                     </div>
                     <hr class="my-0 mb-2 mt-1 text-white">
                     <div class="d-flex align-items-start">
-                        <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
+                        <i class="bi bi-person h6 me-1 fw-bold text-white"></i>
                         <p class="h6 fw-bold text-white mb-0 flex-grow-1">
-                            Material: ${element.material}
+                            Buyer: ${element.buyer_name}
                         </p>
                     </div>
-                    <div class="text-white mt-3">
-                        <p class="fw-bold mb-1">Dimensions & Weight:</p>
-                        <div class="d-grid gap-1">
-                            <div>📏 Length: <span class="fw-bold">${element.dimensions.split(' x ')[0]}${element.unit}</span></div>
-                            <div>📐 Width: <span class="fw-bold">${element.dimensions.split(' x ')[1]}${element.unit}</span></div>
-                            <div>📏 Height: <span class="fw-bold">${element.dimensions.split(' x ')[2]}${element.unit}</span></div>
-                            <div>⚖️ Weight: <span class="fw-bold">${element.weight}kg</span></div>
-                        </div>
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
+                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                            Qty: ${element.qty}
+                        </p>
                     </div>
-                    <div class="mt-3">
-                        <p class="fw-bold text-white mb-1">Category:</p>
-                        <div class="d-flex flex-wrap gap-1">
-                            ${element.category.split(', ').map(cat => `<span class="badge bg-light text-dark">${cat}</span>`).join('')}
-                        </div>
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-currency-dollar h6 me-1 fw-bold text-white"></i>
+                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                            Price: Rp ${element.price.toLocaleString('id-ID')}
+                        </p>
+                    </div>
+<div class="d-flex align-items-start">
+                        <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
+                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                            Status: ${element.status}
+                        </p>
                     </div>
                     <div class="mt-3">
                         <div class="d-flex flex-wrap gap-1 justify-content-end">
-                            <a href="{{ route('index.catalogue.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Read More...</a>
+                            <a href="{{ route('index.order.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Read More...</a>
                         </div>
                     </div>
                 </div>
@@ -333,7 +374,7 @@
                     const newPage = parseInt(e.target.closest('button').dataset.page);
                     if (!isNaN(newPage)) {
                         currentPage1 = newPage;
-                        await getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1,
+                        await getListDataOrder(defaultLimitPage1, currentPage1, defaultAscending1,
                             defaultSearch1,
                             customFilter1);
                     }
@@ -345,7 +386,7 @@
             document.getElementById('limitPage').addEventListener('change', async function() {
                 defaultLimitPage1 = parseInt(this.value);
                 currentPage1 = 1;
-                await getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1,
+                await getListDataOrder(defaultLimitPage1, currentPage1, defaultAscending1,
                     defaultSearch1,
                     customFilter1);
             });
@@ -354,7 +395,7 @@
                 input.addEventListener('input', debounce(async () => {
                     defaultSearch1 = input.value;
                     currentPage1 = 1;
-                    await getListDataCatalogue(defaultLimitPage1, currentPage1,
+                    await getListDataOrder(defaultLimitPage1, currentPage1,
                         defaultAscending1, defaultSearch1,
                         customFilter1);
                 }, 500));
@@ -371,7 +412,7 @@
 
         async function initPageLoad() {
             await Promise.all([
-                getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
+                getListDataOrder(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
                     customFilter1),
                 searchListDataCatalogue(),
             ])

@@ -42,4 +42,10 @@ class IndexController extends Controller
         $title = 'Order';
         return view('buyer.pages.order.index', compact('title'));
     }
+
+    public function indexOrdeDetail()
+    {
+        $title = 'Detail Order';
+        return view('buyer.pages.order.detail', compact('title'));
+    }
 }

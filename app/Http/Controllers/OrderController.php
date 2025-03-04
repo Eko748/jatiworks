@@ -41,6 +41,11 @@ class OrderController extends Controller
 
         $query = Order::with(['katalog', 'user'])->orderBy('id', $meta['orderBy']);
 
+        // Add user_id filter
+        if ($request->has('user_id')) {
+            $query->where('id_user', $request->user_id);
+        }
+
         if (!empty($request['search'])) {
             $searchTerm = trim(strtolower($request['search']));
             $query->where(function ($query) use ($searchTerm) {
