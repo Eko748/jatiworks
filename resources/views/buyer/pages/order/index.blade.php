@@ -70,8 +70,8 @@
 @section('content')
     <section id="catalogue-section" class="catalogue-section bg-green-white">
         <div class="container pt-5 pb-5">
-            <h3 class="heading fw-bold">Our Collection</h3>
-            <h6 class="subtitle h6 mb-5">Explore Our Collection: Timeless Craftsmanship, Global Quality</h6>
+            <h3 class="heading fw-bold">Your Order</h3>
+            <h6 class="subtitle h6 mb-5"> </h6>
             <div class="d-flex align-items-center gap-1 flex-wrap">
                 <button type="button" id="toggleFilter" class="filter-data btn-success btn btn-md" data-bs-toggle="collapse"
                     data-bs-target="#filterContainer">
@@ -279,7 +279,7 @@
                         <div class="d-flex align-items-start">
                             <i class="bi bi-currency-dollar h6 me-1 fw-bold text-white"></i>
                             <p class="h6 fw-bold text-white mb-0 flex-grow-1">
-                                Price: Rp ${element.price.toLocaleString('id-ID')}
+                                Price: ${element.price.toLocaleString('id-ID')}
                             </p>
                         </div>
                         <div class="d-flex align-items-start">

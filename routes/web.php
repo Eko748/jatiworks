@@ -148,6 +148,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
 
     // Custom Design Management
     Route::get('/design', [CustomDesignController::class, 'index'])->name('admin.custom.index');
+    Route::post('/custom-store', [CustomDesignController::class, 'store'])->name('admin.custom.store');
     Route::get('/getdatadesign', [CustomDesignController::class, 'getdatadesign'])->name('getdatadesign');
     Route::put('/design/update-status', [CustomDesignController::class, 'updateStatus'])->name('custom.updateStatus');
     Route::put('/design/update-tracking', [CustomDesignController::class, 'updateTrackingStep'])->name('custom.updateTracking');

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\File;
 
 class CustomDesignController extends Controller
 {
@@ -45,13 +46,14 @@ class CustomDesignController extends Controller
     public function index()
     {
         $title = $this->title[0];
+        $user = User::where('id_role', 2)->get();
 
         $status = array_combine(
             array_map(fn($status) => $status->value, OrderStatus::cases()),
             array_map(fn($status) => $status->label(), OrderStatus::cases())
         );
 
-        return view('admin.custom.index', compact('title', 'status'));
+        return view('admin.custom.index', compact('title', 'status', 'user'));
     }
 
     public function detail()
@@ -59,6 +61,67 @@ class CustomDesignController extends Controller
         $title = $this->title[0];
 
         return view('admin.custom.detail', compact('title'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $request->validate([
+                'id_user' => 'required|integer|exists:users,id',
+                'item_name' => 'required|string|max:255',
+                'price' => 'required|numeric|min:0',
+                'desc' => 'required|string',
+                'file.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+            ]);
+
+            $customDesign = CustomDesign::create([
+                'id_user' => $request->id_user,
+                'item_name' => $request->item_name,
+                'price' => $request->price,
+                'desc' => $request->desc
+            ]);
+
+            // Generate code_design
+            $design_id = $customDesign->id;
+            $id_user_str = (string) $request->id_user;
+            $total_length = strlen($id_user_str);
+            $random_length = max(0, 6 - $total_length);
+            $random_number = str_pad(mt_rand(0, pow(10, $random_length) - 1), $random_length, '0', STR_PAD_LEFT);
+            $code_design = $id_user_str . $design_id . $random_number;
+            $customDesign->update(['code_design' => $code_design]);
+
+            // Handle file uploads
+            if ($request->hasFile('file')) {
+                foreach ($request->file('file') as $file) {
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('uploads/custom', $filename, 'public');
+
+                    File::create([
+                        'id_custom' => $customDesign->id,
+                        'file_name' => $filename
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status_code' => 201,
+                'message' => 'Custom design successfully created!',
+                'data' => $customDesign->load('file')
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors' => true,
+                'message' => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getDetailDataDesign(Request $request)
