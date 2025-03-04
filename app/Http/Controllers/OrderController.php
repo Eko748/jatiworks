@@ -102,13 +102,13 @@ class OrderController extends Controller
                     ? ($item->katalog->file->map(function ($file) {
                         return [
                             'id'        => $file->id,
-                            'file_name' => $file->file_name,
+                            'file_name' => 'storage/uploads/katalog/' . $file->file_name,
                         ];
                     })->toArray())
                     : ($item->file->map(function ($file) {
                         return [
                             'id'        => $file->id,
-                            'file_name' => $file->file_name,
+                            'file_name' => 'storage/uploads/order/' . $file->file_name,
                         ];
                     })->toArray())
             ];
