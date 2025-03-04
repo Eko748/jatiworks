@@ -132,19 +132,21 @@
             <div class="row">
                 <div class="col-md-7 mb-3">
                     @php
-                        // Path ke folder penyimpanan gambar dan gambar default jika tidak ada
-                        $storageUrl = asset('storage/uploads/order');
                         $imageNullUrl = asset('assets/img/public/image_null.webp');
 
-                        // Ambil gambar dari order->files atau gunakan gambar default jika kosong
-                        $files = $order->file ?? [];
-                        // dd($files);
+                        if ($order->id_katalog) {
+                            $storageUrl = asset('storage/uploads/katalog');
+                            $files = $order->katalog->file ?? [];
+                        } else {
+                            $storageUrl = asset('storage/uploads/order');
+                            $files = $order->file ?? [];
+                        }
+
                         $images =
                             count($files) > 0
                                 ? collect($files)->map(fn($file) => "{$storageUrl}/{$file->file_name}")->toArray()
                                 : [$imageNullUrl];
                     @endphp
-
                     <div id="carouselContainer" class="mb-3">
                         <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
