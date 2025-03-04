@@ -876,7 +876,7 @@
             function getCatalogueOptions() {
                 return `
                 @foreach ($katalog as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->item_name }}</option>
+                    <option value="{{ $cat->id }}">{{ $cat->code }}/{{ $cat->item_name }}</option>
                 @endforeach`;
             }
         }
@@ -1408,7 +1408,7 @@
             function getCatalogueOptions() {
                 return `
                 @foreach ($katalog as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->item_name }}</option>
+                    <option value="{{ $cat->id }}">{{ $cat->code }} / {{ $cat->item_name }}</option>
                 @endforeach`;
             }
         }

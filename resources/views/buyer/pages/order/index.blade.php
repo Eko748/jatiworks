@@ -125,7 +125,8 @@
         let defaultAscending1 = 0
         let defaultSearch1 = ''
         let customFilter1 = {}
-        let storageUrlOrder = '{{ asset('storage/uploads/order') }}'
+        let storageUrl = '{{ asset('storage/uploads/order') }}'
+        let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         function showErrorMessage(message) {
             let catalogueData = document.getElementById("catalogue-data");
@@ -205,7 +206,7 @@
             };
 
             let statusHtml = `<span class="${statusData.class}">${statusData.icon} ${data.status}</span>`;
-            let images = data.images || [];
+            let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
             return {
                 id: data?.id ?? '-',
@@ -215,7 +216,7 @@
                 qty: data?.qty ?? '-',
                 price: data?.price ?? '-',
                 status: statusHtml,
-                images: images
+                images
             };
         }
 
@@ -231,72 +232,69 @@
                 let carouselId = `carousel${element.id}-${index}`;
 
                 let imageCarousel = element.images.length ? `
-            <div class="position-relative w-100 overflow-hidden">
-                <div class="ribbon ribbon-top-right" style="position: absolute; top: -8px; right: -8px; z-index: 10;">
-                    <span>New</span>
-                </div>
-                <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner" style="height: 300px;">
-                        ${element.images.map((img, i) => `
-                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                <img src="${storageUrlOrder}/${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                    <div class="position-relative w-100 overflow-hidden">
+                        <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" style="height: 300px;">
+                                ${element.images.map((img, i) => `
+                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                                    </div>
+                                                `).join('')}
                             </div>
-                        `).join('')}
-                    </div>
-                    ${element.images.length > 1 ? `
-                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
-                    ` : ''}
-                </div>
-            </div>
-        ` : '-';
-
-                getDataHtml += `
-            <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 300px;">
-                <div class="card-body d-flex flex-column">
-                    ${imageCarousel}
-                    <div class="mt-2">
-                        <small class="text-white">Code: ${element.code_order}</small>
-                        <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
-                            ${element.item_name}
-                        </h5>
-                    </div>
-                    <hr class="my-0 mb-2 mt-1 text-white">
-                    <div class="d-flex align-items-start">
-                        <i class="bi bi-person h6 me-1 fw-bold text-white"></i>
-                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
-                            Buyer: ${element.buyer_name}
-                        </p>
-                    </div>
-                    <div class="d-flex align-items-start">
-                        <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
-                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
-                            Qty: ${element.qty}
-                        </p>
-                    </div>
-                    <div class="d-flex align-items-start">
-                        <i class="bi bi-currency-dollar h6 me-1 fw-bold text-white"></i>
-                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
-                            Price: Rp ${element.price.toLocaleString('id-ID')}
-                        </p>
-                    </div>
-<div class="d-flex align-items-start">
-                        <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
-                        <p class="h6 fw-bold text-white mb-0 flex-grow-1">
-                            Status: ${element.status}
-                        </p>
-                    </div>
-                    <div class="mt-3">
-                        <div class="d-flex flex-wrap gap-1 justify-content-end">
-                            <a href="/order/detail/${element.id}" class="btn btn-sm btn-success">Read More...</a>
+                            ${element.images.length > 1 ? `
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                            ` : ''}
                         </div>
                     </div>
-                </div>
-            </div>`;
+                ` : '-';
+
+                getDataHtml += `
+                <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 300px;">
+                    <div class="card-body d-flex flex-column">
+                        ${imageCarousel}
+                        <div class="mt-2">
+                            <small class="text-white">Code: ${element.code_order}</small>
+                            <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
+                                ${element.item_name}
+                            </h5>
+                        </div>
+                        <hr class="my-0 mb-2 mt-1 text-white">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-person h6 me-1 fw-bold text-white"></i>
+                            <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                                Buyer: ${element.buyer_name}
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
+                            <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                                Qty: ${element.qty}
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-currency-dollar h6 me-1 fw-bold text-white"></i>
+                            <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                                Price: Rp ${element.price.toLocaleString('id-ID')}
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
+                            <p class="h6 fw-bold text-white mb-0 flex-grow-1">
+                                Status: ${element.status}
+                            </p>
+                        </div>
+                        <div class="mt-3">
+                            <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                <a href="/order/detail/${element.id}" class="btn btn-sm btn-success">Read More...</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             });
 
             document.getElementById('catalogue-data').innerHTML = getDataHtml;

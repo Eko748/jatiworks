@@ -133,40 +133,38 @@
                 <div class="col-md-7 mb-3">
                     @php
                         // Path ke folder penyimpanan gambar dan gambar default jika tidak ada
-                        $storageUrl = asset('storage/uploads/order/');
+                        $storageUrl = asset('storage/uploads/order');
                         $imageNullUrl = asset('assets/img/public/image_null.webp');
 
                         // Ambil gambar dari order->files atau gunakan gambar default jika kosong
-                        $files = $order->files ?? [];
+                        $files = $order->file ?? [];
+                        // dd($files);
                         $images =
                             count($files) > 0
-                                ? collect($files)->map(fn($file) => "{$storageUrl}/{$file->name}")->toArray()
+                                ? collect($files)->map(fn($file) => "{$storageUrl}/{$file->file_name}")->toArray()
                                 : [$imageNullUrl];
                     @endphp
 
                     <div id="carouselContainer" class="mb-3">
-                        <div id="orderImageCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner rounded-3">
+                        <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
                                 @foreach ($images as $index => $image)
                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                        <img src="{{ $image }}" class="d-block w-100"
-                                            alt="Order Image {{ $index + 1 }}" style="object-fit: cover; height: 400px;">
+                                        <img src="{{ $image }}" class="d-block w-100 img-fluid card-radius"
+                                            alt="Slide {{ $index === 0 ? 'active' : '' }}">
                                     </div>
                                 @endforeach
                             </div>
-
-                            @if (count($images) > 1)
-                                <button class="carousel-control-prev" type="button" data-bs-target="#orderImageCarousel"
-                                    data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#orderImageCarousel"
-                                    data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            @endif
+                            <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
                     </div>
 
@@ -330,6 +328,11 @@
                 console.log("Opening Modal..."); // Debugging
                 modal.show();
             });
+        });
+
+        let carousel = new bootstrap.Carousel(document.getElementById('imageCarousel'), {
+            interval: 2000,
+            ride: "carousel"
         });
     });
 </script>

@@ -228,69 +228,69 @@
                 let shortDesc = element.desc.length > 40 ? element.desc.substring(0, 40) + "..." : element.desc;
 
                 let imageCarousel = element.images.length ? `
-            <div class="position-relative w-100 overflow-hidden">
-                <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner" style="height: 300px;">
-                        ${element.images.map((img, i) => `
-                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                            </div>
-                                        `).join('')}
+                    <div class="position-relative w-100 overflow-hidden">
+                        <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" style="height: 300px;">
+                                ${element.images.map((img, i) => `
+                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                                    </div>
+                                                `).join('')}
+                            </div>
+                            ${element.images.length > 1 ? `
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                            ` : ''}
+                        </div>
                     </div>
-                    ${element.images.length > 1 ? `
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon"></span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon"></span>
-                                        </button>
-                                    ` : ''}
-                </div>
-            </div>
-        ` : '-';
+                ` : '-';
 
                 getDataHtml += `
-        <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 300px;">
-            <div class="card-body d-flex flex-column">
-                ${imageCarousel}
-                <div>
-                    <small class="text-white">Code: ${element.code}</small>
-                    <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">${element.item_name}</h5>
-                </div>
-                <hr class="my-0 mb-2 mt-1 text-white">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-credit-card h6 me-1 fw-bold text-white"></i>
-                        <span class="h6 fw-bold text-white">Status:</span>
+                <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 300px;">
+                    <div class="card-body d-flex flex-column">
+                        ${imageCarousel}
+                        <div>
+                            <small class="text-white">Code: ${element.code}</small>
+                            <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">${element.item_name}</h5>
+                        </div>
+                        <hr class="my-0 mb-2 mt-1 text-white">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-credit-card h6 me-1 fw-bold text-white"></i>
+                                <span class="h6 fw-bold text-white">Status:</span>
+                            </div>
+                            <p class="h6 fw-bold text-white mb-0">${element.status}</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-cash-stack h6 me-1 fw-bold text-white"></i>
+                                <span class="h6 fw-bold text-white">Price:</span>
+                            </div>
+                            <p class="h6 fw-bold text-white mb-0"><span class="badge bg-primary h6"><i class="bi bi-currency-dollar fw-bold text-white"></i>${element.price}</span></p>
+                        </div>
+                        <div class="mt-3">
+                            <p class="fw-bold text-white mb-1">Description:</p>
+                            <p class="text-white desc-short"
+                                data-full="${element.desc}"
+                                data-short="${shortDesc}"
+                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${shortDesc}
+                            </p>
+                            ${element.desc.length > 20 ? `
+                                                <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
+                                            ` : ''}
+                        </div>
+                        <div class="mt-3">
+                            <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                <a href="{{ route('index.customdesign.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Show Detail...</a>
+                            </div>
+                        </div>
                     </div>
-                    <p class="h6 fw-bold text-white mb-0">${element.status}</p>
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-cash-stack h6 me-1 fw-bold text-white"></i>
-                        <span class="h6 fw-bold text-white">Price:</span>
-                    </div>
-                    <p class="h6 fw-bold text-white mb-0"><span class="badge bg-primary h6"><i class="bi bi-currency-dollar fw-bold text-white"></i>${element.price}</span></p>
-                </div>
-                <div class="mt-3">
-                    <p class="fw-bold text-white mb-1">Description:</p>
-                    <p class="text-white desc-short"
-                        data-full="${element.desc}"
-                        data-short="${shortDesc}"
-                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${shortDesc}
-                    </p>
-                    ${element.desc.length > 20 ? `
-                                        <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
-                                    ` : ''}
-                </div>
-                <div class="mt-3">
-                    <div class="d-flex flex-wrap gap-1 justify-content-end">
-                        <a href="{{ route('index.customdesign.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Show Detail...</a>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+                </div>`;
             });
 
             document.getElementById('listData').innerHTML = getDataHtml;
