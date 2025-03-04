@@ -275,7 +275,7 @@
                     <div class="card-body d-flex flex-column">
                         ${imageCarousel}
                         <div class="mt-2">
-                            <small class="text-white">Code: ${element.code_order}</small>
+                            <small class="text-white">Code Order: ${element.code_order}</small>
                             <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
                                 ${element.item_name}
                             </h5>

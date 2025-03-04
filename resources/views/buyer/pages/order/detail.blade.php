@@ -178,16 +178,27 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-3">
-                        <h6 class="fw-bold text-old-blue">
-                            <span class="badge {{ $order->status === 'PC' ? 'bg-success' : 'bg-warning' }}">
-                                {{ $order->status->label() }}
-                            </span>
-                        </h6>
-                    </div>
-                    <div>
+
+                    <div class="neumorphic-card p-3 mb-3 bg-green-young">
+                        <div class="d-flex gap-3">
+                            <h6 class="fw-bold text-old-blue">Status Payment :
+                                <span class="badge {{ $order->status === 'PC' ? 'bg-success' : 'bg-warning' }}">
+                                    {{ $order->status->label() }}
+                                </span>
+                            </h6>
+                        </div>
+                        <br>
                         <h3 class="fw-bold">Description</h3>
                         <p>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</p>
+                        <hr>
+                        <h3 class="fw-bold">Material</h3>
+                        <p>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</p>
+                        <hr>
+                        <h3 class="fw-bold">Dimension</h3>
+                        <p>L {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }} x W {{ $order->id_katalog ? $order->katalog->width : $order->width }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }} x H {{ $order->id_katalog ? $order->katalog->height : $order->height }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}</p>
+                        <hr>
+                        <h3 class="fw-bold">Weight</h3>
+                        <p>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }}kg</p>
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -259,7 +270,7 @@
                                                     </div>
                                                 @else
                                                     @if ($tracking->status === 'completed')
-                                                        <p class="mt-2 mb-2"><i class="fas fa-paperclip me-1"></i>No
+                                                        <p class="mt-2 mb-2"><i class="fas fa-paper me-1"></i>No
                                                             attachments available.</p>
                                                     @endif
                                                 @endif
