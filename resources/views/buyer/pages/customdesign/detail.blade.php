@@ -109,7 +109,7 @@
             let carouselContainer = document.getElementById("carouselContainer");
 
             if (data.file.length > 0) {
-                let images = data.file.map(file => `${storageUrl}/${file.file_name}`);
+                let images = data.file.map(file => `${file.file_name}`);
 
                 if (images.length > 1) {
                     let carouselHTML = `

@@ -121,7 +121,7 @@
         let defaultAscending1 = 0
         let defaultSearch1 = ''
         let customFilter1 = {}
-        let storageUrl = ''
+        // let storageUrl = ''
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         function showErrorMessage(message, type = 'danger', showWhatsApp = false) {
@@ -223,7 +223,7 @@
             };
 
             let statusHtml = `<span class="${statusData.class}">${statusData.icon} ${data.status}</span>`;
-            let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
+            let images = data?.file.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
 
             return {
                 id: data?.id ?? '-',

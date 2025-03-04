@@ -237,7 +237,7 @@
                 </div>
             ` : `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
 
-            let images = data?.file.length ? data.file.map(f => `${f.file_name}`) : [imageNullUrl];
+            let images = data?.file.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
 
             return {
                 id: data?.id ?? '-',
