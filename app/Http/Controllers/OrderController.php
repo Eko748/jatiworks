@@ -72,7 +72,7 @@ class OrderController extends Controller
             return response()->json([
                 'status_code' => 400,
                 'errors' => true,
-                'message' => 'Tidak ada data'
+                'message' => 'No data found'
             ], 400);
         }
 

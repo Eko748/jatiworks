@@ -238,19 +238,19 @@
                 <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner" style="height: 300px;">
                         ${element.images.map((img, i) => `
-                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                        <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                                    </div>
-                                                `).join('')}
+                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                <img src="${storageUrlOrder}/${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                            </div>
+                        `).join('')}
                     </div>
                     ${element.images.length > 1 ? `
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            ` : ''}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    ` : ''}
                 </div>
             </div>
         ` : '-';
