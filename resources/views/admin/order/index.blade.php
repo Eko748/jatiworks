@@ -159,7 +159,7 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
-        let storageUrl = '{{ asset('storage/uploads/order/') }}'
+        // let storageUrl = '{{ asset('storage/uploads/katalog') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
@@ -237,7 +237,7 @@
                 </div>
             ` : `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
 
-            let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
+            let images = data?.file.length ? data.file.map(f => `${f.file_name}`) : [imageNullUrl];
 
             return {
                 id: data?.id ?? '-',

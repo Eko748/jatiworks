@@ -41,9 +41,21 @@ class OrderController extends Controller
 
         $query = Order::with(['katalog', 'user'])->orderBy('id', $meta['orderBy']);
 
-        // Add user_id filter
         if ($request->has('user_id')) {
             $query->where('id_user', $request->user_id);
+        }
+
+        if ($request->has('id_user')) {
+            $query->where('id_user', $request->id_user);
+
+            if (!$query->exists()) {
+                return response()->json([
+                    'status'  => 400,
+                    'message' => 'User ID not found',
+                    'error'   => true,
+                    'id_user' => false
+                ], 400);
+            }
         }
 
         if (!empty($request['search'])) {

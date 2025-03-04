@@ -136,12 +136,7 @@
                                 <input type="text" class="form-control neumorphic-card" id="item_name"
                                     name="item_name" placeholder="Enter item name" autocomplete="off" required>
                             </div>
-                            <div class="col-md-3">
-                                <label for="code_design" class="form-label fw-bold">Code Design</label>
-                                <input type="text" class="form-control neumorphic-card" id="code_design"
-                                    name="code_design" placeholder="Enter code design" autocomplete="off" required>
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <label for="price" class="form-label fw-bold">Price</label>
                                 <input type="number" class="form-control neumorphic-card" id="price" name="price"
                                     placeholder="Enter price" autocomplete="off" required>

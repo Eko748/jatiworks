@@ -299,7 +299,7 @@
 @section('js')
     <script>
         let title = '{{ $title }}'
-        let defaultLimitPage = 1
+        let defaultLimitPage = 10
         let currentPage = 1
         let totalPage = 1
         let defaultAscending = 0

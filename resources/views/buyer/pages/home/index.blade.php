@@ -421,6 +421,11 @@
                                 ${element.category.split(', ').map(cat => `<span class="badge bg-light text-dark">${cat}</span>`).join('')}
                             </div>
                         </div>
+                        <div class="mt-3">
+                            <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                <a href="{{ route('index.catalogue.detail') }}?r=${element.id}" class="btn btn-sm btn-success">Read More...</a>
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             });

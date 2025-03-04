@@ -11,17 +11,17 @@
             padding: 1rem 0;
         }
 
-        #catalogue-data {
+        #listData {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: start;
             gap: 1rem;
             min-height: 300px;
             width: fit-content;
             margin: auto;
         }
 
-        #catalogue-data .card {
+        #listData .card {
             min-width: 250px;
             max-width: 300px;
             flex: 0 0 auto;
@@ -71,18 +71,14 @@
     <section id="catalogue-section" class="catalogue-section bg-green-white">
         <div class="container pt-5 pb-5">
             <h3 class="heading fw-bold">Your Order</h3>
-            <h6 class="subtitle h6 mb-5"> </h6>
+            <h6 class="subtitle h6 mb-3" id="noteData"></h6>
             <div class="d-flex align-items-center gap-1 flex-wrap">
-                <button type="button" id="toggleFilter" class="filter-data btn-success btn btn-md" data-bs-toggle="collapse"
-                    data-bs-target="#filterContainer">
-                    <i class="fas fa-filter"></i><span class="d-none d-sm-inline ms-1">Filter</span>
-                </button>
                 <div class="d-flex align-items-center gap-1 ms-auto">
                     <div class="position-relative">
                         <select name="limitPage" id="limitPage" class="form-control neumorphic-card me-4">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="8">8</option>
+                            <option value="16">16</option>
+                            <option value="24">24</option>
                         </select>
                         <i class="fas fa-list select-icon"></i>
                     </div>
@@ -96,7 +92,7 @@
             </div>
             <hr>
             <div class="scrollable-cards overflow-x-auto">
-                <div id="catalogue-data" class="d-flex justify-content-center flex-wrap gap-3"></div>
+                <div id="listData" class="d-flex justify-content-center flex-wrap gap-3"></div>
             </div>
             <hr>
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
@@ -119,30 +115,42 @@
 
 @section('js')
     <script>
-        let defaultLimitPage1 = 10
+        let defaultLimitPage1 = 8
         let currentPage1 = 1
         let totalPage1 = 1
         let defaultAscending1 = 0
         let defaultSearch1 = ''
         let customFilter1 = {}
-        let storageUrl = '{{ asset('storage/uploads/order') }}'
+        let storageUrl = ''
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
-        function showErrorMessage(message) {
-            let catalogueData = document.getElementById("catalogue-data");
+        function showErrorMessage(message, type = 'danger', showWhatsApp = false) {
+            let catalogueData = document.getElementById("listData");
+
+            let whatsappButton = showWhatsApp ?
+                `<div class="mt-3">
+                        <a href="https://wa.me/6282217101985?text=Hello,%20I%20am%20interested%20in%20creating%20a%20custom%20design."
+                        target="_blank"
+                        class="btn btn-success d-flex align-items-center justify-content-center gap-2">
+                            <i class="fab fa-whatsapp"></i> Chat us on WhatsApp
+                        </a>
+                    </div>` :
+                '';
+
             catalogueData.innerHTML = `
-                <div class="alert alert-danger text-center w-100">
-                    ${message}
-                </div>
-            `;
+                    <div class="alert alert-${type} text-center w-100">
+                        ${message}
+                        ${whatsappButton}
+                    </div>
+                `;
         }
 
-        async function getListDataOrder(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getListDataOrder(limit = 8, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
                 limit: limit,
                 ascending: ascending,
-                user_id: '{{ Auth::id() }}',
+                id_user: {{ Auth::user()->id }},
                 ...customFilter
             };
 
@@ -154,15 +162,24 @@
                 .then(response => response)
                 .catch(error => error.response);
 
-            if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
+                if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
                     getDataRest.data.data.map(async item => await handleListDataOrder(item))
-                )
-                await setListDataOrder(handleDataArray, getDataRest.data.pagination)
+                );
+                const msg = 'Please click on the show details to view the tracking details of your order.'
+                document.getElementById('noteData').innerHTML = msg;
+                await setListDataOrder(handleDataArray, getDataRest.data.pagination);
             } else {
-                let errorMessage = "Data gagal dimuat";
+                let errorMessage = "Failed to load data";
+
                 if (getDataRest && getDataRest.data && getDataRest.data.message) {
                     errorMessage = getDataRest.data.message;
+
+                    if (getDataRest.data.id_user === false) {
+                        const msg = 'Your history is not found, but you can start your Order right now!';
+                        await showErrorMessage(msg, "warning", true);
+                        return;
+                    }
                 }
 
                 await showErrorMessage(errorMessage);
@@ -236,19 +253,19 @@
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner" style="height: 300px;">
                                 ${element.images.map((img, i) => `
-                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                                    </div>
-                                                `).join('')}
+                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                            <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                                        </div>
+                                                    `).join('')}
                             </div>
                             ${element.images.length > 1 ? `
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon"></span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon"></span>
-                                                </button>
-                                            ` : ''}
+                                                    <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"></span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"></span>
+                                                    </button>
+                                                ` : ''}
                         </div>
                     </div>
                 ` : '-';
@@ -297,7 +314,7 @@
                 </div>`;
             });
 
-            document.getElementById('catalogue-data').innerHTML = getDataHtml;
+            document.getElementById('listData').innerHTML = getDataHtml;
             document.getElementById('totalPage').textContent = pagination.total;
             document.getElementById('countPage').textContent = `${display_from} - ${display_to}`;
 

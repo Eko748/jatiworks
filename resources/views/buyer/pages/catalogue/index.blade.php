@@ -71,18 +71,18 @@
     <section id="catalogue-section" class="catalogue-section bg-green-white">
         <div class="container pt-5 pb-5">
             <h3 class="heading fw-bold">Our Collection</h3>
-            <h6 class="subtitle h6 mb-5">Explore Our Collection: Timeless Craftsmanship, Global Quality</h6>
+            <h6 class="subtitle h6 mb-3">Explore Our Collection: Timeless Craftsmanship, Global Quality</h6>
             <div class="d-flex align-items-center gap-1 flex-wrap">
-                <button type="button" id="toggleFilter" class="filter-data btn-success btn btn-md" data-bs-toggle="collapse"
+                {{-- <button type="button" id="toggleFilter" class="filter-data btn-success btn btn-md" data-bs-toggle="collapse"
                     data-bs-target="#filterContainer">
                     <i class="fas fa-filter"></i><span class="d-none d-sm-inline ms-1">Filter</span>
-                </button>
+                </button> --}}
                 <div class="d-flex align-items-center gap-1 ms-auto">
                     <div class="position-relative">
                         <select name="limitPage" id="limitPage" class="form-control neumorphic-card me-4">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="8">8</option>
+                            <option value="16">16</option>
+                            <option value="24">24</option>
                         </select>
                         <i class="fas fa-list select-icon"></i>
                     </div>
@@ -119,7 +119,7 @@
 
 @section('js')
     <script>
-        let defaultLimitPage1 = 10
+        let defaultLimitPage1 = 8
         let currentPage1 = 1
         let totalPage1 = 1
         let defaultAscending1 = 0
@@ -136,7 +136,7 @@
             `;
         }
 
-        async function getListDataCatalogue(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getListDataCatalogue(limit = 8, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
                 limit: limit,
