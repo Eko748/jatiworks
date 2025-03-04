@@ -126,8 +126,16 @@
 @section('content')
     <section id="main-section" class="main-section bg-green-white">
         <div class="container pt-5 pb-5">
-            <h3 class="heading fw-bold">{{ $order->id_katalog ? $order->katalog->item_name : $order->item_name }}</h3>
-            <h6 class="subtitle h6 mb-3">Code Order : #{{ $order->code_order }}</h6>
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h3 class="heading fw-bold">{{ $order->id_katalog ? $order->katalog->item_name : $order->item_name }}
+                    </h3>
+                    <h6 class="subtitle h6 mb-3">Code Order : #{{ $order->code_order }}</h6>
+                </div>
+                <a href="{{ url()->previous() }}" type="button" id="toggleFilter" class="filter-data btn-success btn btn-md">
+                    <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
+                </a>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-md-7 mb-3">
@@ -220,7 +228,8 @@
                                             <div class="neumorphic-card p-3 bg-light">
                                                 <div class="d-flex align-items-center text-secondary">
                                                     <i class="fas fa-lock me-2"></i>
-                                                    <p class="mb-0">Please wait, each process is done sequentially and is
+                                                    <p class="mb-0">Please wait, each process is done sequentially and
+                                                        is
                                                         being worked on.</p>
                                                 </div>
                                             </div>

@@ -7,10 +7,18 @@
 @section('content')
     <section id="main-section" class="main-section bg-green-white">
         <div class="container pt-5 pb-5">
-            <div id="skeletonItemName" class="skeleton-text"></div>
-            <h3 class="heading fw-bold d-none" id="itemNameData"></h3>
-            <div id="skeletonCodeData" class="skeleton-text w-50"></div>
-            <h6 class="subtitle h6 mb-3 d-none" id="codeData"></h6>
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div id="skeletonItemName" class="skeleton-text"></div>
+                    <h3 class="heading fw-bold d-none" id="itemNameData"></h3>
+                    <div id="skeletonCodeData" class="skeleton-text w-50"></div>
+                    <h6 class="subtitle h6 mb-3 d-none" id="codeData"></h6>
+                </div>
+                <a href="{{ url()->previous() }}" type="button" id="toggleFilter"
+                    class="filter-data btn-success btn btn-md">
+                    <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
+                </a>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-md-7 mb-3">
@@ -108,10 +116,10 @@
                         <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
                                 ${images.map((img, index) => `
-                                                                        <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                                                                            <img src="${img}" class="d-block w-100 img-fluid card-radius" alt="Slide ${index + 1}">
-                                                                        </div>
-                                                                    `).join('')}
+                                                                            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                                                                <img src="${img}" class="d-block w-100 img-fluid card-radius" alt="Slide ${index + 1}">
+                                                                            </div>
+                                                                        `).join('')}
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

@@ -39,7 +39,7 @@ class CustomDesignController extends Controller
         ])->with([
             'user:id,name,email',
             'user.profile:id,id_user,address,phone',
-            'file' => function($query) {
+            'file' => function ($query) {
                 $query->select(['id', 'id_custom', 'file_name']);
             }
         ]);
@@ -114,7 +114,6 @@ class CustomDesignController extends Controller
                 'message' => 'Custom design successfully created!',
                 'data' => $customDesign->load('file')
             ], 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -169,7 +168,9 @@ class CustomDesignController extends Controller
                 'phone'   => optional($data->user->profile)->phone,
                 'address' => optional($data->user->profile)->address,
             ],
-            'file' => optional($data->file)->pluck('file_name')->toArray(),
+            'file' => optional($data->file)->map(function ($file) {
+                return ['file_name' => $file->file_name];
+            })->toArray(),
             'tracking' => $data->designTracking->map(function ($tracking) {
                 $fileNames = json_decode($tracking->file_name, true);
 
@@ -242,7 +243,7 @@ class CustomDesignController extends Controller
                     'status'      => method_exists($item->status, 'label') ? $item->status->label() : $item->status,
                     'desc'        => $item->desc,
                     'buyer_name'  => optional($item->user)->name,
-                    'file'        => $item->file->map(function($file) {
+                    'file'        => $item->file->map(function ($file) {
                         return [
                             'id' => $file->id,
                             'file_name' => $file->file_name
