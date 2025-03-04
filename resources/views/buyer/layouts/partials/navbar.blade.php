@@ -33,7 +33,7 @@
                     </li>
                 @endauth
             </ul>
-            <div class="d-flex" role="search">
+            <div class="d-flex align-items-center gap-3" role="search">
                 <div class="dropdown-center">
                     <ul class="dropdown-menu" style="min-width: auto">
                         <li>
@@ -55,6 +55,7 @@
                     <a class="btn bg-green-young me-2 py-2 px-3 fw-bold" href="{{ route('login.index') }}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
                 @endguest
                 @auth
+                    <span class="fw-bold">{{ Auth::user()->name }}</span>
                     <form method="POST" action="{{ route('login.logout') }}">
                         @csrf
                         <button type="submit" class="btn bg-green-young fw-bold"><i class="fas fa-sign-out-alt"></i>
