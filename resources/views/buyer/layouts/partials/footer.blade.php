@@ -3,7 +3,8 @@
         <div class="footer-content">
             <!-- Brand Section -->
             <div class="">
-                <img src="{{ asset('assets/img/public/logo_jatiworks_putih.png') }}" alt="Jatiworks Logo" class="mb-3" height="20">
+                <img src="{{ asset('assets/img/public/logo_jatiworks_putih.png') }}" alt="Jatiworks Logo" class="mb-3"
+                    height="20">
                 <div class="d-flex align-items-center">
                     <a href="#" class="social-link me-4">
                         <span class="bi bi-linkedin h2 text-white"></span>
@@ -26,9 +27,18 @@
             <div class="footer-links">
                 <h5 class="footer-title text-white">{{ __('localization.quicklinks') }}</h5>
                 <ul class="footer-menu">
-                    <li><a href="/" class="text-decoration-none text-white">{{ __('localization.home') }}</a></li>
-                    <li><a href="/investing" class="text-decoration-none text-white">Catalogue</a></li>
-                    <li><a href="/publishing" class="text-decoration-none text-white">Custom Design</a></li>
+                    <li><a href="{{ route('index.home.index') }}"
+                            class="text-decoration-none text-white">Home</a></li>
+                    <li><a href="{{ route('index.catalogue.index') }}"
+                            class="text-decoration-none text-white">Catalogue</a></li>
+                    @auth
+                        <li><a href="{{ route('index.order.index') }}"
+                                class="text-decoration-none text-white">Order</a></li>
+                        <li><a href="{{ route('index.customdesign.index') }}"
+                                class="text-decoration-none text-white">Custom Design</a></li>
+                        <li><a href="{{ route('profile.index') }}"
+                                class="text-decoration-none text-white">Profile</a></li>
+                    @endauth
                 </ul>
             </div>
 
@@ -55,7 +65,8 @@
         <div class="footer-bottom">
             <div class="divider"></div>
             <div class="footer-bottom-content ">
-                <p class="copyright fw-bold text-white">© {{ now()->year }} PT JATI HARAPAN NUSANTARA <br class="d-md-none"> All rights reserved.</p>
+                <p class="copyright fw-bold text-white">© {{ now()->year }} PT JATI HARAPAN NUSANTARA <br
+                        class="d-md-none"> All rights reserved.</p>
                 <div class="legal-links">
                     <a href="/privacy-policy" class="fw-bold text-white">{{ __('localization.privacypolicy') }}</a>
                     <span class="separator fw-bold text-white">|</span>

@@ -1,7 +1,7 @@
 @extends('buyer.layouts.main')
 
 @section('content')
-    <section class="bg-old-blue-tri">
+    <section class="bg-green-white">
         <div class="container pt-5 pb-5">
             <h3 class="fw-bold">Update your profile</h3>
             <h6 class="subtitle h6 mb-5">For information</h6>
@@ -13,15 +13,11 @@
                             <input type="text" class="form-control" id="name" name="name"
                                 value="{{ $user?->name ?? '' }}" autocomplete="off" placeholder="Enter your full name">
                         </div>
-
-                        <!-- Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address</label>
                             <input type="email" class="form-control" id="email" name="email"
                                 value="{{ $user?->email ?? '' }}" autocomplete="off" placeholder="Enter your email">
                         </div>
-
-                        <!-- Password -->
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password"
@@ -35,28 +31,22 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="mb-3">
-                            <label for="rek" class="form-label">Bank Account</label>
+                            <label for="phone" class="form-label">Phone Number<sup class="text-danger ms-1 fw-bold">*</sup></label>
+                            <input type="number" class="form-control" id="phone" name="phone"
+                                value="{{ $profile?->phone ?? '' }}" autocomplete="off"
+                                placeholder="Enter your phone number">
+                        </div>
+                        <div class="mb-3">
+                            <label for="rek" class="form-label">Bank Account<sup class="text-danger ms-1 fw-bold">*</sup></label>
                             <input type="text" class="form-control" id="rek" name="rek"
                                 value="{{ $profile?->rek ?? '' }}" autocomplete="off"
                                 placeholder="Enter your bank account number">
                         </div>
-
-                        <!-- Phone Number -->
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone" name="phone"
-                                value="{{ $profile?->phone ?? '' }}" autocomplete="off"
-                                placeholder="Enter your phone number">
-                        </div>
-
-                        <!-- Address -->
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
+                            <label for="address" class="form-label">Address<sup class="text-danger ms-1 fw-bold">*</sup></label>
                             <textarea class="form-control" id="address" name="address" rows="3" autocomplete="off"
                                 placeholder="Enter your address">{{ $profile?->address ?? '' }}</textarea>
                         </div>
-
-                        <!-- Submit Button -->
                         <button type="submit" class="btn btn-old-blue float-end">
                             <i class="fas fa-paper-plane me-1"></i>Update Profile
                         </button>
@@ -71,6 +61,13 @@
     <script>
         const passwordInput = document.getElementById('password');
         const passwordValidation = document.getElementById('passwordValidation');
+        const notyf = new Notyf({
+            duration: 3000,
+            position: {
+                x: 'center',
+                y: 'top'
+            }
+        });
 
         passwordInput.addEventListener('input', function() {
             const password = passwordInput.value;
@@ -122,8 +119,7 @@
         });
 
         async function initPageLoad() {
-            await Promise.all([
-            ])
+            await Promise.all([])
         }
     </script>
 @endsection

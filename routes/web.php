@@ -98,6 +98,8 @@ Route::get('/datakatalog', [KatalogController::class, 'getdatakatalog'])->name('
 Route::get('/datadesign', [CustomDesignController::class, 'getdatadesign'])->name('datadesign');
 Route::get('/datadesign-detail', [CustomDesignController::class, 'getDetailDataDesign'])->name('datadesign.detail');
 
+Route::get('/data-article', [ArticleController::class, 'getdataarticle'])->name('dataarticle');
+
 // Login Routes
 Route::prefix('login')->as('login.')->group(function () {
     Route::get('/', [LoginController::class, 'index'])->name('index');
