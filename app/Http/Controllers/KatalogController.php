@@ -246,4 +246,26 @@ class KatalogController extends Controller
             'error'   => false
         ], 200);
     }
+
+    public function destroy($id)
+    {
+        try {
+            $decryptedId = Crypt::decryptString($id);
+            $katalog = Katalog::findOrFail($decryptedId);
+            $katalog->delete();
+
+            return response()->json([
+                'status_code' => 200,
+                'message'     => 'Katalog deleted successfully!',
+                'data'        => null
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'errors'      => true,
+                'message'     => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

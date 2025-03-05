@@ -23,7 +23,6 @@ class ArticleController extends Controller
         return view('admin.article.index', compact('title'));
     }
 
-
     public function getdataarticle(Request $request)
     {
         $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
@@ -48,6 +47,16 @@ class ArticleController extends Controller
         }
 
         $data = $query->paginate($meta['limit']);
+
+        // Update status based on current time
+        $now = now();
+        $data->each(function ($item) use ($now) {
+            $status = ($now >= $item->start_date && $now <= $item->end_date) ? 'Yes' : 'No';
+            if ($item->status !== $status) {
+                $item->status = $status;
+                $item->save();
+            }
+        });
 
         $paginationMeta = [
             'total'        => $data->total(),
@@ -108,11 +117,11 @@ class ArticleController extends Controller
             }
 
             $now = now();
-            $status = ($request->start_date <= $now && $now <= $request->end_date) ? 'Yes' : 'No';
+            $status = ($request->created_at <= $now && $now <= $request->end_date) ? 'Yes' : 'No';
 
             $article = Article::create([
                 'file_name'  => $fileName,
-                'title'       => $request->title,
+                'title'      => $request->title,
                 'desc'       => $request->desc,
                 'status'     => $status,
                 'start_date' => $request->start_date,
@@ -150,6 +159,27 @@ class ArticleController extends Controller
                 'status_code' => 200,
                 'message'     => 'Status updated successfully!',
                 'data'        => $article
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'errors'      => true,
+                'message'     => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $article = Article::findOrFail($id);
+            $article->delete();
+
+            return response()->json([
+                'status_code' => 200,
+                'message'     => 'Article deleted successfully!',
+                'data'        => null
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

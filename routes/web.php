@@ -130,12 +130,14 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     // Catalogue Management
     Route::get('/katalog', [KatalogController::class, 'index'])->name('admin.katalog.index');
     Route::post('/katalog-store', [KatalogController::class, 'store'])->name('admin.katalog.store');
+    Route::delete('/katalog/{id}', [KatalogController::class, 'destroy'])->name('admin.katalog.destroy');
     Route::get('/getdatakatalog', [KatalogController::class, 'getdatakatalog'])->name('getdatakatalog');
     Route::get('/katalog-detail-data', [KatalogController::class, 'getDetailDataKatalog'])->name('admin.katalog.data');
 
     // Article Management
     Route::get('/article', [ArticleController::class, 'index'])->name('admin.article.index');
     Route::post('/article-store', [ArticleController::class, 'store'])->name('admin.article.store');
+    Route::delete('/article/{id}', [ArticleController::class, 'destroy'])->name('admin.article.destroy');
     Route::get('/getdataarticle', [ArticleController::class, 'getdataarticle'])->name('getdataarticle');
 
     // Order Management
