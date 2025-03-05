@@ -114,7 +114,8 @@
             <div class="modal-content neumorphic-modal p-3">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Order</h5>
-                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="d-flex justify-content-between gap-3 mb-4">
@@ -186,6 +187,7 @@
             } else {
                 errorListData(getDataRest);
             }
+            await addListData();
         }
 
         async function handleListData(data) {
@@ -231,11 +233,12 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                            `).join('')}
+                                        <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                    `).join('')}
                     </ul>
                 </div>
-            ` : `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
+            ` :
+                `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
 
             let images = data?.file.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
 
@@ -263,19 +266,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                    </div>
-                                `).join('')}
+                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                            </div>
+                                        `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                    <i class="fas fa-circle-chevron-left fs-3"></i>
-                                </button>
-                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                    <i class="fas fa-circle-chevron-right fs-3"></i>
-                                </button>
-                            ` : ''}
+                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                            <i class="fas fa-circle-chevron-left fs-3"></i>
+                                        </button>
+                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                            <i class="fas fa-circle-chevron-right fs-3"></i>
+                                        </button>
+                                    ` : ''}
                     </div>
                 `;
 
@@ -350,14 +353,18 @@
         }
 
         async function addListData() {
+            document.getElementById("addDataModal").addEventListener("hidden.bs.modal", function() {
+                resetForm();
+            });
             document.getElementById("addDataForm").addEventListener("submit", async function(e) {
                 e.preventDefault();
 
                 const saveButton = document.getElementById('submitBtn');
-                if (saveButton.disabled) return;
                 const originalContent = saveButton.innerHTML;
+                if (saveButton.disabled) return;
 
-                await confirmSubmitData(saveButton);
+                const confirmed = await confirmSubmitData(saveButton);
+                if (!confirmed) return;
 
                 const formData = new FormData(document.getElementById('addDataForm'));
                 const croppedImages = document.querySelectorAll('.cropped-preview');
@@ -557,8 +564,13 @@
                     instance.set('');
                 }
             });
+            document.querySelectorAll('input[name="catalogue_option"]').forEach((radio) => {
+                radio.value = "";
+            });
 
             form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+            form.querySelectorAll(".ss-deselect").forEach(el => el.click());
+
 
             const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
             if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
@@ -843,25 +855,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                </button>` : ''
+                                                                                                                        <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                            <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                        </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                        <i class="fas fa-forward me-1"></i>Next
-                                                                                                                    </button>` : ''
+                                                                                                                            <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                <i class="fas fa-forward me-1"></i>Next
+                                                                                                                            </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                    </button>
-                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                        <i class="fas fa-save me-1"></i>Submit
-                                                                                                                    </button>
-                                                                                                                ` : ''
+                                                                                                                            <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                            </button>
+                                                                                                                            <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                <i class="fas fa-save me-1"></i>Submit
+                                                                                                                            </button>
+                                                                                                                        ` : ''
                             }
                         </div>
                     </div>
@@ -1352,25 +1364,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                </button>` : ''
+                                                                                                                        <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                            <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                        </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                        <i class="fas fa-forward me-1"></i>Next
-                                                                                                                    </button>` : ''
+                                                                                                                            <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                <i class="fas fa-forward me-1"></i>Next
+                                                                                                                            </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                    </button>
-                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                        <i class="fas fa-save me-1"></i>Submit
-                                                                                                                    </button>
-                                                                                                                ` : ''
+                                                                                                                            <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                            </button>
+                                                                                                                            <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                <i class="fas fa-save me-1"></i>Submit
+                                                                                                                            </button>
+                                                                                                                        ` : ''
                             }
                         </div>
                     </div>
@@ -1455,7 +1467,6 @@
                     customFilter),
                 searchListData(),
                 setFilterListData(),
-                addListData(),
                 toggleFilterButton(),
                 dateRangeInput('#date_range'),
                 dateRangeInput('#filterDateRange'),

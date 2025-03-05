@@ -305,8 +305,7 @@
                     await notyf.success("Data deleted successfully.");
 
                     setTimeout(async () => {
-                        await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
-                            customFilter);
+                        window.location.reload();
                     }, 1000);
                 } else {
                     notyf.error("Failed to delete data.");
@@ -417,6 +416,8 @@
 
             const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
             if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+
+            form.querySelectorAll(".ss-deselect").forEach(el => el.click());
 
             const imageInput = document.getElementById("imageInput");
             if (imageInput) {

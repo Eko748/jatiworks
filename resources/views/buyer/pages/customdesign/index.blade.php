@@ -2,15 +2,6 @@
 
 @section('css')
     <style>
-        .scrollable-cards {
-            display: flex;
-            justify-content: center;
-            overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            padding: 1rem 0;
-        }
-
         #listData {
             display: flex;
             justify-content: center;
@@ -25,20 +16,6 @@
             min-width: 250px;
             max-width: 300px;
             flex: 0 0 auto;
-        }
-
-        /* Pastikan scroll hanya muncul jika perlu */
-        .scrollable-cards::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .scrollable-cards::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
-
-        .scrollable-cards::-webkit-scrollbar-track {
-            background: #f1f1f1;
         }
 
         .search-icon {
@@ -92,8 +69,8 @@
                 </div>
             </div>
             <hr>
-            <div class="scrollable-cards overflow-x-auto">
-                <div id="listData" class="d-flex justify-content-center flex-wrap gap-3"></div>
+            <div class="scrollable-cards">
+                <div id="listData" class="d-inline-flex gap-3"></div>
             </div>
             <hr>
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">

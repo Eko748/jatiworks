@@ -396,6 +396,9 @@
         }
 
         async function addListData() {
+            document.getElementById("addDataModal").addEventListener("hidden.bs.modal", function() {
+                resetForm();
+            });
             document.getElementById("addDataForm").addEventListener("submit", async function(e) {
                 e.preventDefault();
 
@@ -468,6 +471,7 @@
             });
 
             form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
+            form.querySelectorAll(".ss-deselect").forEach(el => el.click());
 
             const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
             if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
