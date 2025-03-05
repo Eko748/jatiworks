@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('file_name');
             $table->string('title');
-            $table->string('desc');
+            $table->longText('desc');
             $table->enum('status',['Yes','No'])->nullable();
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
