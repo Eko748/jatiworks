@@ -4,24 +4,25 @@
     <style>
         .scrollable-cards {
             overflow-x: auto;
-            white-space: nowrap;
             -webkit-overflow-scrolling: touch;
-            /* Smooth scrolling di iOS */
+            white-space: normal;
         }
 
         #catalogue-data {
             display: flex;
             flex-wrap: nowrap;
-            /* Pastikan item tidak turun ke bawah */
         }
 
         #catalogue-data .card {
-            min-width: 250px;
-            /* Atur ukuran minimal kartu agar tetap proporsional */
-            max-width: 300px;
-            /* Batasi ukuran maksimum agar tidak terlalu besar */
+            min-width: 280px;
+            max-width: 350px;
             flex: 0 0 auto;
-            /* Pastikan tidak mengecil */
+        }
+
+        .card-body p {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
     </style>
 @endsection
@@ -223,51 +224,7 @@
                 <h6 class="text-old-blue mb-5">Crafting Quality, Empowering Communities</h6>
             </div>
             <div class="scrollable-cards">
-                <div class="d-inline-flex gap-3">
-                    <div class="card-w d-flex flex-column">
-                        <img src="{{ asset('assets/img/public/activity_1.jpg') }}" alt=""
-                            class="img-fluid rounded-4">
-                        <div class="card mx-2 rounded-4 h-100" style="margin-top: -6rem; z-index: 4; position: relative;">
-                            <div class="card-body d-flex flex-column">
-                                <h6 class="fw-bold text-old-blue">
-                                    Empowering Skilled Craftsmen
-                                </h6>
-                                <p>
-                                    Collaborating with small-scale craftsmen while managing buyer orders to ensure seamless
-                                    production.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-w d-flex flex-column">
-                        <img src="{{ asset('assets/img/public/activity_2.jpg') }}" alt=""
-                            class="img-fluid rounded-4">
-                        <div class="card mx-2 rounded-4 h-100" style="margin-top: -6rem; z-index: 4; position: relative;">
-                            <div class="card-body d-flex flex-column">
-                                <h6 class="fw-bold text-old-blue">
-                                    Upskilling for Global Standards
-                                </h6>
-                                <p>
-                                    Training craftsmen to enhance their craftsmanship and meet international quality
-                                    standards.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-w d-flex flex-column">
-                        <img src="{{ asset('assets/img/public/activity_3.jpg') }}" alt=""
-                            class="img-fluid rounded-4">
-                        <div class="card mx-2 rounded-4 h-100" style="margin-top: -6rem; z-index: 4; position: relative;">
-                            <div class="card-body d-flex flex-column">
-                                <h6 class="fw-bold text-old-blue">
-                                    Seamless Order Fulfillment
-                                </h6>
-                                <p>
-                                    Coordinating shipments to ensure timely and efficient delivery to buyers worldwide.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                <div id="article-data" class="d-inline-flex gap-3">
                 </div>
             </div>
         </div>
@@ -311,23 +268,21 @@
         let customFilter1 = {}
         let storageUrlCatalogue = '{{ asset('storage/uploads/katalog') }}'
 
-        async function getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1, customFilter1 = {}) {
+        async function getListDataCatalogue(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
-                page: currentPage1,
-                limit: defaultLimitPage1,
-                ascending: defaultAscending1,
-                ...customFilter1
+                page: page,
+                limit: limit,
+                ascending: ascending,
+                ...customFilter
             };
 
-            if (defaultSearch1.trim() !== '') {
-                requestParams.search = defaultSearch1;
+            if (search.trim() !== '') {
+                requestParams.search = search;
             }
 
             let getDataRest = await restAPI('GET', '{{ route('datakatalog') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
-
-            console.log('getDataRest:', getDataRest)
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
@@ -370,19 +325,19 @@
                     <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
                         <div class="carousel-inner">
                             ${element.images.map((img, i) => `
-                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                            <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 200px; object-fit: cover;">
-                                        </div>
-                                    `).join('')}
+                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 200px; object-fit: cover;">
+                                                                            </div>
+                                                                        `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                    <button class="text-dark carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" style="position: absolute; z-index: 10;">
-                                        <i class="fas fa-circle-chevron-left fs-3"></i>
-                                    </button>
-                                    <button class="text-dark carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" style="position: absolute; z-index: 10;">
-                                        <i class="fas fa-circle-chevron-right fs-3"></i>
-                                    </button>
-                                ` : ''}
+                                                                        <button class="text-dark carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" style="position: absolute; z-index: 10;">
+                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                        </button>
+                                                                        <button class="text-dark carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" style="position: absolute; z-index: 10;">
+                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                        </button>
+                                                                    ` : ''}
                     </div>
                 </div>
                 ` : '-';
@@ -443,8 +398,108 @@
 
         async function initPageLoad() {
             await Promise.all([
-                getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1, customFilter1),
+                getListDataCatalogue(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
+                    customFilter1),
+                getListDataArticle(defaultLimitPage2, currentPage2, defaultAscending2, defaultSearch2,
+                    customFilter2),
             ])
+        }
+    </script>
+
+    <script>
+        let defaultLimitPage2 = 10
+        let currentPage2 = 1
+        let totalPage2 = 1
+        let defaultAscending2 = 0
+        let defaultSearch2 = ''
+        let customFilter2 = {}
+        let storageUrlArticle = '{{ asset('storage/uploads/article') }}'
+        let globalDataListArticle = [];
+
+        async function getListDataArticle(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+            let requestParams = {
+                page: page,
+                limit: limit,
+                ascending: ascending,
+                ...customFilter
+            };
+
+            if (search.trim() !== '') {
+                requestParams.search = search;
+            }
+
+            let getDataRest = await restAPI('GET', '{{ route('dataarticle') }}', requestParams)
+                .then(response => response)
+                .catch(error => error.response);
+
+            if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
+                let handleDataArray = await Promise.all(
+                    getDataRest.data.data.map(async item => await handleListDataArticle(item))
+                )
+                await setListDataArticle(handleDataArray, getDataRest.data.pagination)
+            } else {
+                let errorMessage = "Data gagal dimuat";
+                if (getDataRest && getDataRest.data && getDataRest.data.message) {
+                    errorMessage = getDataRest.data.message;
+                }
+            }
+        }
+
+        async function handleListDataArticle(data) {
+            return {
+                id: data?.id ?? '-',
+                title: data?.title ?? '-',
+                desc: data?.desc ?? '-',
+                status: data?.status ?? '-',
+                images: data?.file_name ?? ''
+            };
+        }
+
+        async function setListDataArticle(dataList, pagination) {
+            globalDataListArticle = dataList;
+            totalPage2 = pagination.total_pages;
+            currentPage2 = pagination.current_page;
+
+            let getDataHtml = '';
+            dataList.forEach((element, index) => {
+                let shortDesc = element.desc.length > 100 ? element.desc.substring(0, 100) + '...' : element
+                    .desc;
+                let isLongText = element.desc.length > 100;
+
+                getDataHtml += `
+                <div class="card-w d-flex flex-column">
+                    <img src="${storageUrlArticle}/${element.images}" alt=""
+                        class="img-fluid rounded-4">
+                    <div class="card mx-2 rounded-4 d-flex flex-column h-100"
+                        style="margin-top: -6rem; z-index: 4; position: relative; min-height: 100px;">
+                        <div class="card-body d-flex flex-column flex-grow-1">
+                            <h6 class="fw-bold text-old-blue">${element.title}</h6>
+                            <p class="m-0 desc" id="desc-${index}">
+                                ${shortDesc}
+                            </p>
+                            ${isLongText ? `
+                                    <div class="mt-auto text-end">
+                                        <button class="btn btn-link p-0" id="toggle-${index}" onclick="toggleReadMore(${index})">Read More..</button>
+                                    </div>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById('article-data').innerHTML = getDataHtml;
+        }
+
+        function toggleReadMore(index) {
+            let descElement = document.getElementById(`desc-${index}`);
+            let buttonElement = document.getElementById(`toggle-${index}`);
+
+            if (buttonElement.innerText === "Read More..") {
+                descElement.innerText = globalDataListArticle[index].desc;
+                buttonElement.innerText = "Read Less..";
+            } else {
+                descElement.innerText = globalDataListArticle[index].desc.substring(0, 100) + "...";
+                buttonElement.innerText = "Read More..";
+            }
         }
     </script>
 @endsection
