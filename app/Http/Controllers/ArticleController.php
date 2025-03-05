@@ -100,7 +100,7 @@ class ArticleController extends Controller
             $request->validate([
                 'article'  => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
                 'title'    => 'nullable|string|max:255',
-                'desc'     => 'nullable|string|max:255',
+                'desc'     => 'nullable|string',
                 'status'   => 'nullable|string|max:255',
                 'start_date'  => 'required|date',
                 'end_date'    => 'required|date|after_or_equal:start_date',
