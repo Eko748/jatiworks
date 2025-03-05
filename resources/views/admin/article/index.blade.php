@@ -187,7 +187,7 @@
                 requestParams.search = search;
             }
 
-            loadListData();
+            await loadListData();
 
             let getDataRest = await restAPI('GET', '{{ route('getdataarticle') }}', requestParams)
                 .then(response => response)
@@ -198,11 +198,14 @@
                     getDataRest.data.data.map(async item => await handleListData(item))
                 );
                 await setListData(handleDataArray, getDataRest.data.pagination);
-                await modalCrop();
-                await uploadSingleImage();
             } else {
                 errorListData(getDataRest);
             }
+            await Promise.all([
+                modalCrop(),
+                uploadSingleImage(),
+                addListData(),
+            ]);
         }
 
         async function handleListData(data) {
@@ -234,10 +237,10 @@
                 '-';
 
             let actions = `
-                <button class="delete-data btn btn-sm neumorphic-button" data-id="${data.id}">
-                    <i class="fas fa-trash-alt text-danger me-1"></i>Delete
-                </button>
-            `;
+                    <button class="delete-data btn btn-sm neumorphic-button" data-id="${data.id}" onclick="deleteListData(this)">
+                        <i class="fas fa-trash-alt text-danger me-1"></i>Delete
+                    </button>
+                `;
 
             return {
                 id: data?.id ?? '-',
@@ -273,48 +276,42 @@
             renderListData(getDataTable, pagination, display_from, display_to);
         }
 
-        async function deleteListData() {
-            document.addEventListener("click", async function(event) {
-                if (event.target.closest(".delete-data")) {
-                    let button = event.target.closest(".delete-data");
-                    let id = button.dataset.id;
+        async function deleteListData(button) {
+            let id = button.dataset.id;
 
-                    if (!id) {
-                        notyf.error("ID not found!");
-                        return;
-                    }
+            if (!id) {
+                notyf.error("ID not found!");
+                return;
+            }
 
-                    const result = await Swal.fire({
-                        title: "Delete Data?",
-                        text: "Are you sure you want to delete this article?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        cancelButtonColor: "#d33",
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonText: "Yes, Delete!",
-                        confirmButtonText: "Cancel"
-                    });
-
-                    if (result.dismiss === Swal.DismissReason.cancel) {
-                        let deleteResponse = await restAPI(
-                            "DELETE",
-                            `{{ route('admin.article.destroy', ['id' => '__id__']) }}`.replace("__id__",
-                                id)
-                        );
-
-                        if (deleteResponse && deleteResponse.status === 200) {
-                            await notyf.success("Data deleted successfully.");
-
-                            setTimeout(async () => {
-                                await getListData(defaultLimitPage, currentPage,
-                                    defaultAscending, defaultSearch, customFilter);
-                            }, 1000);
-                        } else {
-                            notyf.error("Failed to delete data.");
-                        }
-                    }
-                }
+            const result = await Swal.fire({
+                title: "Delete Data?",
+                text: "Are you sure you want to delete this article?",
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonColor: "#d33",
+                confirmButtonColor: "#3085d6",
+                cancelButtonText: "Yes, Delete!",
+                confirmButtonText: "Cancel"
             });
+
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                let deleteResponse = await restAPI(
+                    "DELETE",
+                    `{{ route('admin.article.destroy', ['id' => '__id__']) }}`.replace("__id__", id)
+                );
+
+                if (deleteResponse && deleteResponse.status === 200) {
+                    await notyf.success("Data deleted successfully.");
+
+                    setTimeout(async () => {
+                        await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
+                            customFilter);
+                    }, 1000);
+                } else {
+                    notyf.error("Failed to delete data.");
+                }
+            }
         }
 
         async function getFilterListData() {
@@ -344,6 +341,9 @@
         }
 
         async function addListData() {
+            document.getElementById("addDataModal").addEventListener("hidden.bs.modal", function() {
+                resetForm();
+            });
             document.getElementById("addDataForm").addEventListener("submit", async function(e) {
                 e.preventDefault();
 
@@ -420,6 +420,7 @@
 
             const imageInput = document.getElementById("imageInput");
             if (imageInput) {
+                imageInput.value = "";
                 imageInput.disabled = false;
                 imageInput.style.display = "block";
             }
@@ -434,32 +435,6 @@
                 locale: "en"
             });
         }
-
-        function modalCrop() {
-            const modalCrop = document.getElementById('cropImageModal');
-            modalCrop.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content neumorphic-modal p-3">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title">Crop Image</h5>
-                            <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="img-container">
-                                <img id="imagePreview">
-                            </div>
-                        </div>
-                        <div class="modal-footer border-0">
-                            <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
-                                    class="fas fa-circle-xmark me-1"></i>Cancel</button>
-                            <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
-                                    class="fas fa-upload me-1"></i>Crop &
-                                Upload</button>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
 
         async function uploadSingleImage() {
             let cropper;
@@ -520,10 +495,10 @@
                                 height: containerHeight
                             });
 
-                            document.querySelector('.cropper-container').style.width = containerWidth +
-                                'px';
-                            document.querySelector('.cropper-container').style.height = containerHeight +
-                                'px';
+                            // document.querySelector('.cropper-container').style.width = containerWidth +
+                            //     'px';
+                            // document.querySelector('.cropper-container').style.height = containerHeight +
+                            //     'px';
                         }
                     });
                 };
@@ -600,11 +575,9 @@
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
                 searchListData(),
                 setFilterListData(),
-                addListData(),
                 toggleFilterButton(),
                 dateRangeInput('#date_range'),
                 dateRangeInput('#filterDateRange'),
-                deleteListData(),
             ])
         }
     </script>

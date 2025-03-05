@@ -355,10 +355,10 @@
 
                 const saveButton = document.getElementById('submitBtn');
                 if (saveButton.disabled) return;
+                const originalContent = saveButton.innerHTML;
 
                 await confirmSubmitData(saveButton);
 
-                const originalContent = saveButton.innerHTML;
                 const formData = new FormData(document.getElementById('addDataForm'));
                 const croppedImages = document.querySelectorAll('.cropped-preview');
 
@@ -1146,29 +1146,6 @@
                     }
                 });
             });
-
-            function modalCrop() {
-                const modalCrop = document.getElementById('cropImageModal');
-                modalCrop.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content neumorphic-modal p-3">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title">Crop Image</h5>
-                            <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="img-container">
-                                <img id="imagePreview">
-                            </div>
-                        </div>
-                        <div class="modal-footer border-0">
-                            <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold">Crop &
-                                Upload</button>
-                        </div>
-                    </div>
-                </div>`;
-            }
 
             function renderWithCatalogue(container) {
                 container.innerHTML = `

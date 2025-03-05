@@ -6,6 +6,31 @@ const notyf = new Notyf({
     }
 });
 
+function modalCrop() {
+    const modalCrop = document.getElementById('cropImageModal');
+    modalCrop.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content neumorphic-modal p-3">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imagePreview">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
+                            class="fas fa-circle-xmark me-1"></i>Cancel</button>
+                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
+                            class="fas fa-upload me-1"></i>Crop &
+                        Upload</button>
+                </div>
+            </div>
+        </div>`;
+}
+
 function loadListData() {
     let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
     let thCount = thElements.length;

@@ -401,11 +401,11 @@
 
                 const saveButton = document.getElementById('submitBtn');
                 if (saveButton.disabled) return;
+                const originalContent = saveButton.innerHTML;
 
                 const confirmed = await confirmSubmitData(saveButton);
                 if (!confirmed) return;
 
-                const originalContent = saveButton.innerHTML;
                 const formData = new FormData(document.getElementById('addDataForm'));
                 const croppedImages = document.querySelectorAll('.cropped-preview');
 

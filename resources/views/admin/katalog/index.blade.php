@@ -112,182 +112,9 @@
 
     <div class="modal fade" id="addDataModal" tabindex="-1" data-bs-focus="false" aria-labelledby="addDataModalLabel"
         aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content neumorphic-modal p-3">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Data</h5>
-                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs border-0 mb-3 gap-2" id="wizardTabs">
-                        <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link active wizard-step" data-step="1">
-                                1 <span class="d-none d-md-inline">. Item Details</span>
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="2">
-                                2 <span class="d-none d-md-inline">. Select Categories</span>
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="3">
-                                3 <span class="d-none d-md-inline">. Description Contents</span>
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="neumorphic-button text-green nav-link wizard-step" data-step="4">
-                                4 <span class="d-none d-md-inline">. Upload Images</span>
-                            </button>
-                        </li>
-                    </ul>
-                    <hr>
-                    <form id="addDataForm">
-                        <div class="wizard-content" id="step-1">
-                            <div class="row g-3">
-                                <div class="col-md-9">
-                                    <label for="itemName" class="form-label fw-bold">Item Name</label>
-                                    <textarea class="form-control neumorphic-card" id="itemName" name="item_name" rows="1"
-                                        placeholder="Enter item name" required></textarea>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="code" class="form-label fw-bold">Katalog Code</label>
-                                    <input type="text" class="form-control neumorphic-card" id="code"
-                                        name="code" placeholder="Enter code" required>
-                                </div>
-                                <div class="col-md-9">
-                                    <label for="material" class="form-label fw-bold">Material</label>
-                                    <textarea class="form-control neumorphic-card" id="material" name="material" rows="1"
-                                        placeholder="Enter material details" required></textarea>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="weight" class="form-label fw-bold">Weight (kg)</label>
-                                    <input type="number" class="form-control neumorphic-card" id="weight"
-                                        name="weight" placeholder="Enter weight" required>
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="form-label fw-bold">Dimensions (L × W × H):</label>
-                                    <div class="row g-2">
-                                        <div class="col-md-3">
-                                            <label for="length" class="form-label">Length</label>
-                                            <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                id="length" name="length" placeholder="Enter length" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="width" class="form-label">Width</label>
-                                            <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                id="width" name="width" placeholder="Enter width" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="height" class="form-label">Height</label>
-                                            <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                id="height" name="height" placeholder="Enter height" required>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="unit" class="form-label">Unit</label>
-                                            <select id="unit" class="form-control neumorphic-card" name="unit"
-                                                required>
-                                                <option value="m">m (Meter)</option>
-                                                <option value="cm">cm (Centimeter)</option>
-                                                <option value="mm">mm (Milimeter)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="wizard-content d-none" id="step-2">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-bold">Category:</label>
-                                    <div class="row g-2">
-                                        <div class="col-md-12">
-                                            <label for="category" class="form-label">Existing Categories</label>
-                                            <select id="id_category" class="form-control neumorphic-card"
-                                                name="id_category" multiple>
-                                                @foreach ($category as $cat)
-                                                    <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-12 position-relative">
-                                            <label class="form-label">Add New Category (optional)</label>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <input type="text" class="form-control neumorphic-card mb-2"
-                                                    name="name_category[]" placeholder="Enter new category">
-                                                <button type="button" class="btn circle-plus mb-2 neumorphic-btn-success"
-                                                    onclick="addCategoryInput()">
-                                                    <i class="fas fa-circle-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div id="categoryContainer" class="mt-2"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="wizard-content d-none" id="step-3">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label for="desc" class="form-label fw-bold">Description</label>
-                                    <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description"
-                                        required></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="wizard-content d-none" id="step-4">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label for="imageInput" class="form-label fw-bold">Upload Images</label>
-                                    <input type="file" accept="image/*" class="form-control neumorphic-card"
-                                        id="imageInput" multiple>
-                                    <small class="neu-text">You can upload multiple images</small>
-                                    <div id="imagePreviewContainer" class="mt-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer border-0 d-flex justify-content-between">
-                    <button type="button" id="prevBtn" class="btn neumorphic-button d-none"><i
-                            class="fas fa-backward me-1"></i>Previous</button>
-                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline"><i
-                            class="fas fa-forward me-1"></i>Next</button>
-                    <div id="submitBtnContainer" class="d-flex justify-content-end d-none gap-2">
-                        <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                            <i class="fas fa-circle-xmark me-1"></i>Cancel
-                        </button>
-                        <button type="submit" form="addDataForm" id="submitBtn"
-                            class="btn neumorphic-button-outline fw-bold">
-                            <i class="fas fa-save me-1"></i>Submit
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content neumorphic-modal p-3">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">Crop Image</h5>
-                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="img-container">
-                        <img id="imagePreview">
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
-                            class="fas fa-circle-xmark me-1"></i>Cancel</button>
-                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
-                            class="fas fa-upload me-1"></i>Crop &
-                        Upload</button>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -319,7 +146,7 @@
                 requestParams.search = search;
             }
 
-            loadListData();
+            await loadListData();
 
             let getDataRest = await restAPI('GET', '{{ route('getdatakatalog') }}', requestParams)
                 .then(response => response)
@@ -333,6 +160,16 @@
             } else {
                 errorListData(getDataRest);
             }
+            await Promise.all([
+                modalAddListData(),
+                modalCrop(),
+                setWizardForm(),
+                uploadMultiImage(),
+                addListData(),
+                multiSelectData('#filterCategory', 'Select Categories'),
+                multiSelectData('#id_category', 'Select Categories'),
+                multiSelectData('#unit', 'Select Unit'),
+            ]);
         }
 
         async function handleListData(data) {
@@ -361,19 +198,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                            </div>
-                                                                                                                        `).join('')}
+                                                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                                        </div>
+                                                                                                                                    `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                        </button>
-                                                                                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                        </button>
-                                                                                                                    ` : ''}
+                                                                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                                    </button>
+                                                                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                                    </button>
+                                                                                                                                ` : ''}
                     </div>
                 ` : '-'
 
@@ -665,11 +502,11 @@
 
                 const saveButton = document.getElementById('submitBtn');
                 if (saveButton.disabled) return;
+                const originalContent = saveButton.innerHTML;
 
                 const confirmed = await confirmSubmitData(saveButton);
                 if (!confirmed) return;
 
-                const originalContent = saveButton.innerHTML;
                 const formData = new FormData(document.getElementById('addDataForm'));
                 const croppedImages = document.querySelectorAll('.cropped-preview');
 
@@ -717,18 +554,171 @@
             });
         }
 
+        function modalAddListData() {
+            const modal = document.getElementById('addDataModal');
+            modal.innerHTML = `
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content neumorphic-modal p-3">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Data</h5>
+                            <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="nav nav-tabs border-0 mb-3 gap-2" id="wizardTabs">
+                                <li class="nav-item">
+                                    <button class="neumorphic-button text-green nav-link active wizard-step" data-step="1">
+                                        1 <span class="d-none d-md-inline">. Item Details</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="neumorphic-button text-green nav-link wizard-step" data-step="2">
+                                        2 <span class="d-none d-md-inline">. Select Categories</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="neumorphic-button text-green nav-link wizard-step" data-step="3">
+                                        3 <span class="d-none d-md-inline">. Description Contents</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="neumorphic-button text-green nav-link wizard-step" data-step="4">
+                                        4 <span class="d-none d-md-inline">. Upload Images</span>
+                                    </button>
+                                </li>
+                            </ul>
+                            <hr>
+                            <form id="addDataForm">
+                                <div class="wizard-content" id="step-1">
+                                    <div class="row g-3">
+                                        <div class="col-md-9">
+                                            <label for="itemName" class="form-label fw-bold">Item Name</label>
+                                            <textarea class="form-control neumorphic-card" id="itemName" name="item_name" rows="1"
+                                                placeholder="Enter item name" required></textarea>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="code" class="form-label fw-bold">Catalogue Code</label>
+                                            <input type="text" class="form-control neumorphic-card" id="code"
+                                                name="code" placeholder="Enter code" required>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label for="material" class="form-label fw-bold">Material</label>
+                                            <textarea class="form-control neumorphic-card" id="material" name="material" rows="1"
+                                                placeholder="Enter material details" required></textarea>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="weight" class="form-label fw-bold">Weight (kg)</label>
+                                            <input type="number" class="form-control neumorphic-card" id="weight"
+                                                name="weight" placeholder="Enter weight" required>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Dimensions (L × W × H):</label>
+                                            <div class="row g-2">
+                                                <div class="col-md-3">
+                                                    <label for="length" class="form-label">Length</label>
+                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                        id="length" name="length" placeholder="Enter length" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="width" class="form-label">Width</label>
+                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                        id="width" name="width" placeholder="Enter width" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="height" class="form-label">Height</label>
+                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                        id="height" name="height" placeholder="Enter height" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="unit" class="form-label">Unit</label>
+                                                    <select id="unit" class="form-control neumorphic-card" name="unit"
+                                                        required>
+                                                        <option value="m">m (Meter)</option>
+                                                        <option value="cm">cm (Centimeter)</option>
+                                                        <option value="mm">mm (Milimeter)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wizard-content d-none" id="step-2">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Category:</label>
+                                            <div class="row g-2">
+                                                <div class="col-md-12">
+                                                    <label for="category" class="form-label">Existing Categories</label>
+                                                    <select id="id_category" class="form-control neumorphic-card"
+                                                        name="id_category" multiple>
+                                                        @foreach ($category as $cat)
+                                                            <option value="{{ $cat->id }}">{{ $cat->name_category }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12 position-relative">
+                                                    <label class="form-label">Add New Category (optional)</label>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="text" class="form-control neumorphic-card mb-2"
+                                                            name="name_category[]" placeholder="Enter new category">
+                                                        <button type="button" class="btn circle-plus mb-2 neumorphic-btn-success"
+                                                            onclick="addCategoryInput()">
+                                                            <i class="fas fa-circle-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div id="categoryContainer" class="mt-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wizard-content d-none" id="step-3">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="desc" class="form-label fw-bold">Description</label>
+                                            <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description"
+                                                required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wizard-content d-none" id="step-4">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="imageInput" class="form-label fw-bold">Upload Images</label>
+                                            <input type="file" accept="image/*" class="form-control neumorphic-card"
+                                                id="imageInput" multiple>
+                                            <small class="neu-text">You can upload multiple images</small>
+                                            <div id="imagePreviewContainer" class="mt-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer border-0 d-flex justify-content-between">
+                            <button type="button" id="prevBtn" class="btn neumorphic-button d-none"><i
+                                    class="fas fa-backward me-1"></i>Previous</button>
+                            <button type="button" id="nextBtn" class="btn neumorphic-button-outline"><i
+                                    class="fas fa-forward me-1"></i>Next</button>
+                            <div id="submitBtnContainer" class="d-flex justify-content-end d-none gap-2">
+                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                </button>
+                                <button type="submit" form="addDataForm" id="submitBtn"
+                                    class="btn neumorphic-button-outline fw-bold">
+                                    <i class="fas fa-save me-1"></i>Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
+                modalAddListData(),
                 searchListData(),
                 setFilterListData(),
                 toggleFilterButton(),
-                multiSelectData('#filterCategory', 'Select Categories'),
-                multiSelectData('#id_category', 'Select Categories'),
-                multiSelectData('#unit', 'Select Unit'),
-                setWizardForm(),
-                uploadMultiImage(),
-                addListData(),
             ]);
         }
     </script>
