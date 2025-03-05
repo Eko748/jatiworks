@@ -85,6 +85,7 @@
                             <th class="text-wrap align-top">Title</th>
                             <th class="text-wrap align-top">Description</th>
                             <th class="text-wrap align-top">Content Date Range</th>
+                            <th class="text-wrap align-top">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -111,7 +112,8 @@
             <div class="modal-content neumorphic-modal p-3">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New Article</h5>
-                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addDataForm">
@@ -152,28 +154,7 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="cropImageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content neumorphic-modal p-3">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">Crop Image</h5>
-                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="img-container">
-                        <img id="imagePreview">
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
-                            class="fas fa-circle-xmark me-1"></i>Cancel</button>
-                    <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
-                            class="fas fa-upload me-1"></i>Crop &
-                        Upload</button>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -217,6 +198,8 @@
                     getDataRest.data.data.map(async item => await handleListData(item))
                 );
                 await setListData(handleDataArray, getDataRest.data.pagination);
+                await modalCrop();
+                await uploadSingleImage();
             } else {
                 errorListData(getDataRest);
             }
@@ -250,13 +233,20 @@
                 `<img src="${storageUrl}/${data.file_name}" class="d-block w-100" style="max-height: 100px; object-fit: contain;" alt="${data.title}">` :
                 '-';
 
+            let actions = `
+                <button class="delete-data btn btn-sm neumorphic-button" data-id="${data.id}">
+                    <i class="fas fa-trash-alt text-danger me-1"></i>Delete
+                </button>
+            `;
+
             return {
                 id: data?.id ?? '-',
                 title: data?.title ?? '-',
                 desc: data?.desc ?? '-',
                 date_range: dateRange,
                 status: `<span class="${statusClass}">${data?.status ?? '-'}</span>`,
-                images: imageTag
+                images: imageTag,
+                actions
             };
         }
 
@@ -276,10 +266,55 @@
                     <td>${element.title}</td>
                     <td>${element.desc}</td>
                     <td>${element.date_range}</td>
+                    <td>${element.actions}</td>
                 </tr>`;
             });
 
             renderListData(getDataTable, pagination, display_from, display_to);
+        }
+
+        async function deleteListData() {
+            document.addEventListener("click", async function(event) {
+                if (event.target.closest(".delete-data")) {
+                    let button = event.target.closest(".delete-data");
+                    let id = button.dataset.id;
+
+                    if (!id) {
+                        notyf.error("ID not found!");
+                        return;
+                    }
+
+                    const result = await Swal.fire({
+                        title: "Delete Data?",
+                        text: "Are you sure you want to delete this article?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        cancelButtonColor: "#d33",
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonText: "Yes, Delete!",
+                        confirmButtonText: "Cancel"
+                    });
+
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        let deleteResponse = await restAPI(
+                            "DELETE",
+                            `{{ route('admin.article.destroy', ['id' => '__id__']) }}`.replace("__id__",
+                                id)
+                        );
+
+                        if (deleteResponse && deleteResponse.status === 200) {
+                            await notyf.success("Data deleted successfully.");
+
+                            setTimeout(async () => {
+                                await getListData(defaultLimitPage, currentPage,
+                                    defaultAscending, defaultSearch, customFilter);
+                            }, 1000);
+                        } else {
+                            notyf.error("Failed to delete data.");
+                        }
+                    }
+                }
+            });
         }
 
         async function getFilterListData() {
@@ -314,11 +349,11 @@
 
                 const saveButton = document.getElementById('submitBtn');
                 if (saveButton.disabled) return;
+                const originalContent = saveButton.innerHTML;
 
                 const confirmed = await confirmSubmitData(saveButton);
                 if (!confirmed) return;
 
-                const originalContent = saveButton.innerHTML;
                 const formData = new FormData(document.getElementById('addDataForm'));
 
                 const dateRangeValue = document.getElementById("date_range").value;
@@ -380,24 +415,14 @@
 
             form.reset();
 
-            form.querySelectorAll('.ss-main select').forEach(select => {
-                const instance = select.slim;
-                if (instance) {
-                    instance.set('');
-                }
-            });
-
-            form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
-
-            const categoryContainer = form.querySelector('#categoryContainer');
-            if (categoryContainer) categoryContainer.innerHTML = '';
-
             const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
             if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
 
-            form.querySelectorAll("input[type='file']").forEach(input => {
-                input.value = '';
-            });
+            const imageInput = document.getElementById("imageInput");
+            if (imageInput) {
+                imageInput.disabled = false;
+                imageInput.style.display = "block";
+            }
         }
 
         function dateRangeInput(isParameter) {
@@ -409,6 +434,32 @@
                 locale: "en"
             });
         }
+
+        function modalCrop() {
+            const modalCrop = document.getElementById('cropImageModal');
+            modalCrop.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content neumorphic-modal p-3">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Crop Image</h5>
+                            <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img id="imagePreview">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal"><i
+                                    class="fas fa-circle-xmark me-1"></i>Cancel</button>
+                            <button type="button" id="cropImageBtn" class="btn neumorphic-button-outline fw-bold"><i
+                                    class="fas fa-upload me-1"></i>Crop &
+                                Upload</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
 
         async function uploadSingleImage() {
             let cropper;
@@ -553,7 +604,7 @@
                 toggleFilterButton(),
                 dateRangeInput('#date_range'),
                 dateRangeInput('#filterDateRange'),
-                uploadSingleImage(),
+                deleteListData(),
             ])
         }
     </script>

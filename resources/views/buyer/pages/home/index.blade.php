@@ -218,16 +218,6 @@
         </div>
     </section>
     <section id="articles-section" class="bg-green-white">
-        <div class="container pb-5 pt-5">
-            <div class="section-header">
-                <h3 class="fw-bold text-old-blue">Our Activities</h3>
-                <h6 class="text-old-blue mb-5">Crafting Quality, Empowering Communities</h6>
-            </div>
-            <div class="scrollable-cards">
-                <div id="article-data" class="d-inline-flex gap-3">
-                </div>
-            </div>
-        </div>
     </section>
     <section class="section-dark">
         <div class="container d-flex align-items-center justify-content-center pt-5 pb-5" style="min-height: 60vh;">
@@ -325,19 +315,19 @@
                     <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
                         <div class="carousel-inner">
                             ${element.images.map((img, i) => `
-                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 200px; object-fit: cover;">
-                                                                            </div>
-                                                                        `).join('')}
+                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                    <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 200px; object-fit: cover;">
+                                                                                </div>
+                                                                            `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                        <button class="text-dark carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" style="position: absolute; z-index: 10;">
-                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                        </button>
-                                                                        <button class="text-dark carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" style="position: absolute; z-index: 10;">
-                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                        </button>
-                                                                    ` : ''}
+                                                                            <button class="text-dark carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" style="position: absolute; z-index: 10;">
+                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                            </button>
+                                                                            <button class="text-dark carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" style="position: absolute; z-index: 10;">
+                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                            </button>
+                                                                        ` : ''}
                     </div>
                 </div>
                 ` : '-';
@@ -460,6 +450,21 @@
             totalPage2 = pagination.total_pages;
             currentPage2 = pagination.current_page;
 
+            let getParentHtml = `
+                <div class="container pb-5 pt-5">
+                    <div class="section-header">
+                        <h3 class="fw-bold text-old-blue">Our Activities</h3>
+                        <h6 class="text-old-blue mb-5">Crafting Quality, Empowering Communities</h6>
+                    </div>
+                    <div class="scrollable-cards">
+                        <div id="article-data" class="d-inline-flex gap-3">
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('articles-section').innerHTML = getParentHtml;
+
             let getDataHtml = '';
             dataList.forEach((element, index) => {
                 let shortDesc = element.desc.length > 100 ? element.desc.substring(0, 100) + '...' : element
@@ -468,7 +473,7 @@
 
                 getDataHtml += `
                 <div class="card-w d-flex flex-column">
-                    <img src="${storageUrlArticle}/${element.images}" alt=""
+                    <img src="${storageUrlArticle}/${element.images}" alt="Article-${index}"
                         class="img-fluid rounded-4">
                     <div class="card mx-2 rounded-4 d-flex flex-column h-100"
                         style="margin-top: -6rem; z-index: 4; position: relative; min-height: 100px;">
@@ -478,9 +483,9 @@
                                 ${shortDesc}
                             </p>
                             ${isLongText ? `
-                                    <div class="mt-auto text-end">
-                                        <button class="btn btn-link p-0" id="toggle-${index}" onclick="toggleReadMore(${index})">Read More..</button>
-                                    </div>` : ''}
+                                        <div class="mt-auto text-end">
+                                            <button class="btn btn-link p-0" id="toggle-${index}" onclick="toggleReadMore(${index})">Read More..</button>
+                                        </div>` : ''}
                         </div>
                     </div>
                 </div>`;

@@ -23,8 +23,6 @@ function loadListData() {
 }
 
 function errorListData(getDataRest) {
-    notyf.error(getDataRest.data.message);
-
     let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
     let thCount = thElements.length;
 

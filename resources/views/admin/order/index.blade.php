@@ -291,7 +291,7 @@
                     <td>${element.price}</td>
                     <td>
                         <a href="/admin/order/${element.id}/detail" class="btn btn-sm neumorphic-button">
-                            <i class="fas fa-eye me-1"></i>Detail
+                            <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>
                 </tr>`;

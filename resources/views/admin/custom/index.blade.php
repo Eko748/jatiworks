@@ -293,7 +293,7 @@
 
             let actions = `
                 <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-button">
-                    <i class="fas fa-eye me-1"></i>Detail
+                    <i class="fas fa-eye text-info me-1"></i>Detail
                 </a>
             `;
             return {
