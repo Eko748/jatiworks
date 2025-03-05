@@ -72,7 +72,7 @@ class ArticleController extends Controller
             return response()->json([
                 'status_code' => 400,
                 'errors'      => true,
-                'message'     => 'Empty Data'
+                'message'     => 'No data found'
             ], 400);
         }
 

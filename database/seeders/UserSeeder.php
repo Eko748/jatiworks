@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Admin User 1',
+            'name' => 'Super Admin',
             'email' => 'admin@mail.com',
             'password' => Hash::make('password123'),
             'id_role' => 1,
@@ -24,37 +24,37 @@ class UserSeeder extends Seeder
             'remember_token' => Str::random(10),
         ]);
 
-        User::create([
-            'name' => 'Admin User 2',
-            'email' => 'admin2@mail.com',
-            'password' => Hash::make('password123'),
-            'id_role' => 1,
-            'email_verified_at' => Carbon::now(),
-            'remember_token' => Str::random(10),
-        ]);
+        // User::create([
+        //     'name' => 'Admin User 2',
+        //     'email' => 'admin2@mail.com',
+        //     'password' => Hash::make('password123'),
+        //     'id_role' => 1,
+        //     'email_verified_at' => Carbon::now(),
+        //     'remember_token' => Str::random(10),
+        // ]);
 
-        User::create([
-            'name' => 'Buyer User 1',
-            'email' => 'buyer@mail.com',
-            'password' => Hash::make('password123'),
-            'id_role' => 2,
-            'email_verified_at' => Carbon::now(),
-            'remember_token' => Str::random(10),
-        ]);
+        // User::create([
+        //     'name' => 'Buyer User 1',
+        //     'email' => 'buyer@mail.com',
+        //     'password' => Hash::make('password123'),
+        //     'id_role' => 2,
+        //     'email_verified_at' => Carbon::now(),
+        //     'remember_token' => Str::random(10),
+        // ]);
 
-        User::create([
-            'name' => 'Buyer User 2',
-            'email' => 'buyer2@mail.com',
-            'password' => Hash::make('password123'),
-            'id_role' => 2,
-            'email_verified_at' => Carbon::now(),
-            'remember_token' => Str::random(10),
-        ]);
+        // User::create([
+        //     'name' => 'Buyer User 2',
+        //     'email' => 'buyer2@mail.com',
+        //     'password' => Hash::make('password123'),
+        //     'id_role' => 2,
+        //     'email_verified_at' => Carbon::now(),
+        //     'remember_token' => Str::random(10),
+        // ]);
 
-        User::factory(6)->create([
-            'id_role' => 2,
-            'email_verified_at' => Carbon::now(),
-            'remember_token' => Str::random(10),
-        ]);
+        // User::factory(6)->create([
+        //     'id_role' => 2,
+        //     'email_verified_at' => Carbon::now(),
+        //     'remember_token' => Str::random(10),
+        // ]);
     }
 }
