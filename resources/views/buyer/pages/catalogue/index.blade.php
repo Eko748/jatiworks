@@ -171,7 +171,7 @@
                     <span>New</span>
                 </div>
                 <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner" style="height: 300px;">
+                    <div class="carousel-inner">
                         ${element.images.map((img, i) => `
                                                     <div class="carousel-item ${i === 0 ? 'active' : ''}">
                                                         <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
@@ -195,7 +195,7 @@
                 <div class="card-body d-flex flex-column">
                     ${imageCarousel}
                     <div class="mt-2">
-                        <small class="text-white">Code Catalogue: ${element.code}</small>
+                        <small class="text-white text-truncate">Code Catalogue: ${element.code}</small>
                         <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
                             ${element.item_name}
                         </h5>

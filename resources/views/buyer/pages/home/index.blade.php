@@ -294,6 +294,7 @@
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
+                code: data?.code ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : []
@@ -336,8 +337,8 @@
                 <div class="card shadow-smooth bg-green-old card-radius w-100 overflow-hidden">
                     <div class="card-body d-flex flex-column">
                         ${imageCarousel}
-
                         <div class="mt-2">
+                            <small class="text-white" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">Code Catalogue: <span>${element.code}</span></small>
                             <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
                                 ${element.item_name}
                             </h5>
