@@ -26,7 +26,7 @@
                         <div id="skeletonLoader" class="skeleton-box"></div>
                         <img id="imageData" src="" alt="Image Catalogue" class="img-fluid card-radius d-none">
                     </div>
-                    <div class="d-flex gap-3">
+                    <div class="d-flex gap-1">
                         <h6 class="fw-bold text-old-blue" id="lengthData"></h6>
                         <h6 class="fw-bold text-old-blue">|</h6>
                         <h6 class="fw-bold text-old-blue" id="widthData"></h6>
