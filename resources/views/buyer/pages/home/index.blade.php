@@ -316,7 +316,7 @@
                         <div class="carousel-inner">
                             ${element.images.map((img, i) => `
                                                                                 <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                    <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 200px; object-fit: cover;">
+                                                                                    <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 300px; object-fit: cover;">
                                                                                 </div>
                                                                             `).join('')}
                         </div>
