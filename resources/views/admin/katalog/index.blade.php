@@ -90,6 +90,7 @@
                             <th class="text-wrap align-top">Dimensions (l x w x h)</th>
                             <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Category</th>
+                            <th class="text-wrap align-top">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -173,6 +174,12 @@
         }
 
         async function handleListData(data) {
+            let actions = `
+                    <button class="delete-data btn btn-sm neumorphic-button" data-id="${data.id}" onclick="deleteListData(this)">
+                        <i class="fas fa-trash-alt text-danger me-1"></i>Delete
+                    </button>
+                `;
+
             return {
                 id: data?.id ?? '-',
                 code: data?.code ?? '-',
@@ -182,7 +189,8 @@
                 weight: data?.weight ?? '-',
                 dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
-                images: data?.file.length ? data.file.map(f => f.file_name) : []
+                images: data?.file.length ? data.file.map(f => f.file_name) : [],
+                actions
             }
         }
 
@@ -198,19 +206,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                                            <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                                        </div>
-                                                                                                                                    `).join('')}
+                                                                                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                                <img src="${storageUrl}/${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                                            </div>
+                                                                                                                                        `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                                    </button>
-                                                                                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                                    </button>
-                                                                                                                                ` : ''}
+                                                                                                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                                        </button>
+                                                                                                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                                        </button>
+                                                                                                                                    ` : ''}
                     </div>
                 ` : '-'
 
@@ -225,6 +233,7 @@
                     <td>${element.dimensions}</td>
                     <td>${element.unit}</td>
                     <td>${element.category}</td>
+                    <td>${element.actions}</td>
                 </tr>`
             })
 
@@ -710,6 +719,43 @@
                         </div>
                     </div>
                 </div>`;
+        }
+
+        async function deleteListData(button) {
+            let id = button.dataset.id;
+
+            if (!id) {
+                notyf.error("ID not found!");
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: "Delete Data?",
+                text: "Are you sure you want to delete this article?",
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonColor: "#d33",
+                confirmButtonColor: "#3085d6",
+                cancelButtonText: "Yes, Delete!",
+                confirmButtonText: "Cancel"
+            });
+
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                let deleteResponse = await restAPI(
+                    "DELETE",
+                    `{{ route('admin.katalog.destroy', ['id' => '__id__']) }}`.replace("__id__", id)
+                );
+
+                if (deleteResponse && deleteResponse.status === 200) {
+                    await notyf.success("Data deleted successfully.");
+
+                    setTimeout(async () => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    notyf.error("Failed to delete data.");
+                }
+            }
         }
 
         async function initPageLoad() {
