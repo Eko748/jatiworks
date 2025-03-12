@@ -18,7 +18,6 @@
                     <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.catalogue.*') ? 'active' : '' }}"
                         href="{{ route('index.catalogue.index') }}">Catalogue</a>
                 </li>
-                {{-- tes --}}
                 @guest
                     <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order.*') ? 'active' : '' }}"
