@@ -18,6 +18,18 @@
                     <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.catalogue.*') ? 'active' : '' }}"
                         href="{{ route('index.catalogue.index') }}">Catalogue</a>
                 </li>
+                {{-- tes --}}
+                @guest
+                    <li class="nav-item pe-4">
+                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order.*') ? 'active' : '' }}"
+                            href="{{ route('login.index') }}">Order</a>
+                    </li>
+                    <li class="nav-item pe-4">
+                        <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign.*') ? 'active' : '' }}"
+                            href="{{ route('login.index') }}">Custom Design</a>
+                    </li>
+                @endguest
+
                 @auth
                     <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order.*') ? 'active' : '' }}"
@@ -52,7 +64,8 @@
                 </div>
 
                 @guest
-                    <a class="btn bg-green-young me-2 py-2 px-3 fw-bold" href="{{ route('login.index') }}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
+                    <a class="btn bg-green-young me-2 py-2 px-3 fw-bold" href="{{ route('login.index') }}"><i
+                            class="fas fa-sign-in-alt me-1"></i>Login</a>
                 @endguest
                 @auth
                     <span class="fw-bold">{{ Auth::user()->name }}</span>
