@@ -200,7 +200,15 @@ class OrderController extends Controller
                 if ($request->hasFile('file')) {
                     foreach ($request->file('file') as $file) {
                         $filename = time() . '_' . $file->getClientOriginalName();
-                        $file->storeAs('uploads/order', $filename, 'public');
+                        $destinationPath = public_path('storage/uploads/order');
+
+                        // Pastikan folder tujuan ada
+                        if (!file_exists($destinationPath)) {
+                            mkdir($destinationPath, 0777, true);
+                        }
+
+                        // Pindahkan file langsung ke public/storage
+                        $file->move($destinationPath, $filename);
 
                         File::create([
                             'id_order' => $order->id,
@@ -321,7 +329,15 @@ class OrderController extends Controller
                 $fileNames = [];
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->storeAs('uploads/tracking', $filename, 'public');
+                    $destinationPath = public_path('storage/uploads/tracking');
+
+                    // Pastikan folder tujuan ada
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+
+                    // Pindahkan file langsung ke public/storage
+                    $file->move($destinationPath, $filename);
                     $fileNames[] = $filename;
                 }
                 $data['file_name'] = json_encode($fileNames);

@@ -158,7 +158,15 @@ class KatalogController extends Controller
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->storeAs('uploads/katalog', $filename, 'public');
+                    $destinationPath = public_path('storage/uploads/katalog');
+
+                    // Pastikan folder tujuan ada
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+
+                    // Pindahkan file langsung ke public/storage
+                    $file->move($destinationPath, $filename);
 
                     File::create([
                         'id_katalog' => $katalog->id,
@@ -226,18 +234,18 @@ class KatalogController extends Controller
             'desc'        => $data->desc,
             'unit'        => $data->unit,
             'category'   => $data->category->map(function ($category) {
-                    return [
-                        'id_category'   => $category->id,
-                        'name_category' => $category->name_category,
-                    ];
-                }),
-                'file'       => $data->file->map(function ($file) {
-                    return [
-                        'id'        => $file->id,
-                        'file_name' => $file->file_name,
-                    ];
-                })
-            ];
+                return [
+                    'id_category'   => $category->id,
+                    'name_category' => $category->name_category,
+                ];
+            }),
+            'file'       => $data->file->map(function ($file) {
+                return [
+                    'id'        => $file->id,
+                    'file_name' => $file->file_name,
+                ];
+            })
+        ];
 
         return response()->json([
             'status'  => 200,
