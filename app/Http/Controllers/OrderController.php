@@ -36,96 +36,105 @@ class OrderController extends Controller
 
     public function getdataorder(Request $request)
     {
-        $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
-        $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
+        try {
+            $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
+            $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
 
-        $query = Order::with(['katalog', 'user'])->orderBy('id', $meta['orderBy']);
+            $query = Order::with(['katalog', 'user'])->orderBy('id', $meta['orderBy']);
 
-        if ($request->has('user_id')) {
-            $query->where('id_user', $request->user_id);
-        }
+            if ($request->has('user_id')) {
+                $query->where('id_user', $request->user_id);
+            }
 
-        if ($request->has('id_user')) {
-            $query->where('id_user', $request->id_user);
+            if ($request->has('id_user')) {
+                $query->where('id_user', $request->id_user);
 
-            if (!$query->exists()) {
+                if (!$query->exists()) {
+                    return response()->json([
+                        'status'  => 400,
+                        'message' => 'User ID not found',
+                        'error'   => true,
+                        'id_user' => false
+                    ], 400);
+                }
+            }
+
+            if (!empty($request['search'])) {
+                $searchTerm = trim(strtolower($request['search']));
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->orWhereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
+                    $query->orWhereRaw("LOWER(code_order) LIKE ?", ["%$searchTerm%"]);
+                    $query->orWhereHas('katalog', function ($subquery) use ($searchTerm) {
+                        $subquery->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
+                    });
+                    $query->orWhereHas('user', function ($subquery) use ($searchTerm) {
+                        $subquery->whereRaw("LOWER(name) LIKE ?", ["%$searchTerm%"]);
+                    });
+                });
+            }
+
+            if ($request->has('start_date') && $request->has('end_date')) {
+                $start_date = $request->input('start_date');
+                $end_date = $request->input('end_date');
+                $query->whereBetween('created_at', [$start_date, $end_date]);
+            }
+
+            $data = $query->paginate($meta['limit']);
+
+            if ($data->isEmpty()) {
                 return response()->json([
-                    'status'  => 400,
-                    'message' => 'User ID not found',
-                    'error'   => true,
-                    'id_user' => false
+                    'status_code' => 400,
+                    'errors' => true,
+                    'message' => 'No data found'
                 ], 400);
             }
-        }
 
-        if (!empty($request['search'])) {
-            $searchTerm = trim(strtolower($request['search']));
-            $query->where(function ($query) use ($searchTerm) {
-                $query->orWhereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
-                $query->orWhereRaw("LOWER(code_order) LIKE ?", ["%$searchTerm%"]);
-                $query->orWhereHas('katalog', function ($subquery) use ($searchTerm) {
-                    $subquery->whereRaw("LOWER(item_name) LIKE ?", ["%$searchTerm%"]);
-                });
-                $query->orWhereHas('user', function ($subquery) use ($searchTerm) {
-                    $subquery->whereRaw("LOWER(name) LIKE ?", ["%$searchTerm%"]);
-                });
+            $mappedData = collect($data->items())->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'code_order' => $item->code_order,
+                    'buyer_name' => $item->user->name ?? null,
+                    'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
+                    'qty' => $item->qty,
+                    'price' => $item->price,
+                    'status' => $item->status->label(),
+                    'detail_url' => route('admin.order.detail', $item->id),
+                    'file'       => $item->id_katalog
+                        ? ($item->katalog->file->map(function ($file) {
+                            return [
+                                'id'        => $file->id,
+                                'file_name' => 'storage/uploads/katalog/' . $file->file_name,
+                            ];
+                        })->toArray())
+                        : ($item->file->map(function ($file) {
+                            return [
+                                'id'        => $file->id,
+                                'file_name' => 'storage/uploads/order/' . $file->file_name,
+                            ];
+                        })->toArray())
+                ];
             });
-        }
 
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $start_date = $request->input('start_date');
-            $end_date = $request->input('end_date');
-            $query->whereBetween('created_at', [$start_date, $end_date]);
-        }
-
-        $data = $query->paginate($meta['limit']);
-
-        if ($data->isEmpty()) {
             return response()->json([
-                'status_code' => 400,
-                'errors' => true,
-                'message' => 'No data found'
-            ], 400);
+                'data' => $mappedData,
+                'status_code' => 200,
+                'errors' => false,
+                'message' => 'Sukses',
+                'pagination' => [
+                    'total' => $data->total(),
+                    'per_page' => $data->perPage(),
+                    'current_page' => $data->currentPage(),
+                    'total_pages' => $data->lastPage()
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            // Tangkap error dan tampilkan pesan
+            return response()->json([
+                'status_code' => 500,
+                'error' => true,
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        $mappedData = collect($data->items())->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'code_order' => $item->code_order,
-                'buyer_name' => $item->user->name ?? null,
-                'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
-                'qty' => $item->qty,
-                'price' => $item->price,
-                'status' => $item->status->label(),
-                'detail_url' => route('admin.order.detail', $item->id),
-                'file'       => $item->id_katalog
-                    ? ($item->katalog->file->map(function ($file) {
-                        return [
-                            'id'        => $file->id,
-                            'file_name' => 'storage/uploads/katalog/' . $file->file_name,
-                        ];
-                    })->toArray())
-                    : ($item->file->map(function ($file) {
-                        return [
-                            'id'        => $file->id,
-                            'file_name' => 'storage/uploads/order/' . $file->file_name,
-                        ];
-                    })->toArray())
-            ];
-        });
-
-        return response()->json([
-            'data' => $mappedData,
-            'status_code' => 200,
-            'errors' => false,
-            'message' => 'Sukses',
-            'pagination' => [
-                'total' => $data->total(),
-                'per_page' => $data->perPage(),
-                'current_page' => $data->currentPage(),
-                'total_pages' => $data->lastPage()
-            ]
-        ], 200);
     }
 
     public function store(Request $request)
