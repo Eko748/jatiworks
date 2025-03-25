@@ -331,12 +331,11 @@
 
                 files.forEach((file, index) => {
                     const isActive = index === 0 ? 'active' : '';
-                    const imageUrl =
-                        `{{ asset('storage/uploads/tracking/') }}/${file}`;
+                    const imageUrl = `{{ asset('storage/uploads/tracking/') }}/${file}`;
 
                     carouselInner.innerHTML += `
                         <div class="carousel-item ${isActive}">
-                            <img src="${imageUrl}" class="d-block w-100" alt="Image ${index + 1}" style="object-fit: cover; height: 400px;">
+                            <img src="${imageUrl}" class="d-block w-100" alt="Image ${index + 1}" style="object-fit: scale-down; max-height: none;">
                         </div>
                     `;
                 });
@@ -358,3 +357,43 @@
         });
     });
 </script>
+
+<style>
+    #carouselContainer img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        aspect-ratio: auto;
+        background-color: #f8f9fa;
+    }
+
+    #carouselImages img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        margin: 0 auto;
+        background-color: #f8f9fa;
+    }
+
+    .carousel-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        min-height: 400px;
+    }
+
+    #imageCarousel,
+    #carouselImages {
+        max-height: none;
+    }
+
+    @media (max-width: 768px) {
+        #imageCarousel,
+        #carouselImages {
+            max-height: none;
+        }
+    }
+</style>
