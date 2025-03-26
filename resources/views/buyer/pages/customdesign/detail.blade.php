@@ -21,7 +21,7 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-7 mb-3">
+                <div class="col-md-4 mb-3">
                     <div id="carouselContainer" class="mb-3">
                         <div id="skeletonLoader" class="skeleton-box"></div>
                         <img id="imageData" src="" alt="Image Custom Design" class="img-fluid card-radius d-none">
@@ -42,7 +42,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-8">
                     <div class="neumorphic-card p-3 mb-3 bg-green-young">
                         <h5 class="fw-bold">Design Progress</h5>
                         <hr>
@@ -93,7 +93,7 @@
                 codeData.classList.remove("d-none");
 
                 await setDetailData(getDataRest.data.data);
-                await handleViewTimeline();
+                // await handleViewTimeline();
                 await addListData();
             } else {
                 console.log(getDataRest);
@@ -193,7 +193,7 @@
                             <div class="timeline-marker rounded-circle me-3 d-flex align-items-center justify-content-center ${statusClass}">
                                 <i class="fas ${iconClass} text-white"></i>
                             </div>
-                            <div class="timeline-content neumorphic-card p-3 bg-green-white">
+                            <div class="timeline-content neumorphic-card p-3 bg-green-white" style="width: 100%; max-width: 1000px;">
                                 <div class="d-flex flex-column flex-sm-row justify-content-between">
                                     <h4><i class="fas fa-step-forward me-1"></i> Step ${index + 1}: ${data.step_name}</h4>
                                     <div class="d-flex flex-row flex-sm-column align-items-center align-items-sm-end gap-2 mt-2 mt-sm-0">
@@ -268,24 +268,24 @@
             modal.show();
         }
 
-        function handleViewTimeline() {
-            const timelineContents = document.querySelectorAll(".timeline-content");
+        // function handleViewTimeline() {
+        //     const timelineContents = document.querySelectorAll(".timeline-content");
 
-            if (timelineContents.length > 0) {
-                let maxWidth = 0;
+        //     if (timelineContents.length > 0) {
+        //         let maxWidth = 0;
 
-                timelineContents.forEach(el => {
-                    let width = el.offsetWidth;
-                    if (width > maxWidth) {
-                        maxWidth = width;
-                    }
-                });
+        //         timelineContents.forEach(el => {
+        //             let width = el.offsetWidth;
+        //             if (width > maxWidth) {
+        //                 maxWidth = width;
+        //             }
+        //         });
 
-                timelineContents.forEach(el => {
-                    el.style.width = maxWidth + "px";
-                });
-            }
-        }
+        //         timelineContents.forEach(el => {
+        //             el.style.width = maxWidth + "px";
+        //         });
+        //     }
+        // }
 
         async function uploadMultiImage() {
             let cropper;

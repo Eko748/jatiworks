@@ -138,7 +138,7 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-7 mb-3">
+                <div class="col-md-4 mb-3">
                     @php
                         $imageNullUrl = asset('assets/img/public/image_null.webp');
 
@@ -195,13 +195,18 @@
                         <p>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</p>
                         <hr>
                         <h3 class="fw-bold">Dimension</h3>
-                        <p>L {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }} x W {{ $order->id_katalog ? $order->katalog->width : $order->width }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }} x H {{ $order->id_katalog ? $order->katalog->height : $order->height }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}</p>
+                        <p>L {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            x W
+                            {{ $order->id_katalog ? $order->katalog->width : $order->width }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            x H
+                            {{ $order->id_katalog ? $order->katalog->height : $order->height }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                        </p>
                         <hr>
                         <h3 class="fw-bold">Weight</h3>
                         <p>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }}kg</p>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-8">
                     <div class="neumorphic-card p-3 mb-3 bg-green-young">
                         <h5 class="fw-bold">Order Progress</h5>
                         <hr>
@@ -215,7 +220,7 @@
                                         <i
                                             class="fas {{ $tracking->status === 'completed' ? 'fa-check' : ($tracking->status === 'in_progress' ? 'fa-spinner fa-spin' : 'fa-hourglass-start') }} text-white"></i>
                                     </div>
-                                    <div class="timeline-content neumorphic-card p-3 bg-green-white">
+                                    <div class="timeline-content neumorphic-card p-3 bg-green-white" style="width: 100%; max-width: 1000px;">
                                         <div class="d-flex flex-column flex-sm-row justify-content-between">
                                             <h4><i class="fas fa-step-forward me-1"></i> Step {{ $index + 1 }}:
                                                 {{ $tracking->trackingStep->step_name }}</h4>
@@ -290,12 +295,12 @@
                                                 <div class="carousel-inner"></div>
                                                 <button class="carousel-control-prev" type="button"
                                                     data-bs-target="#carouselImages" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <i class="fa-solid fa-circle-chevron-left text-dark fs-2"></i>
                                                     <span class="visually-hidden">Previous</span>
                                                 </button>
                                                 <button class="carousel-control-next" type="button"
                                                     data-bs-target="#carouselImages" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <i class="fa-solid fa-circle-chevron-right text-dark fs-2"></i>
                                                     <span class="visually-hidden">Next</span>
                                                 </button>
                                             </div>
@@ -313,25 +318,21 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log("Script Loaded!"); // Debugging
-
         document.querySelectorAll('.view-image').forEach(link => {
             link.addEventListener('click', function(event) {
                 event.preventDefault();
-                console.log("View Image Clicked!"); // Debugging
 
                 const files = JSON.parse(this.getAttribute('data-files'));
-                console.log("Files Data:", files); // Debugging
 
                 const carouselInner = document.querySelector('#carouselImages .carousel-inner');
                 const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
 
-                // Kosongkan carousel sebelum diisi ulang
                 carouselInner.innerHTML = '';
 
                 files.forEach((file, index) => {
                     const isActive = index === 0 ? 'active' : '';
-                    const imageUrl = `{{ asset('storage/uploads/tracking/') }}/${file}`;
+                    const imageUrl =
+                    `{{ asset('storage/uploads/tracking/') }}/${file}`;
 
                     carouselInner.innerHTML += `
                         <div class="carousel-item ${isActive}">
@@ -340,13 +341,11 @@
                     `;
                 });
 
-                // Tampilkan atau sembunyikan tombol navigasi berdasarkan jumlah gambar
                 document.querySelector('.carousel-control-prev').style.display = files.length >
                     1 ? 'block' : 'none';
                 document.querySelector('.carousel-control-next').style.display = files.length >
                     1 ? 'block' : 'none';
 
-                console.log("Opening Modal..."); // Debugging
                 modal.show();
             });
         });
@@ -391,6 +390,7 @@
     }
 
     @media (max-width: 768px) {
+
         #imageCarousel,
         #carouselImages {
             max-height: none;

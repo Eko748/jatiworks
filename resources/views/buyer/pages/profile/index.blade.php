@@ -31,19 +31,19 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number<sup class="text-danger ms-1 fw-bold">*</sup></label>
+                            <label for="phone" class="form-label">Phone Number</label>
                             <input type="number" class="form-control" id="phone" name="phone"
                                 value="{{ $profile?->phone ?? '' }}" autocomplete="off"
                                 placeholder="Enter your phone number">
                         </div>
                         <div class="mb-3">
-                            <label for="rek" class="form-label">Bank Account<sup class="text-danger ms-1 fw-bold">*</sup></label>
+                            <label for="rek" class="form-label">Bank Account</label>
                             <input type="text" class="form-control" id="rek" name="rek"
                                 value="{{ $profile?->rek ?? '' }}" autocomplete="off"
                                 placeholder="Enter your bank account number">
                         </div>
                         <div class="mb-3">
-                            <label for="address" class="form-label">Address<sup class="text-danger ms-1 fw-bold">*</sup></label>
+                            <label for="address" class="form-label">Address</label>
                             <textarea class="form-control" id="address" name="address" rows="3" autocomplete="off"
                                 placeholder="Enter your address">{{ $profile?->address ?? '' }}</textarea>
                         </div>
