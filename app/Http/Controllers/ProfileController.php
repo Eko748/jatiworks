@@ -21,9 +21,9 @@ class ProfileController extends Controller
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|string|email|max:255|unique:users,email,' . Auth::id(),
             'password' => 'nullable|string|min:6|',
-            'phone' => 'required|min:11|numeric',
-            'address' => 'required|string|max:255',
-            'rek' => 'required|numeric',
+            'phone' => 'nullable|min:11|numeric',
+            'address' => 'nullable|string|max:255',
+            'rek' => 'nullable|numeric',
         ]);
 
         $user = Auth::user();

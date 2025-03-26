@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('profile', function (Blueprint $table) {
             $table->id();
             $table->string('id_user');
-            $table->integer('rek');
-            $table->string('phone');
-            $table->string('address');
+            $table->integer('rek')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }
