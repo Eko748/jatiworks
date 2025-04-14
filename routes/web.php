@@ -145,6 +145,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
 
     // PO Management
     Route::get('/po', [POController::class, 'index'])->name('admin.po.index');
+    Route::get('/getdatapo', [POController::class, 'getdatapo'])->name('getdatapo');
 
     // Order Management
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
