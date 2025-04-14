@@ -94,7 +94,7 @@ class POController extends Controller
                 'id_user'     => 'required|integer',
                 'desc'   => 'required|string',
                 'dp'   => 'required|numeric|min:0',
-                'file'  => 'required|file|mimes:jpg,jpeg,png,pdf,docx,xls|max:2048',
+                'file'  => 'required|file|mimes:pdf|max:10240',
             ]);
 
             DB::beginTransaction();
