@@ -27,6 +27,7 @@ class OrderController extends Controller
     }
     public function index()
     {
+        // test
         $title = $this->title[0];
         $user = User::where('id_role', 2)->get();
         $katalog = Katalog::all();
