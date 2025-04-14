@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Po;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class POController extends Controller
 {
@@ -84,19 +85,64 @@ class POController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'id_user'     => 'required|integer',
+                'desc'   => 'required|string',
+                'dp'   => 'required|numeric|min:0',
+                'file'  => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,xls|max:2048',
+            ]);
+
+            DB::beginTransaction();
+
+            $fileName = null;
+
+            if ($request->hasFile('po')) {
+                $file = $request->file('po');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $destinationPath = public_path('storage/uploads/po');
+
+                // Pastikan folder tujuan ada
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+
+                // Pindahkan file langsung ke public/storage
+                $file->move($destinationPath, $fileName);
+            }
+
+            // Generate kode_po
+            $randomDigits = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+            $kode_po = 'PO' . $request->id_user . $randomDigits;
+
+            $po = Po::create([
+                'kode_po'     => $kode_po,
+                'id_user'      => $request->id_user,
+                'desc'       => $request->desc,
+                'dp'       => $request->dp,
+                'file'  => $fileName,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status_code' => 201,
+                'message'     => 'Purchase Order added successfully!',
+                'data'        => $po
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status_code' => 500,
+                'errors'      => true,
+                'message'     => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
