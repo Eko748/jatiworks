@@ -212,6 +212,7 @@
                 percentage: data?.percentage ?? '-',
                 code: data?.kode_po ?? '-',
                 id_user: data?.id_user ?? '-',
+                buyer_name: data?.buyer_name ?? '-',
                 desc: data?.desc ?? '-',
                 dp: data?.dp ?? '-',
                 file: data.file,
@@ -255,11 +256,11 @@
                     <td>${fileContent}</td>
                     <td>${element.percentage}</td>
                     <td>${element.code}</td>
-                    <td>${element.id_user}</td>
+                    <td>${element.buyer_name}</td>
                     <td>${element.desc}</td>
                     <td>${element.dp}</td>
                     <td>
-                        <a href="/admin/order?r=${element.id_encrypt}" class="btn btn-sm neumorphic-button">
+                        <a href="/admin/order?r=${element.id_encrypt}&buyer=${element.buyer_name}&user=${element.id_user}" class="btn btn-sm neumorphic-button">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>
