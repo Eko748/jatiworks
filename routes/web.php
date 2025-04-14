@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomDesignController;
 use App\Http\Controllers\Home\IndexController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\POController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\IsAdmin;
@@ -141,6 +142,9 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::post('/article-store', [ArticleController::class, 'store'])->name('admin.article.store');
     Route::delete('/article/{id}', [ArticleController::class, 'destroy'])->name('admin.article.destroy');
     Route::get('/getdataarticle', [ArticleController::class, 'getdataarticle'])->name('getdataarticle');
+
+    // PO Management
+    Route::get('/po', [POController::class, 'index'])->name('admin.po.index');
 
     // Order Management
     Route::get('/order', [OrderController::class, 'index'])->name('admin.order.index');
