@@ -83,12 +83,12 @@
                     <thead>
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
+                            <th class="text-wrap align-top">File</th>
                             <th class="text-wrap align-top">Percentage</th>
                             <th class="text-wrap align-top">Code</th>
                             <th class="text-wrap align-top">Buyer</th>
                             <th class="text-wrap align-top">Description</th>
                             <th class="text-wrap align-top">DP</th>
-                            <th class="text-wrap align-top">File</th>
                             <th class="text-wrap align-top">Action</th>
                         </tr>
                     </thead>
@@ -176,6 +176,7 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
+        let storageUrl = '{{ asset('storage/uploads/po') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
@@ -224,15 +225,38 @@
 
             let getDataTable = '';
             dataList.forEach((element, index) => {
+                let fileContent = '-';
+                if (element.file) {
+                    if (element.file.endsWith('.pdf')) {
+                        fileContent = `
+                            <div class="neumorphic-card card shadow-sm text-center" style="width: 420px;">
+                                <div class="card-body d-flex flex-column align-items-center p-2">
+                                    <iframe src="${storageUrl}/${element.file}"
+                                        width="100%" height="200"
+                                        style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                    </iframe>
+                                    <a href="${storageUrl}/${element.file}" target="_blank"
+                                        class="btn btn-sm neumorphic-btn-success mt-3 w-100"
+                                        style="text-decoration: none;">
+                                        <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        fileContent = `<a href="${storageUrl}/${element.file}" target="_blank">View file</a>`;
+                    }
+                }
+
                 getDataTable += `
                 <tr class="neumorphic-tr">
                     <td class="text-center">${display_from + index}.</td>
+                    <td>${fileContent}</td>
                     <td>${element.percentage}</td>
                     <td>${element.code}</td>
                     <td>${element.id_user}</td>
                     <td>${element.desc}</td>
                     <td>${element.dp}</td>
-                    <td>${element.file}</td>
                     <td>
                         <a href="/admin/po/${element.id}/detail" class="btn btn-sm neumorphic-button">
                             <i class="fas fa-eye text-info me-1"></i>Detail
@@ -242,13 +266,6 @@
             });
 
             renderListData(getDataTable, pagination, display_from, display_to);
-
-            document.querySelectorAll('.carousel').forEach(carousel => {
-                new bootstrap.Carousel(carousel, {
-                    interval: 2000,
-                    ride: 'carousel'
-                });
-            });
         }
 
         async function getFilterListData() {
