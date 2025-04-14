@@ -94,15 +94,15 @@ class POController extends Controller
                 'id_user'     => 'required|integer',
                 'desc'   => 'required|string',
                 'dp'   => 'required|numeric|min:0',
-                'file'  => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,xls|max:2048',
+                'file'  => 'required|file|mimes:jpg,jpeg,png,pdf,docx,xls|max:2048',
             ]);
 
             DB::beginTransaction();
 
             $fileName = null;
 
-            if ($request->hasFile('po')) {
-                $file = $request->file('po');
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $destinationPath = public_path('storage/uploads/po');
 
