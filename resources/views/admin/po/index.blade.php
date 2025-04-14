@@ -62,9 +62,12 @@
                 <form id="filterForm">
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label for="filterDateRange" class="form-label">Content Date Range</label>
-                            <input type="text" class="form-control neumorphic-card" id="filterDateRange"
-                                placeholder="Select date range" autocomplete="off" required>
+                            <label for="filterStatus" class="form-label">Status</label>
+                            <select id="filterStatus" class="form-control" multiple>
+                                {{-- @foreach ($status as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach --}}
+                            </select>
                         </div>
                         <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
                             <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
@@ -117,24 +120,42 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-between gap-3 mb-4">
-                        <label class="card neumorphic-button p-3 text-center flex-grow-1 position-relative">
-                            <input type="radio" name="catalogue_option" value="with-catalogue" class="d-none">
-                            <h6 class="fw-bold mb-1">With Catalogue</h6>
-                            <i class="fas fa-book fa-2x text-info"></i>
-                        </label>
-                        <label class="card neumorphic-button p-3 text-center flex-grow-1 position-relative">
-                            <input type="radio" name="catalogue_option" value="without-catalogue" class="d-none">
-                            <h6 class="fw-bold mb-1">Without Catalogue</h6>
-                            <i class="fas fa-edit fa-2x text-warning"></i>
-                        </label>
-                    </div>
-                    <hr>
                     <form id="addDataForm">
-                        <div id="formContainer"></div>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="id_user" class="form-label">Buyer</label>
+                                <select id="id_user" class="form-control neumorphic-card" name="id_user">
+                                    @foreach ($user as $usr)
+                                        <option value="{{ $usr->id }}">{{ $usr->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="dp" class="form-label fw-bold">DP</label>
+                                <input type="number" class="form-control neumorphic-card" id="dp" name="dp"
+                                    placeholder="Enter DP" autocomplete="off" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="desc" class="form-label fw-bold">Description</label>
+                                <textarea class="form-control neumorphic-card" id="desc" name="desc" placeholder="Enter description"
+                                    rows="4" required></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="file" class="form-label fw-bold">Upload File PO</label>
+                                <input type="file" class="form-control neumorphic-card" id="file"
+                                    accept="file/*" multiple>
+                            </div>
+                        </div>
                     </form>
                 </div>
-                <div id="btnContainer" class="modal-footer border-0">
+                <div class="modal-footer border-0 d-flex justify-content-end">
+                    <button type="button" class="btn neumorphic-button" data-bs-dismiss="modal">
+                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                    </button>
+                    <button type="submit" form="addDataForm" id="submitBtn"
+                        class="btn neumorphic-button-outline fw-bold">
+                        <i class="fas fa-save me-1"></i> Submit
+                    </button>
                 </div>
             </div>
         </div>
@@ -181,7 +202,6 @@
             } else {
                 errorListData(getDataRest);
             }
-            await addListData();
         }
 
         async function handleListData(data) {
@@ -272,24 +292,29 @@
                 if (!confirmed) return;
 
                 const formData = new FormData(document.getElementById('addDataForm'));
-                const croppedImages = document.querySelectorAll('.cropped-preview');
+
+                const fileInput = document.getElementById('file');
+                if (fileInput && fileInput.files.length === 1) {
+                    const originalFile = fileInput.files[0];
+
+                    const now = new Date();
+                    const timestamp =
+                        `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
+
+                    const customFileName = `PO-${timestamp}_1.${originalFile.name.split('.').pop()}`
+                        .replace(/\s+/g, '');
+
+                    const renamedFile = new File([originalFile], customFileName, {
+                        type: originalFile.type,
+                        lastModified: originalFile.lastModified,
+                    });
+
+                    formData.append('file', renamedFile);
+                    formData.append('file_name', renamedFile.name);
+                }
 
                 try {
-                    await Promise.all(
-                        Array.from(croppedImages).map(async (img, index) => {
-                            const response = await fetch(img.src);
-                            const blob = await response.blob();
-
-                            const now = new Date();
-                            const timestamp =
-                                `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
-
-                            const fileName = `${timestamp}_${index}.png`.replace(/\s+/g, '');
-                            formData.append(`file[]`, blob, fileName);
-                        })
-                    );
-
-                    const postData = await restAPI('POST', '{{ route('admin.order.store') }}', formData);
+                    const postData = await restAPI('POST', '{{ route('admin.po.store') }}', formData);
 
                     if (postData.status >= 200 && postData.status < 300) {
                         await notyf.success('Data saved successfully.');
@@ -347,163 +372,6 @@
             });
         }
 
-        function setMethodAddListData() {
-
-            function getUserOptions() {
-                return `
-                @foreach ($user as $usr)
-                    <option value="{{ $usr->id }}">{{ $usr->name }}</option>
-                @endforeach`;
-            }
-        }
-
-        async function addListData() {
-            document.getElementById("addDataForm").addEventListener("submit", async function(e) {
-                e.preventDefault();
-
-                const saveButton = document.getElementById('submitBtn');
-                if (saveButton.disabled) return;
-
-                await confirmSubmitData(saveButton);
-
-                const originalContent = saveButton.innerHTML;
-                const formData = new FormData(document.getElementById('addDataForm'));
-                const croppedImages = document.querySelectorAll('.cropped-preview');
-
-                try {
-                    await Promise.all(
-                        Array.from(croppedImages).map(async (img, index) => {
-                            const response = await fetch(img.src);
-                            const blob = await response.blob();
-
-                            const now = new Date();
-                            const timestamp =
-                                `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
-
-                            const fileName = `${timestamp}_${index}.png`.replace(/\s+/g, '');
-                            formData.append(`file[]`, blob, fileName);
-                        })
-                    );
-
-                    const postData = await restAPI('POST', '{{ route('admin.order.store') }}', formData);
-
-                    if (postData.status >= 200 && postData.status < 300) {
-                        await notyf.success('Data saved successfully.');
-
-                        setTimeout(async () => {
-                            await getListData(defaultLimitPage, currentPage, defaultAscending,
-                                defaultSearch, customFilter);
-                        }, 1000);
-
-                        const modalElement = document.getElementById('addDataModal');
-                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        if (modalInstance) {
-                            await modalInstance.hide();
-                        }
-
-                        await resetForm();
-                    } else {
-                        notyf.error('An error occurred while saving data.');
-                    }
-                } catch (error) {
-                    notyf.error('Failed to save data. Please try again.');
-                } finally {
-                    saveButton.disabled = false;
-                    saveButton.innerHTML = originalContent;
-                }
-            });
-        }
-
-        function resetForm() {
-            const form = document.getElementById("addDataForm");
-
-            if (!form) return;
-
-            form.reset();
-
-            form.querySelectorAll('.ss-main select').forEach(select => {
-                const instance = select.slim;
-                if (instance) {
-                    instance.set('');
-                }
-            });
-
-            form.querySelectorAll(".ss-value-delete").forEach(el => el.click());
-
-            const imagePreviewContainer = form.querySelector("#imagePreviewContainer");
-            if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
-
-            form.querySelectorAll("input[type='file']").forEach(input => {
-                input.value = '';
-            });
-        }
-
-        function setMethodAddListData() {
-            function getUserOptions() {
-                return `
-                @foreach ($user as $usr)
-                    <option value="{{ $usr->id }}">{{ $usr->name }}</option>
-                @endforeach`;
-            }
-        }
-
-        async function addListData() {
-            document.getElementById("addDataForm").addEventListener("submit", async function(e) {
-                e.preventDefault();
-
-                const saveButton = document.getElementById('submitBtn');
-                if (saveButton.disabled) return;
-
-                await confirmSubmitData(saveButton);
-
-                const originalContent = saveButton.innerHTML;
-                const formData = new FormData(document.getElementById('addDataForm'));
-                const croppedImages = document.querySelectorAll('.cropped-preview');
-
-                try {
-                    await Promise.all(
-                        Array.from(croppedImages).map(async (img, index) => {
-                            const response = await fetch(img.src);
-                            const blob = await response.blob();
-
-                            const now = new Date();
-                            const timestamp =
-                                `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}_${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getFullYear()).slice(-2)}`;
-
-                            const fileName = `${timestamp}_${index}.png`.replace(/\s+/g, '');
-                            formData.append(`file[]`, blob, fileName);
-                        })
-                    );
-
-                    const postData = await restAPI('POST', '{{ route('admin.order.store') }}', formData);
-
-                    if (postData.status >= 200 && postData.status < 300) {
-                        await notyf.success('Data saved successfully.');
-
-                        setTimeout(async () => {
-                            await getListData(defaultLimitPage, currentPage, defaultAscending,
-                                defaultSearch, customFilter);
-                        }, 1000);
-
-                        const modalElement = document.getElementById('addDataModal');
-                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        if (modalInstance) {
-                            await modalInstance.hide();
-                        }
-
-                        await resetForm();
-                    } else {
-                        notyf.error('An error occurred while saving data.');
-                    }
-                } catch (error) {
-                    notyf.error('Failed to save data. Please try again.');
-                } finally {
-                    saveButton.disabled = false;
-                    saveButton.innerHTML = originalContent;
-                }
-            });
-        }
-
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
@@ -511,7 +379,8 @@
                 searchListData(),
                 setFilterListData(),
                 toggleFilterButton(),
-                setMethodAddListData(),
+                multiSelectData('#id_user', 'Select User Buyer'),
+                addListData()
             ])
         }
     </script>
