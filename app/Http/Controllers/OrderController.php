@@ -144,21 +144,23 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         try {
+            $decryptedId = Crypt::decryptString($request->id_po);
+            $id_user = $request->id_user;
             DB::beginTransaction();
 
             if ($request->filled('id_katalog')) {
                 $validatedData = $request->validate([
-                    'id_user'   => 'required|integer',
                     'id_katalog' => 'required|integer|exists:katalog,id',
                     'qty'       => 'required|integer|min:1',
                     'price'     => 'required|numeric|min:0'
                 ]);
 
                 $order = Order::create([
-                    'id_user'   => $validatedData['id_user'],
+                    'id_po' => $decryptedId,
+                    'id_user'   => $id_user,
                     'id_katalog' => $validatedData['id_katalog'],
                     'qty'       => $validatedData['qty'],
-                    'price'     => $validatedData['price']
+                    'price'     => $validatedData['price'],
                 ]);
 
                 // Generate code_order for katalog orders

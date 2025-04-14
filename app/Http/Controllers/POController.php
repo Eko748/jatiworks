@@ -60,9 +60,10 @@ class POController extends Controller
         $mappedData = $data->map(function ($item) {
             return [
                 'id'         => $item->id,
-                'id_encrypt'          => Crypt::encryptString($item->id),
+                'id_encrypt' => Crypt::encryptString($item->id),
                 'kode_po'  => $item->kode_po,
-                'id_user'  => $item->user->name,
+                'id_user'  => $item->user->id,
+                'buyer_name'  => $item->user->name,
                 'file'  => $item->file,
                 'desc'  => $item->desc,
                 'dp'  => $item->dp,
