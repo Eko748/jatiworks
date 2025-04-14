@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Po;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class POController extends Controller
@@ -59,6 +60,7 @@ class POController extends Controller
         $mappedData = $data->map(function ($item) {
             return [
                 'id'         => $item->id,
+                'id_encrypt'          => Crypt::encryptString($item->id),
                 'kode_po'  => $item->kode_po,
                 'id_user'  => $item->user->name,
                 'file'  => $item->file,

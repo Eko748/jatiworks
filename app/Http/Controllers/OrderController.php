@@ -11,6 +11,7 @@ use App\Models\OrderTracking;
 use App\Models\TrackingStep;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -37,11 +38,13 @@ class OrderController extends Controller
 
     public function getdataorder(Request $request)
     {
+
         try {
+            $decryptedId = Crypt::decryptString($request->id_po);
             $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
             $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
 
-            $query = Order::with(['katalog', 'user'])->orderBy('id', $meta['orderBy']);
+            $query = Order::with(['katalog', 'user'])->where('id_po', $decryptedId)->orderBy('id', $meta['orderBy']);
 
             if ($request->has('user_id')) {
                 $query->where('id_user', $request->user_id);

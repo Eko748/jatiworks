@@ -208,6 +208,7 @@
         async function handleListData(data) {
             return {
                 id: data?.id ?? '-',
+                id_encrypt: data?.id_encrypt ?? '-',
                 percentage: data?.percentage ?? '-',
                 code: data?.kode_po ?? '-',
                 id_user: data?.id_user ?? '-',
@@ -258,7 +259,7 @@
                     <td>${element.desc}</td>
                     <td>${element.dp}</td>
                     <td>
-                        <a href="/admin/po/${element.id}/detail" class="btn btn-sm neumorphic-button">
+                        <a href="/admin/order?r=${element.id_encrypt}" class="btn btn-sm neumorphic-button">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>

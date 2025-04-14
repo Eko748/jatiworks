@@ -162,12 +162,15 @@
         let customFilter = {}
         // let storageUrl = '{{ asset('storage/uploads/katalog') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
+        let urlParams = new URLSearchParams(window.location.search);
+        let dataParams = urlParams.get('r');
 
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
                 limit: limit,
                 ascending: ascending,
+                id_po: dataParams,
                 ...customFilter
             };
 
