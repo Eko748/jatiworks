@@ -784,7 +784,7 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label for="buyer" class="form-label">Buyer</label>
-                            <input type="text" class="form-control neumorphic-card-reverse" value="${buyer}" readonly>
+                            <input type="text" class="text-dark form-control neumorphic-card-reverse" value="${buyer}" disabled>
                         </div>
                         <div class="col-md-12">
                             <label for="id_katalog" class="form-label">Catalogue</label>
@@ -828,7 +828,7 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label for="buyer" class="form-label">Buyer</label>
-                                <input type="text" class="form-control neumorphic-card-reverse" value="${buyer}" readonly>
+                                <input type="text" class="form-control neumorphic-card-reverse" value="${buyer}" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label for="qty" class="form-label">Qty</label>
