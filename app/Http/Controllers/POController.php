@@ -168,6 +168,7 @@ class POController extends Controller
                     'buyer_name' => $po->user->name,
                     'desc'       => $po->desc,
                     'dp'         => $po->dp,
+                    'file'         => $po->file,
                 ]
             ], 200);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
