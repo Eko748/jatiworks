@@ -383,6 +383,7 @@
                 if (!confirmed) return;
 
                 const formData = new FormData(document.getElementById('addDataForm'));
+                formData.append(`id_po`, dataParams);
                 formData.append(`id_user`, id_user);
                 const croppedImages = document.querySelectorAll('.cropped-preview');
 
