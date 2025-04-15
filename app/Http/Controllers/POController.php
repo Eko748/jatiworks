@@ -178,6 +178,7 @@ class POController extends Controller
                     'desc'       => $po->desc,
                     'dp'         => $po->dp,
                     'file'       => $po->file,
+                    'status' => OrderStatus::from($po->status)->label(),
                     'urutan' => $po->user->name . ' #' .$urutan,
                 ]
             ], 200);
@@ -208,17 +209,15 @@ class POController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateStatus(Request $request, string $id)
+    public function updateStatus(Request $request, $id)
     {
         try {
-            $decryptedId = Crypt::decryptString($id);
-            $po = Po::findOrFail($decryptedId);
+            $po = Po::findOrFail($id);
 
             $request->validate([
                 'status' => ['required', 'in:NC,PC']
             ]);
 
-            // Update status from NC to PC
             $po->status = OrderStatus::from($request->status);
             $po->save();
 
