@@ -155,7 +155,7 @@ class POController extends Controller
     {
         try {
             $decryptedId = Crypt::decryptString($id);
-            $po = Po::with(['user', 'order'])->findOrFail($decryptedId);
+            $po = Po::with(['user'])->findOrFail($decryptedId);
 
             return response()->json([
                 'status_code' => 200,
@@ -167,7 +167,6 @@ class POController extends Controller
                     'kode_po'    => $po->kode_po,
                     'id_user'    => $po->user->id,
                     'buyer_name' => $po->user->name,
-                    'file'       => $po->file,
                     'desc'       => $po->desc,
                     'dp'         => $po->dp,
                 ]
