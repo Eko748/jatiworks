@@ -95,6 +95,11 @@ class OrderController extends Controller
             }
 
             $mappedData = collect($data->items())->map(function ($item) {
+                // Calculate percentage based on completed tracking steps
+                $totalSteps = $item->orderTracking()->count();
+                $completedSteps = $item->orderTracking()->where('status', 'completed')->count();
+                $percentage = $totalSteps > 0 ? round(($completedSteps / $totalSteps) * 100) : 0;
+
                 return [
                     'id' => $item->id,
                     'code_order' => $item->code_order,
@@ -103,6 +108,7 @@ class OrderController extends Controller
                     'qty' => $item->qty,
                     'price' => $item->price,
                     'status' => $item->status->label(),
+                    'percentage' => $percentage,
                     'detail_url' => route('admin.po.order.detail', $item->id),
                     'file' => $item->id_katalog && $item->katalog
                         ? ($item->katalog->file->map(function ($file) {
