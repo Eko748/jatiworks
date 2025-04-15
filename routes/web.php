@@ -148,6 +148,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::get('/getdatapo', [POController::class, 'getdatapo'])->name('getdatapo');
     Route::get('/po/detail', [POController::class, 'show'])->name('admin.po.detail');
     Route::post('/po-store', [POController::class, 'store'])->name('admin.po.store');
+    Route::put('/po/{id}/update-status', [POController::class, 'updateStatus'])->name('po.updateStatus');
 
     // Order Management
     Route::get('/order', [OrderController::class, 'index'])->name('admin.po.order.index');

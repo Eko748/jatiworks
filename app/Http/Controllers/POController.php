@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Po;
 use App\Models\User;
@@ -67,6 +68,7 @@ class POController extends Controller
                 'file'  => $item->file,
                 'desc'  => $item->desc,
                 'dp'  => $item->dp,
+                'status'  => $item->status,
             ];
         });
 
@@ -157,6 +159,13 @@ class POController extends Controller
             $decryptedId = Crypt::decryptString($request->id_po);
             $po = Po::with(['user', 'order'])->findOrFail($decryptedId);
 
+            // Get the sequence number for this PO based on user_id and created_at
+            $urutan = Po::where('id_user', $po->id_user)
+                ->where('created_at', '<=', $po->created_at)
+                ->orderBy('created_at', 'asc')
+                ->pluck('id')
+                ->search($po->id) + 1;
+
             return response()->json([
                 'status_code' => 200,
                 'errors'     => false,
@@ -168,7 +177,8 @@ class POController extends Controller
                     'buyer_name' => $po->user->name,
                     'desc'       => $po->desc,
                     'dp'         => $po->dp,
-                    'file'         => $po->file,
+                    'file'       => $po->file,
+                    'urutan' => $po->user->name . ' #' .$urutan,
                 ]
             ], 200);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
@@ -198,9 +208,37 @@ class POController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateStatus(Request $request, string $id)
     {
-        //
+        try {
+            $decryptedId = Crypt::decryptString($id);
+            $po = Po::findOrFail($decryptedId);
+
+            // Update status from NC to PC
+            $po->status = OrderStatus::PaymentCompleted;
+            $po->save();
+
+            return response()->json([
+                'status_code' => 200,
+                'errors'     => false,
+                'message'    => 'Status updated successfully',
+                'data'       => $po
+            ], 200);
+
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return response()->json([
+                'status_code' => 400,
+                'errors'     => true,
+                'message'    => 'Invalid encryption string'
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'errors'     => true,
+                'message'    => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

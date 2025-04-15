@@ -163,6 +163,7 @@ class OrderController extends Controller
                     'id_katalog' => $validatedData['id_katalog'],
                     'qty'       => $validatedData['qty'],
                     'price'     => $validatedData['price'],
+                    'status'    => OrderStatus::NotCompleted
                 ]);
 
                 // Generate code_order for katalog orders
@@ -201,7 +202,8 @@ class OrderController extends Controller
                     'desc'      => $request->desc,
                     'unit'      => $request->unit,
                     'qty'       => $request->qty,
-                    'price'     => $request->price
+                    'price'     => $request->price,
+                    'status'    => OrderStatus::NotCompleted
                 ]);
 
                 $order_id = $order->id;
@@ -235,6 +237,16 @@ class OrderController extends Controller
                 }
             }
 
+            // Create order tracking records
+            $trackingSteps = TrackingStep::orderBy('step_order')->get();
+            foreach ($trackingSteps as $step) {
+                OrderTracking::create([
+                    'id_order' => $order->id,
+                    'id_tracking_step' => $step->id,
+                    'status' => $step->id === 1 ? 'in_progress' : 'pending',
+                ]);
+            }
+
             DB::commit();
 
             return response()->json([
@@ -260,25 +272,11 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
 
             $request->validate([
-                'status' => ['required', 'in:WP,NC,PC']
+                'status' => ['required', 'in:NC,PC']
             ]);
 
-            $oldStatus = $order->status;
             $order->status = OrderStatus::from($request->status);
             $order->save();
-
-            // Create order tracking records when status changes from WP to NC or PC
-            if ($oldStatus === OrderStatus::WaitingForPayment && in_array($order->status, [OrderStatus::NotCompleted, OrderStatus::PaymentCompleted])) {
-                $trackingSteps = TrackingStep::orderBy('step_order')->get();
-
-                foreach ($trackingSteps as $step) {
-                    OrderTracking::create([
-                        'id_order' => $order->id,
-                        'id_tracking_step' => $step->id,
-                        'status' => $step->id === 1 ? 'in_progress' : 'pending',
-                    ]);
-                }
-            }
 
             DB::commit();
             return response()->json([

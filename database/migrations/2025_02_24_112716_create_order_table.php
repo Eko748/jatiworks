@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('material')->nullable();
             $table->integer('qty')->nullable();
             $table->double('price')->nullable();
-            $table->enum('status', array_column(OrderStatus::cases(), 'value'))->default(OrderStatus::WaitingForPayment->value);
+            $table->enum('status', array_column(OrderStatus::cases(), 'value'))->default(OrderStatus::NotCompleted->value);
             $table->decimal('length')->nullable();
             $table->decimal('width')->nullable();
             $table->decimal('height')->nullable();
