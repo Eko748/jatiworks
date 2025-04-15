@@ -8,6 +8,7 @@ use App\Models\File;
 use App\Models\Katalog;
 use App\Models\Order;
 use App\Models\OrderTracking;
+use App\Models\Po;
 use App\Models\TrackingStep;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -145,7 +146,8 @@ class OrderController extends Controller
     {
         try {
             $decryptedId = Crypt::decryptString($request->id_po);
-            $id_user = $request->id_user;
+            $po = Po::findOrFail($decryptedId);
+            $id_user = $po->id_user;
             DB::beginTransaction();
 
             if ($request->filled('id_katalog')) {
@@ -165,7 +167,7 @@ class OrderController extends Controller
 
                 // Generate code_order for katalog orders
                 $order_id = $order->id;
-                $id_user_str = (string) $validatedData['id_user'];
+                $id_user_str = (string) $id_user;
                 $total_length = strlen($id_user_str);
                 $random_length = max(0, 6 - $total_length);
                 $random_number = str_pad(mt_rand(0, pow(10, $random_length) - 1), $random_length, '0', STR_PAD_LEFT);
@@ -173,7 +175,6 @@ class OrderController extends Controller
                 $order->update(['code_order' => $code_order]);
             } else {
                 $request->validate([
-                    'id_user'   => 'required|integer',
                     'item_name' => 'required|string|max:255',
                     'material'  => 'required|string|max:255',
                     'length'    => 'required|numeric',
@@ -189,7 +190,7 @@ class OrderController extends Controller
                 ]);
 
                 $order = Order::create([
-                    'id_user'   => $request->id_user,
+                    'id_user'   => $id_user,
                     'item_name' => $request->item_name,
                     'material'  => $request->material,
                     'length'    => $request->length,
