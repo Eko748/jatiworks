@@ -57,16 +57,6 @@
                     <div
                         class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.po.*') ? 'active' : '' }}">
                         <i class="fas fa-credit-card"></i>
-                        <span class="sidebar-text">PO</span>
-                    </div>
-                </li>
-            </a>
-            <a href="{{ route('admin.order.index') }}" class="text-decoration-none">
-                <li
-                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.order.*') ? 'active' : '' }}">
-                    <div
-                        class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.order.*') ? 'active' : '' }}">
-                        <i class="fas fa-credit-card"></i>
                         <span class="sidebar-text">Order</span>
                     </div>
                 </li>
