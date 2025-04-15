@@ -78,8 +78,7 @@ body {
 }
 
 .neumorphic-card-reverse {
-    background: var(--bg-color-reverse);
-    color: var(--bg-color-reverse);
+    background: var(--bg-color);
     box-shadow: 8px 8px 15px var(--shadow-dark), -8px -8px 15px var(--shadow-light);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
