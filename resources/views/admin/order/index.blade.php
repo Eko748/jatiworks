@@ -191,14 +191,10 @@
         let id_user = null;
         let buyer = '';
 
-        async function getDetailData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getDetailData() {
             let requestParams = {
                 id_po: dataParams,
             };
-
-            if (search.trim() !== '') {
-                requestParams.search = search;
-            }
 
             loadDetailData('detail-information');
 
@@ -211,6 +207,42 @@
                 const fileUrl = data.file ? `${storageUrl}/${data.file}` : null;
                 buyer = data.buyer_name;
                 id_user = data.id_user;
+
+                let statusMapping = {
+                    'Payment Completed': {
+                        class: 'text-green border-success neumorphic-card2',
+                        icon: '<i class="fas fa-check-circle"></i>',
+                        dropdown: false
+                    },
+                    'Partial Payment': {
+                        class: 'text-warning border-warning neumorphic-card2',
+                        icon: '<i class="fas fa-times-circle"></i>',
+                        dropdown: [{
+                            text: 'Payment Completed',
+                            value: 'PC'
+                        }]
+                    }
+                };
+
+                let statusData = statusMapping[data.status] || {
+                    class: 'text-secondary border-secondary',
+                    icon: '<i class="fas fa-question-circle"></i>',
+                    dropdown: false
+                };
+
+                let statusHtml = statusData.dropdown ? `
+                <div class="dropdown">
+                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ${statusData.icon} ${data?.status ?? '-'}
+                    </button>
+                    <ul class="dropdown-menu">
+                        ${statusData.dropdown.map(item => `
+                                                                    <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                `).join('')}
+                    </ul>
+                </div>
+            ` :
+                    `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
 
                 const html = `
                     <div class="col-md-6">
@@ -253,7 +285,7 @@
                             <i class="fas fa-chart-simple me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">Status:</span>
-                                <span>${data.status || '-'}</span>
+                                <span>${statusHtml || '-'}</span>
                             </div>
                         </div>
                     </div>
@@ -262,30 +294,48 @@
                         <div class="neumorphic-card2 p-2">
                             <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>File PO:</span>
                             ${fileUrl ? `
-                                    <div class="text-center">
-                                        <div class="card-body d-flex flex-column align-items-center p-2">
-                                            <iframe src="${fileUrl}"
-                                                width="100%" height="300px"
-                                                style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                                            </iframe>
-                                            <a href="${fileUrl}" target="_blank"
-                                                class="btn btn-sm neumorphic-btn-success mt-3 w-100"
-                                                style="text-decoration: none;">
-                                                <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
-                                            </a>
+                                        <div class="text-center">
+                                            <div class="card-body d-flex flex-column align-items-center p-2">
+                                                <iframe src="${fileUrl}"
+                                                    width="100%" height="300px"
+                                                    style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                                </iframe>
+                                                <a href="${fileUrl}" target="_blank"
+                                                    class="btn btn-sm neumorphic-btn-success mt-3 w-100"
+                                                    style="text-decoration: none;">
+                                                    <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
-                                ` : `<p class="ms-4">No File</p>`}
+                                    ` : `<p class="ms-4">No File</p>`}
                         </div>
                     </div>
                 `;
 
-                const breadcrumb = `<span class="breadcrumb-text fw-bold"><span class="breadcrumb-separator"> &raquo; ${data.urutan}</span></span>`
+                const breadcrumb =
+                    `<span class="breadcrumb-text fw-bold"><span class="breadcrumb-separator"> &raquo; ${data.urutan}</span></span>`
 
                 document.getElementById('breadcrumb-detail').innerHTML = breadcrumb;
                 document.getElementById('detail-information').innerHTML = html;
             } else {
                 errorListData(getDataRest);
+            }
+        }
+
+        async function updatePOStatus(poId, status) {
+            try {
+                const response = await restAPI('PUT', `/admin/po/${poId}/update-status`, {
+                    status
+                });
+                if (response.status === 200) {
+                    notyf.success('PO status updated successfully');
+                    await getDetailData();
+                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                } else {
+                    notyf.error('Failed to update po status');
+                }
+            } catch (error) {
+                notyf.error('An error occurred while updating po status');
             }
         }
 
@@ -318,55 +368,6 @@
         }
 
         async function handleListData(data) {
-            let statusMapping = {
-                'Payment Completed': {
-                    class: 'text-green border-success neumorphic-button',
-                    icon: '<i class="fas fa-check-circle"></i>',
-                    dropdown: false
-                },
-                'Waiting for Payment': {
-                    class: 'text-info border-info neumorphic-button',
-                    icon: '<i class="fas fa-clock"></i>',
-                    dropdown: [{
-                            text: 'Not Completed',
-                            value: 'NC'
-                        },
-                        {
-                            text: 'Payment Completed',
-                            value: 'PC'
-                        }
-                    ]
-                },
-                'Not Completed': {
-                    class: 'text-warning border-warning neumorphic-button',
-                    icon: '<i class="fas fa-times-circle"></i>',
-                    dropdown: [{
-                        text: 'Payment Completed',
-                        value: 'PC'
-                    }]
-                }
-            };
-
-            let statusData = statusMapping[data.status] || {
-                class: 'text-secondary border-secondary',
-                icon: '<i class="fas fa-question-circle"></i>',
-                dropdown: false
-            };
-
-            let statusHtml = statusData.dropdown ? `
-                <div class="dropdown">
-                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ${statusData.icon} ${data?.status ?? '-'}
-                    </button>
-                    <ul class="dropdown-menu">
-                        ${statusData.dropdown.map(item => `
-                                                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                            `).join('')}
-                    </ul>
-                </div>
-            ` :
-                `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
-
             let images = data?.file.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
 
             return {
@@ -376,7 +377,7 @@
                 code_order: data?.code_order ?? '-',
                 qty: data?.qty ?? '-',
                 price: data?.price ?? '-',
-                status: statusHtml,
+                percentage: data?.percentage ?? '-',
                 images
             };
         }
@@ -393,26 +394,26 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                    </div>
-                                                                `).join('')}
+                                                                        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                            <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                        </div>
+                                                                    `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                </button>
-                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                </button>
-                                                            ` : ''}
+                                                                    <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                        <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                    </button>
+                                                                    <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                        <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                    </button>
+                                                                ` : ''}
                     </div>
                 `;
 
                 getDataTable += `
                 <tr class="neumorphic-tr">
                     <td class="text-center">${display_from + index}.</td>
-                    <td>${element.status}</td>
+                    <td>${element.percentage}</td>
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
                     <td>${element.code_order}</td>
                     <td>${element.buyer_name}</td>
@@ -420,7 +421,7 @@
                     <td>${element.qty}</td>
                     <td>${element.price}</td>
                     <td>
-                        <a href="/admin/order/${element.id}/detail?r=${dataParams}" class="btn btn-sm neumorphic-button">
+                        <a href="/admin/order/${element.id}/detail?r=${dataParams}" class="btn btn-sm neumorphic-card2">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>
@@ -435,22 +436,6 @@
                     ride: 'carousel'
                 });
             });
-        }
-
-        async function updateOrderStatus(orderId, status) {
-            try {
-                const response = await restAPI('PUT', `/admin/order/${orderId}/update-status`, {
-                    status
-                });
-                if (response.status === 200) {
-                    notyf.success('Order status updated successfully');
-                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
-                } else {
-                    notyf.error('Failed to update order status');
-                }
-            } catch (error) {
-                notyf.error('An error occurred while updating order status');
-            }
         }
 
         async function getFilterListData() {
@@ -980,25 +965,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                                                </button>` : ''
+                                                                                                                                                    <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                                                        <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                                                    </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                                                        <i class="fas fa-forward me-1"></i>Next
-                                                                                                                                                    </button>` : ''
+                                                                                                                                                        <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                                            <i class="fas fa-forward me-1"></i>Next
+                                                                                                                                                        </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                                                    </button>
-                                                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                                                        <i class="fas fa-save me-1"></i>Submit
-                                                                                                                                                    </button>
-                                                                                                                                                ` : ''
+                                                                                                                                                        <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                                            <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                                                        </button>
+                                                                                                                                                        <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                                            <i class="fas fa-save me-1"></i>Submit
+                                                                                                                                                        </button>
+                                                                                                                                                    ` : ''
                             }
                         </div>
                     </div>

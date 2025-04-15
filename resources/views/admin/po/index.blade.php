@@ -209,12 +209,12 @@
         async function handleListData(data) {
             let statusMapping = {
                 'Payment Completed': {
-                    class: 'text-green border-success neumorphic-button',
+                    class: 'text-green border-success neumorphic-card2',
                     icon: '<i class="fas fa-check-circle"></i>',
                     dropdown: false
                 },
                 'Partial Payment': {
-                    class: 'text-warning border-warning neumorphic-button',
+                    class: 'text-warning border-warning neumorphic-card2',
                     icon: '<i class="fas fa-times-circle"></i>',
                     dropdown: [{
                         text: 'Payment Completed',
@@ -315,7 +315,7 @@
                     <td>${element.desc}</td>
                     <td>${element.dp}</td>
                     <td>
-                        <a href="/admin/order?r=${element.id_encrypt}" class="btn btn-sm neumorphic-button">
+                        <a href="/admin/order?r=${element.id_encrypt}" class="btn btn-sm neumorphic-card2">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>

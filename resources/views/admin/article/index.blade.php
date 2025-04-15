@@ -237,7 +237,7 @@
                 '-';
 
             let actions = `
-                    <button class="delete-data btn btn-sm neumorphic-button" data-id="${data.id}" onclick="deleteListData(this)">
+                    <button class="delete-data btn btn-sm neumorphic-card2" data-id="${data.id}" onclick="deleteListData(this)">
                         <i class="fas fa-trash-alt text-danger me-1"></i>Delete
                     </button>
                 `;

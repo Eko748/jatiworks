@@ -242,12 +242,12 @@
         async function handleListData(data) {
             let statusMapping = {
                 'Payment Completed': {
-                    class: 'text-green border-success neumorphic-button',
+                    class: 'text-green border-success neumorphic-card2',
                     icon: '<i class="fas fa-check-circle"></i>',
                     dropdown: false
                 },
                 'Waiting for Payment': {
-                    class: 'text-info border-info neumorphic-button',
+                    class: 'text-info border-info neumorphic-card2',
                     icon: '<i class="fas fa-clock"></i>',
                     dropdown: [{
                             text: 'Not Completed',
@@ -260,7 +260,7 @@
                     ]
                 },
                 'Not Completed': {
-                    class: 'text-warning border-warning neumorphic-button',
+                    class: 'text-warning border-warning neumorphic-card2',
                     icon: '<i class="fas fa-times-circle"></i>',
                     dropdown: [{
                         text: 'Payment Completed',
@@ -292,7 +292,7 @@
             let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
             let actions = `
-                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-button">
+                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-card2">
                     <i class="fas fa-eye text-info me-1"></i>Detail
                 </a>
             `;
