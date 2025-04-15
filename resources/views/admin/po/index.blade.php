@@ -236,8 +236,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                            `).join('')}
+                                                                    <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                `).join('')}
                     </ul>
                 </div>
             ` :
@@ -315,7 +315,7 @@
                     <td>${element.desc}</td>
                     <td>${element.dp}</td>
                     <td>
-                        <a href="/admin/order?r=${element.id_encrypt}&buyer=${element.buyer_name}&user=${element.id_user}" class="btn btn-sm neumorphic-button">
+                        <a href="/admin/order?r=${element.id_encrypt}" class="btn btn-sm neumorphic-button">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>

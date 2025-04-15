@@ -128,7 +128,7 @@
 @endsection
 
 @section('back')
-    <a href="{{ route('admin.po.order.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
+    <a href="{{ route('admin.po.order.index') }}" id="btnBack" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
         data-bs-placement="top" title="Back to {{ $title }} page" onclick="hideTooltip(this)">
         <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
     </a>
@@ -435,6 +435,22 @@
 
 @section('js')
     <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let dataParams = urlParams.get('r');
+
+        function backPage() {
+            if (dataParams) {
+                let btnBack = document.getElementById('btnBack');
+                let currentHref = btnBack.getAttribute('href');
+
+                let newHref = currentHref.includes('?') ?
+                    `${currentHref}&r=${encodeURIComponent(dataParams)}` :
+                    `${currentHref}?r=${encodeURIComponent(dataParams)}`;
+
+                btnBack.setAttribute('href', newHref);
+            }
+        }
+
         function showFilePreview(fileUrl) {
             document.getElementById('previewImage').src = fileUrl;
             var modal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
@@ -715,6 +731,7 @@
 
         async function initPageLoad() {
             await Promise.all([
+                backPage(),
                 handleViewTimeline(),
                 uploadMultiImage(),
                 addListData(),

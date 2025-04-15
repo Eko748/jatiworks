@@ -40,6 +40,13 @@
     </style>
 @endsection
 
+@section('back')
+    <a href="{{ route('admin.po.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
+        data-bs-placement="top" title="Back to PO page" onclick="hideTooltip(this)">
+        <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
+    </a>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -72,11 +79,11 @@
             <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
                 <form id="filterForm">
                     <div class="row g-3">
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <label for="filterDateRange" class="form-label">Content Date Range</label>
                             <input type="text" class="form-control neumorphic-card" id="filterDateRange"
                                 placeholder="Select date range" autocomplete="off" required>
-                        </div>
+                        </div> --}}
                         <div class="col-md-12 d-flex align-items-end justify-content-end gap-2">
                             <button type="reset" id="resetFilter" class="btn neumorphic-button"><i
                                     class="fas fa-rotate me-1"></i>Reset</button>
@@ -181,8 +188,8 @@
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
         let urlParams = new URLSearchParams(window.location.search);
         let dataParams = urlParams.get('r');
-        let id_user = urlParams.get('user');
-        let buyer = urlParams.get('buyer');
+        let id_user = null;
+        let buyer = '';
 
         async function getDetailData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
@@ -193,7 +200,7 @@
                 requestParams.search = search;
             }
 
-            loadListData();
+            loadDetailData('detail-information');
 
             let getDataRest = await restAPI('GET', '{{ route('admin.po.detail') }}', requestParams)
                 .then(response => response)
@@ -202,6 +209,8 @@
             if (getDataRest && getDataRest.status === 200 && getDataRest.data && getDataRest.data.data) {
                 const data = getDataRest.data.data;
                 const fileUrl = data.file ? `${storageUrl}/${data.file}` : null;
+                buyer = data.buyer_name;
+                id_user = data.id_user;
 
                 const html = `
                     <div class="col-md-6">
@@ -264,12 +273,14 @@
                     </div>
                 `;
 
+                const breadcrumb = `<span class="breadcrumb-text fw-bold"><span class="breadcrumb-separator"> &raquo; ${data.urutan}</span></span>`
+
+                document.getElementById('breadcrumb-detail').innerHTML = breadcrumb;
                 document.getElementById('detail-information').innerHTML = html;
             } else {
                 errorListData(getDataRest);
             }
         }
-
 
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
@@ -402,7 +413,7 @@
                     <td>${element.qty}</td>
                     <td>${element.price}</td>
                     <td>
-                        <a href="/admin/order/${element.id}/detail" class="btn btn-sm neumorphic-button">
+                        <a href="/admin/order/${element.id}/detail?r=${dataParams}" class="btn btn-sm neumorphic-button">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
                     </td>

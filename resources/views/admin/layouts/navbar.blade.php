@@ -6,6 +6,7 @@
         </a>
         <span class="breadcrumb-separator"> &raquo; </span>
         <span class="breadcrumb-text fw-bold">{{ $title }}</span>
+        <span id="breadcrumb-detail"></span>
     </div>
 
     <div class="d-flex gap-2">

@@ -47,6 +47,19 @@ function loadListData() {
     document.getElementById('listData').innerHTML = loadingRow;
 }
 
+function loadDetailData(isParams) {
+    let loadingRow = `
+        <div class="neumorphic-tr">
+            <div class="text-center fw-bold">
+                <div class="neumorphic-loader">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>`;
+
+    document.getElementById(isParams).innerHTML = loadingRow;
+}
+
 function errorListData(getDataRest) {
     let thElements = document.getElementsByClassName("tb-head")[0].getElementsByTagName("th");
     let thCount = thElements.length;
