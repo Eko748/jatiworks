@@ -163,7 +163,7 @@ class OrderController extends Controller
                     'id_katalog' => $validatedData['id_katalog'],
                     'qty'       => $validatedData['qty'],
                     'price'     => $validatedData['price'],
-                    'status'    => OrderStatus::NotCompleted
+                    'status'    => $po->status === 'PC' ? OrderStatus::PaymentCompleted : OrderStatus::NotCompleted
                 ]);
 
                 // Generate code_order for katalog orders
@@ -203,7 +203,7 @@ class OrderController extends Controller
                     'unit'      => $request->unit,
                     'qty'       => $request->qty,
                     'price'     => $request->price,
-                    'status'    => OrderStatus::NotCompleted
+                    'status'    => $po->status === 'PC' ? OrderStatus::PaymentCompleted : OrderStatus::NotCompleted
                 ]);
 
                 $order_id = $order->id;
@@ -270,13 +270,20 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $order = Order::findOrFail($id);
+            $po = Po::findOrFail($order->id_po);
 
             $request->validate([
                 'status' => ['required', 'in:NC,PC']
             ]);
 
-            $order->status = OrderStatus::from($request->status);
-            $order->save();
+            // Update PO status
+            $po->status = $request->status;
+            $po->save();
+
+            // Update all orders under this PO
+            Order::where('id_po', $po->id)->update([
+                'status' => OrderStatus::from($request->status)
+            ]);
 
             DB::commit();
             return response()->json([
@@ -284,7 +291,8 @@ class OrderController extends Controller
                 'message'     => 'Status updated successfully!',
                 'data'        => [
                     'id'     => $order->id,
-                    'status' => $order->status->label(),
+                    'status' => OrderStatus::from($request->status)->label(),
+                    'po_id'  => $po->id
                 ]
             ], 200);
         } catch (\Exception $e) {

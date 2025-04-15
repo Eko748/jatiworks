@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Po;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -212,6 +213,7 @@ class POController extends Controller
     public function updateStatus(Request $request, $id)
     {
         try {
+            DB::beginTransaction();
             $po = Po::findOrFail($id);
 
             $request->validate([
@@ -221,6 +223,12 @@ class POController extends Controller
             $po->status = OrderStatus::from($request->status);
             $po->save();
 
+            // Update all orders under this PO
+            Order::where('id_po', $po->id)->update([
+                'status' => OrderStatus::from($request->status)
+            ]);
+
+            DB::commit();
             return response()->json([
                 'status_code' => 200,
                 'errors'     => false,
@@ -231,13 +239,8 @@ class POController extends Controller
                 ]
             ], 200);
 
-        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-            return response()->json([
-                'status_code' => 400,
-                'errors'     => true,
-                'message'    => 'Invalid encryption string'
-            ], 400);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status_code' => 500,
                 'errors'     => true,
