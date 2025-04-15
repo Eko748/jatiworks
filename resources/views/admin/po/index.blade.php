@@ -231,7 +231,7 @@
                 if (element.file) {
                     if (element.file.endsWith('.pdf')) {
                         fileContent = `
-                            <div class="neumorphic-card card shadow-sm text-center" style="width: 420px;">
+                            <div class="neumorphic-card card shadow-sm text-center">
                                 <div class="card-body d-flex flex-column align-items-center p-2">
                                     <iframe src="${storageUrl}/${element.file}"
                                         width="100%" height="270px"
