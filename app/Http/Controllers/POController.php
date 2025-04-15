@@ -158,14 +158,37 @@ class POController extends Controller
     {
         try {
             $decryptedId = Crypt::decryptString($request->id_po);
-            $po = Po::with(['user', 'order'])->findOrFail($decryptedId);
+            $po = Po::with(['user'])->findOrFail($decryptedId);
 
-            // Get the sequence number for this PO based on user_id and created_at
+            // Get the sequence number
             $urutan = Po::where('id_user', $po->id_user)
                 ->where('created_at', '<=', $po->created_at)
                 ->orderBy('created_at', 'asc')
                 ->pluck('id')
                 ->search($po->id) + 1;
+
+            // Ambil semua order yang terkait user & po
+            $orders = Order::with(['orderTracking'])->where('id_user', $po->id_user)
+                ->where('id_po', $po->id)
+                ->get();
+
+            $totalTrackingSteps = $orders->count() * 10; // total maksimal step dari semua order
+            $completedSteps = 0;
+
+            // Hitung semua step yang berstatus "complete"
+            foreach ($orders as $order) {
+                $completedSteps += $order->orderTracking
+                    ->where('status', 'completed') // Ganti ini sesuai kolom status-mu
+                    ->count();
+            }
+
+            $percentage = $totalTrackingSteps > 0
+                ? ($completedSteps / $totalTrackingSteps) * 100
+                : 0;
+
+            $percentage = fmod($percentage, 1) == 0
+                ? (int) $percentage // Kalau bulat, jadikan integer
+                : round($percentage, 1); // Kalau ada koma, bulatkan 1 angka di belakang koma
 
             return response()->json([
                 'status_code' => 200,
@@ -179,8 +202,9 @@ class POController extends Controller
                     'desc'       => $po->desc,
                     'dp'         => $po->dp,
                     'file'       => $po->file,
-                    'status' => OrderStatus::from($po->status)->label(),
-                    'urutan' => $po->user->name . ' #' .$urutan,
+                    'percentage' => $percentage,
+                    'status'     => OrderStatus::from($po->status)->label(),
+                    'urutan'     => $po->user->name . ' #' . $urutan,
                 ]
             ], 200);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
@@ -198,6 +222,7 @@ class POController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -238,7 +263,6 @@ class POController extends Controller
                     'status' => $po->status->label(),
                 ]
             ], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
