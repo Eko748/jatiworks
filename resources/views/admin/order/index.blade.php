@@ -104,7 +104,7 @@
                     <thead>
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
-                            <th class="text-wrap align-top">Status</th>
+                            <th class="text-wrap align-top">Percentage</th>
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Buyer</th>
