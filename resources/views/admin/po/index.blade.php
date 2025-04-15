@@ -84,6 +84,7 @@
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
                             <th class="text-wrap align-top">File</th>
+                            <th class="text-wrap align-top">Status</th>
                             <th class="text-wrap align-top">Percentage</th>
                             <th class="text-wrap align-top">Code</th>
                             <th class="text-wrap align-top">Buyer</th>
@@ -143,7 +144,7 @@
                             <div class="col-md-12">
                                 <label for="file" class="form-label fw-bold">Upload File PO</label>
                                 <input type="file" class="form-control neumorphic-card" id="file"
-                                    accept="file/*" multiple>
+                                    accept="application/pdf">
                             </div>
                         </div>
                     </form>
@@ -206,6 +207,42 @@
         }
 
         async function handleListData(data) {
+            let statusMapping = {
+                'Payment Completed': {
+                    class: 'text-green border-success neumorphic-button',
+                    icon: '<i class="fas fa-check-circle"></i>',
+                    dropdown: false
+                },
+                'Not Completed': {
+                    class: 'text-warning border-warning neumorphic-button',
+                    icon: '<i class="fas fa-times-circle"></i>',
+                    dropdown: [{
+                        text: 'Payment Completed',
+                        value: 'PC'
+                    }]
+                }
+            };
+
+            let statusData = statusMapping[data.status] || {
+                class: 'text-secondary border-secondary',
+                icon: '<i class="fas fa-question-circle"></i>',
+                dropdown: false
+            };
+
+            let statusHtml = statusData.dropdown ? `
+                <div class="dropdown">
+                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ${statusData.icon} ${data?.status ?? '-'}
+                    </button>
+                    <ul class="dropdown-menu">
+                        ${statusData.dropdown.map(item => `
+                                                                <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                            `).join('')}
+                    </ul>
+                </div>
+            ` :
+                `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
+
             return {
                 id: data?.id ?? '-',
                 id_encrypt: data?.id_encrypt ?? '-',
@@ -216,7 +253,24 @@
                 desc: data?.desc ?? '-',
                 dp: data?.dp ?? '-',
                 file: data.file,
+                status: statusHtml,
             };
+        }
+
+        async function updatePOStatus(poId, status) {
+            try {
+                const response = await restAPI('PUT', `/admin/po/${poId}/update-status`, {
+                    status
+                });
+                if (response.status === 200) {
+                    notyf.success('PO status updated successfully');
+                    await getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter);
+                } else {
+                    notyf.error('Failed to update po status');
+                }
+            } catch (error) {
+                notyf.error('An error occurred while updating po status');
+            }
         }
 
         async function setListData(dataList, pagination) {
@@ -254,6 +308,7 @@
                 <tr class="neumorphic-tr">
                     <td class="text-center">${display_from + index}.</td>
                     <td>${fileContent}</td>
+                    <td>${element.status}</td>
                     <td>${element.percentage}</td>
                     <td>${element.code}</td>
                     <td>${element.buyer_name}</td>
