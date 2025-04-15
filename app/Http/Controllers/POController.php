@@ -151,11 +151,11 @@ class POController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
         try {
-            $decryptedId = Crypt::decryptString($id);
-            $po = Po::with(['user'])->findOrFail($decryptedId);
+            $decryptedId = Crypt::decryptString($request->id_po);
+            $po = Po::with(['user', 'order'])->findOrFail($decryptedId);
 
             return response()->json([
                 'status_code' => 200,
@@ -163,7 +163,6 @@ class POController extends Controller
                 'message'    => 'Success',
                 'data'       => [
                     'id'         => $po->id,
-                    'id_encrypt' => $id,
                     'kode_po'    => $po->kode_po,
                     'id_user'    => $po->user->id,
                     'buyer_name' => $po->user->name,
