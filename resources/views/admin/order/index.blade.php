@@ -249,6 +249,13 @@
                                 <span>${data.percentage || '-'}</span>
                             </div>
                         </div>
+                        <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                            <i class="fas fa-chart-simple me-2 mt-1"></i>
+                            <div>
+                                <span class="fw-bold d-block">Status:</span>
+                                <span>${data.status || '-'}</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-md-6">
