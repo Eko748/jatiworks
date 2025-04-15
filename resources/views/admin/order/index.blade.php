@@ -279,8 +279,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                                            <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                                                        `).join('')}
+                                                                                                <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                                            `).join('')}
                     </ul>
                 </div>
             ` :
@@ -320,12 +320,12 @@
                             <i class="fas fa-percent me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">Percentage:</span>
-                                <span>${data.percentage || '-'}</span>
+                                <span>${data.percentage ? renderNeumorphicProgress(data.percentage) : '-'}</span>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
                             <i class="fas fa-chart-simple me-2 mt-1"></i>
-                            <div>
+                            <div class="mb-2">
                                 <span class="fw-bold d-block">Status:</span>
                                 <span>${statusHtml || '-'}</span>
                             </div>
@@ -336,20 +336,20 @@
                         <div class="neumorphic-card2 p-2">
                             <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>File PO:</span>
                             ${fileUrl ? `
-                                                                <div class="text-center">
-                                                                    <div class="card-body d-flex flex-column align-items-center p-2">
-                                                                        <iframe src="${fileUrl}"
-                                                                            width="100%" height="300px"
-                                                                            style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                                                                        </iframe>
-                                                                        <a href="${fileUrl}" target="_blank"
-                                                                            class="btn btn-sm neumorphic-btn-success mt-3 w-100"
-                                                                            style="text-decoration: none;">
-                                                                            <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
-                                                                        </a>
+                                                                    <div class="text-center">
+                                                                        <div class="card-body d-flex flex-column align-items-center p-2">
+                                                                            <iframe src="${fileUrl}"
+                                                                                width="100%" height="345px"
+                                                                                style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                                                            </iframe>
+                                                                            <a href="${fileUrl}" target="_blank"
+                                                                                class="btn btn-sm neumorphic-btn-success mt-3 w-100"
+                                                                                style="text-decoration: none;">
+                                                                                <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            ` : `<p class="ms-4">No File</p>`}
+                                                                ` : `<p class="ms-4">No File</p>`}
                         </div>
                     </div>
                 `;
@@ -409,19 +409,14 @@
             await addListData();
         }
 
-        async function handleListData(data) {
-            let images = data?.file?.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
+        function renderNeumorphicProgress(value) {
+            const val = parseInt(value) || 0;
+            let color = 'danger';
+            if (val > 25 && val <= 50) color = 'warning';
+            else if (val > 50 && val <= 75) color = 'info';
+            else if (val > 75 && val <= 100) color = 'success';
 
-            const percentage = data?.percentage ?? 0;
-
-            function renderNeumorphicProgress(value) {
-                const val = parseInt(value) || 0;
-                let color = 'danger';
-                if (val > 25 && val <= 50) color = 'warning';
-                else if (val > 50 && val <= 75) color = 'info';
-                else if (val > 75 && val <= 100) color = 'success';
-
-                return `
+            return `
                     <div class="neumorphic-progress ${color}">
                         <svg viewBox="0 0 36 36" class="circular-chart ${color}">
                             <path class="circle-bg"
@@ -439,7 +434,12 @@
                         </svg>
                     </div>
                 `;
-            }
+        }
+
+        async function handleListData(data) {
+            let images = data?.file?.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
+
+            const percentage = data?.percentage ?? 0;
 
             return {
                 id: data?.id ?? '-',
@@ -465,19 +465,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                </div>
-                                                                                            `).join('')}
+                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                    </div>
+                                                                                                `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                            </button>
-                                                                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                            </button>
-                                                                                        ` : ''}
+                                                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                </button>
+                                                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                </button>
+                                                                                            ` : ''}
                     </div>
                 `;
 
@@ -575,6 +575,7 @@
                         await notyf.success('Data saved successfully.');
 
                         setTimeout(async () => {
+                            await getDetailData();
                             await getListData(defaultLimitPage, currentPage, defaultAscending,
                                 defaultSearch, customFilter);
                         }, 1000);
@@ -1036,25 +1037,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                                                                            <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                                                                                <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                                                                            </button>` : ''
+                                                                                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                                                                                </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                                                                                <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                                                                                    <i class="fas fa-forward me-1"></i>Next
-                                                                                                                                                                                </button>` : ''
+                                                                                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                                                                        <i class="fas fa-forward me-1"></i>Next
+                                                                                                                                                                                    </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                                                                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                                                                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                                                                                </button>
-                                                                                                                                                                                <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                                                                                    <i class="fas fa-save me-1"></i>Submit
-                                                                                                                                                                                </button>
-                                                                                                                                                                            ` : ''
+                                                                                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                                                                                    </button>
+                                                                                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                                                                        <i class="fas fa-save me-1"></i>Submit
+                                                                                                                                                                                    </button>
+                                                                                                                                                                                ` : ''
                             }
                         </div>
                     </div>
