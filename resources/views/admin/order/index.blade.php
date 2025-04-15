@@ -306,7 +306,7 @@
                             <i class="fas fa-dollar ms-1 me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">DP:</span>
-                                <span>${data.dp || '-'}</span>
+                                <span>${data.dp || 0}</span>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
@@ -320,7 +320,7 @@
                             <i class="fas fa-percent me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">Percentage:</span>
-                                <span>${data.percentage ? renderNeumorphicProgress(data.percentage) : '-'}</span>
+                                <span>${data.percentage ? renderNeumorphicProgress(data.percentage) : renderNeumorphicProgress(0)}</span>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
