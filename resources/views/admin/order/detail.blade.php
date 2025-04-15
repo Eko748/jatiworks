@@ -128,7 +128,7 @@
 @endsection
 
 @section('back')
-    <a href="{{ route('admin.order.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
+    <a href="{{ route('admin.po.order.index') }}" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
         data-bs-placement="top" title="Back to {{ $title }} page" onclick="hideTooltip(this)">
         <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
     </a>
