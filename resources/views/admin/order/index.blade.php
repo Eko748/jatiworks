@@ -86,6 +86,12 @@
                     </div>
                 </form>
             </div>
+            <div class="neumorphic-card p-3 mb-3">
+                <h5 class="fw-bold">PO Information</h5>
+                <hr>
+                <div id="detail-information" class="row">
+                </div>
+            </div>
             <div class="table-responsive neumorphic-card p-3 mb-3">
                 <table class="table m-0">
                     <thead>
@@ -171,12 +177,99 @@
         let defaultAscending = 0
         let defaultSearch = ''
         let customFilter = {}
-        // let storageUrl = '{{ asset('storage/uploads/katalog') }}'
+        let storageUrl = '{{ asset('storage/uploads/po') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
         let urlParams = new URLSearchParams(window.location.search);
         let dataParams = urlParams.get('r');
         let id_user = urlParams.get('user');
         let buyer = urlParams.get('buyer');
+
+        async function getDetailData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
+            let requestParams = {
+                id_po: dataParams,
+            };
+
+            if (search.trim() !== '') {
+                requestParams.search = search;
+            }
+
+            loadListData();
+
+            let getDataRest = await restAPI('GET', '{{ route('admin.po.detail') }}', requestParams)
+                .then(response => response)
+                .catch(error => error.response);
+
+            if (getDataRest && getDataRest.status === 200 && getDataRest.data && getDataRest.data.data) {
+                const data = getDataRest.data.data;
+                const fileUrl = data.file ? `${storageUrl}/${data.file}` : null;
+
+                const html = `
+            <div class="col-md-6">
+                <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                    <i class="fas fa-hashtag me-2 mt-1"></i>
+                    <div>
+                        <span class="fw-bold d-block">PO Code:</span>
+                        <span>${data.kode_po || '-'}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                    <i class="fas fa-user-circle me-2 mt-1"></i>
+                    <div>
+                        <span class="fw-bold d-block">Buyer Name:</span>
+                        <span>${data.buyer_name || '-'}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                    <i class="fas fa-dollar ms-1 me-2 mt-1"></i>
+                    <div>
+                        <span class="fw-bold d-block">DP:</span>
+                        <span>${data.dp || '-'}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                    <i class="fas fa-align-left me-2 mt-1"></i>
+                    <div>
+                        <span class="fw-bold d-block">Description:</span>
+                        <span>${data.desc || '-'}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
+                    <i class="fas fa-percent me-2 mt-1"></i>
+                    <div>
+                        <span class="fw-bold d-block">Percentage:</span>
+                        <span>${data.percentage || '-'}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="neumorphic-card2 p-2">
+                    <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>File PO:</span>
+                    ${fileUrl ? `
+                            <div class="neumorphic-card card shadow-sm text-center">
+                                <div class="card-body d-flex flex-column align-items-center p-2">
+                                    <iframe src="${fileUrl}"
+                                        width="100%" height="300px"
+                                        style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                    </iframe>
+                                    <a href="${fileUrl}" target="_blank"
+                                        class="btn btn-sm neumorphic-btn-success mt-3 w-100"
+                                        style="text-decoration: none;">
+                                        <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
+                                    </a>
+                                </div>
+                            </div>
+                        ` : `<p class="text-muted">Tidak ada file tersedia</p>`}
+                </div>
+            </div>
+        `;
+
+                document.getElementById('detail-information').innerHTML = html;
+            } else {
+                errorListData(getDataRest);
+            }
+        }
+
 
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
@@ -249,8 +342,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                        `).join('')}
+                                                                <li><a class="dropdown-item" href="#" onclick="updateOrderStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                            `).join('')}
                     </ul>
                 </div>
             ` :
@@ -282,19 +375,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                </div>
-                                            `).join('')}
+                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                    </div>
+                                                                `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                <i class="fas fa-circle-chevron-left fs-3"></i>
-                                            </button>
-                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                <i class="fas fa-circle-chevron-right fs-3"></i>
-                                            </button>
-                                        ` : ''}
+                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                </button>
+                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                </button>
+                                                            ` : ''}
                     </div>
                 `;
 
@@ -869,25 +962,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                            <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                                <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                            </button>` : ''
+                                                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                                                </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                                <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                                    <i class="fas fa-forward me-1"></i>Next
-                                                                                                                                </button>` : ''
+                                                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                                        <i class="fas fa-forward me-1"></i>Next
+                                                                                                                                                    </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                                </button>
-                                                                                                                                <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                                    <i class="fas fa-save me-1"></i>Submit
-                                                                                                                                </button>
-                                                                                                                            ` : ''
+                                                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                                                    </button>
+                                                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                                        <i class="fas fa-save me-1"></i>Submit
+                                                                                                                                                    </button>
+                                                                                                                                                ` : ''
                             }
                         </div>
                     </div>
@@ -1083,6 +1176,7 @@
 
         async function initPageLoad() {
             await Promise.all([
+                getDetailData(),
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch,
                     customFilter),
                 searchListData(),
