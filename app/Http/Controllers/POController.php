@@ -153,7 +153,39 @@ class POController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $decryptedId = Crypt::decryptString($id);
+            $po = Po::with(['user', 'order'])->findOrFail($decryptedId);
+
+            return response()->json([
+                'status_code' => 200,
+                'errors'     => false,
+                'message'    => 'Success',
+                'data'       => [
+                    'id'         => $po->id,
+                    'id_encrypt' => $id,
+                    'kode_po'    => $po->kode_po,
+                    'id_user'    => $po->user->id,
+                    'buyer_name' => $po->user->name,
+                    'file'       => $po->file,
+                    'desc'       => $po->desc,
+                    'dp'         => $po->dp,
+                ]
+            ], 200);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return response()->json([
+                'status_code' => 400,
+                'errors'     => true,
+                'message'    => 'Invalid encryption string'
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'errors'     => true,
+                'message'    => 'Something went wrong!',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

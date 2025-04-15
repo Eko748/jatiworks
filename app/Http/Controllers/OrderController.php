@@ -190,6 +190,7 @@ class OrderController extends Controller
                 ]);
 
                 $order = Order::create([
+                    'id_po' => $decryptedId,
                     'id_user'   => $id_user,
                     'item_name' => $request->item_name,
                     'material'  => $request->material,
