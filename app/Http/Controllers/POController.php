@@ -68,7 +68,7 @@ class POController extends Controller
                 'file'  => $item->file,
                 'desc'  => $item->desc,
                 'dp'  => $item->dp,
-                'status'  => $item->status,
+                'status' => OrderStatus::from($item->status)->label()
             ];
         });
 
@@ -214,15 +214,22 @@ class POController extends Controller
             $decryptedId = Crypt::decryptString($id);
             $po = Po::findOrFail($decryptedId);
 
+            $request->validate([
+                'status' => ['required', 'in:NC,PC']
+            ]);
+
             // Update status from NC to PC
-            $po->status = OrderStatus::PaymentCompleted;
+            $po->status = OrderStatus::from($request->status);
             $po->save();
 
             return response()->json([
                 'status_code' => 200,
                 'errors'     => false,
                 'message'    => 'Status updated successfully',
-                'data'       => $po
+                'data'        => [
+                    'id'     => $po->id,
+                    'status' => $po->status->label(),
+                ]
             ], 200);
 
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {

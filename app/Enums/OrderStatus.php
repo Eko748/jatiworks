@@ -10,7 +10,7 @@ enum OrderStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::NotCompleted => 'Not Completed',
+            self::NotCompleted => 'Partial Payment',
             self::PaymentCompleted => 'Payment Completed',
         };
     }
