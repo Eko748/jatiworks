@@ -213,7 +213,7 @@
                     icon: '<i class="fas fa-check-circle"></i>',
                     dropdown: false
                 },
-                'Not Completed': {
+                'Partial Payment': {
                     class: 'text-warning border-warning neumorphic-button',
                     icon: '<i class="fas fa-times-circle"></i>',
                     dropdown: [{
