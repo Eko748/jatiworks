@@ -86,6 +86,7 @@ body {
 
 .neumorphic-card2 {
     background: var(--bg-color);
+    color: var(--bg-color-reverse);
     box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
