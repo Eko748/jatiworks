@@ -182,12 +182,12 @@
 
                 let statusMapping = {
                     'Payment Completed': {
-                        class: 'text-green bg-success border-success neu-card',
+                        class: 'text-white bg-success border-success neu-card',
                         icon: '<i class="fas fa-check-circle"></i>',
                         dropdown: false
                     },
                     'Partial Payment': {
-                        class: 'text-warning bg-warning border-warning neu-card',
+                        class: 'text-dark bg-warning border-warning neu-card',
                         icon: '<i class="fas fa-times-circle"></i>',
                         dropdown: [{
                             text: 'Payment Completed',
