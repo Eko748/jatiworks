@@ -60,6 +60,29 @@ class POController extends Controller
         ];
 
         $mappedData = $data->map(function ($item) {
+            // Get all orders related to this PO
+            $orders = Order::with(['orderTracking'])->where('id_user', $item->user->id)
+                ->where('id_po', $item->id)
+                ->get();
+
+            $totalTrackingSteps = $orders->count() * 10; // total maksimal step dari semua order
+            $completedSteps = 0;
+
+            // Hitung semua step yang berstatus "complete"
+            foreach ($orders as $order) {
+                $completedSteps += $order->orderTracking
+                    ->where('status', 'completed')
+                    ->count();
+            }
+
+            $percentage = $totalTrackingSteps > 0
+                ? ($completedSteps / $totalTrackingSteps) * 100
+                : 0;
+
+            $percentage = fmod($percentage, 1) == 0
+                ? (int) $percentage
+                : round($percentage, 1);
+
             return [
                 'id'         => $item->id,
                 'id_encrypt' => Crypt::encryptString($item->id),
@@ -69,6 +92,7 @@ class POController extends Controller
                 'file'  => $item->file,
                 'desc'  => $item->desc,
                 'dp'  => $item->dp,
+                'percentage' => $percentage. '%',
                 'status' => OrderStatus::from($item->status)->label()
             ];
         });
