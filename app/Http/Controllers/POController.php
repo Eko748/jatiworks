@@ -231,6 +231,9 @@ class POController extends Controller
                 ? (int) $percentage // Kalau bulat, jadikan integer
                 : round($percentage, 1); // Kalau ada koma, bulatkan 1 angka di belakang koma
 
+            $totalAmount = $orders->sum('price');
+            $balanceAmount = $totalAmount - $po->dp;
+
             return response()->json([
                 'status_code' => 200,
                 'errors'     => false,
@@ -246,6 +249,8 @@ class POController extends Controller
                     'percentage' => $percentage,
                     'status'     => OrderStatus::from($po->status)->label(),
                     'urutan'     => $po->user->name . ' #' . $urutan,
+                    'ta'         => $totalAmount,
+                    'ba'         => $balanceAmount
                 ]
             ], 200);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
