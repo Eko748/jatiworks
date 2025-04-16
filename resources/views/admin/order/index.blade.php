@@ -334,7 +334,7 @@
 
                     <div class="col-md-6">
                         <div class="neumorphic-card2 p-2">
-                            <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>File PO:</span>
+                            <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>PO File:</span>
                             ${fileUrl ? `
                                                                     <div class="text-center">
                                                                         <div class="card-body d-flex flex-column align-items-center p-2">

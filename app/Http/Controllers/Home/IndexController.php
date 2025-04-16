@@ -39,6 +39,12 @@ class IndexController extends Controller
         return view('buyer.pages.customdesign.detail', compact('title'));
     }
 
+    public function indexOrderPO()
+    {
+        $title = 'PO - Order';
+        return view('buyer.pages.po.index', compact('title'));
+    }
+
     public function indexOrder()
     {
         $title = 'Order';

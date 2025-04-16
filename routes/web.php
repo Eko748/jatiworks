@@ -89,6 +89,11 @@ Route::get('/catalogue-detail-data', [KatalogController::class, 'getDetailDataKa
 
 Route::get('/custom-design', [IndexController::class, 'indexCustomDesign'])->name('index.customdesign.index');
 Route::get('/custom-design-detail', [IndexController::class, 'detailCustomDesign'])->name('index.customdesign.detail');
+
+Route::get('/order/po', [IndexController::class, 'indexOrderPO'])->name('index.order.po');
+Route::get('/datapo', [POController::class, 'getdatapo'])->name('datapo');
+Route::get('/order/po/detail', [POController::class, 'show'])->name('datapodetail');
+
 Route::get('/order', [IndexController::class, 'indexOrder'])->name('index.order.index');
 
 Route::get('/order/detail/{id}', [IndexController::class, 'detailOrder'])->name('index.order.detail');

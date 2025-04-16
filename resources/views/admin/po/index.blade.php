@@ -26,6 +26,48 @@
             height: auto;
             object-fit: contain;
         }
+
+        .circular-chart {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: #dad8d8ef;
+            stroke-width: 3.8;
+        }
+
+        .circle {
+            fill: none;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.6s ease;
+        }
+
+        .percentage-text {
+            fill: var(--text-color);
+            font-size: 0.6em;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .circular-chart.danger .circle {
+            stroke: #dc3545;
+        }
+
+        .circular-chart.warning .circle {
+            stroke: #ffc107;
+        }
+
+        .circular-chart.info .circle {
+            stroke: #17a2b8;
+        }
+
+        .circular-chart.success .circle {
+            stroke: #28a745;
+        }
     </style>
 @endsection
 
@@ -180,6 +222,33 @@
         let storageUrl = '{{ asset('storage/uploads/po') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
 
+        function renderNeumorphicProgress(value) {
+            const val = parseInt(value) || 0;
+            let color = 'danger';
+            if (val > 25 && val <= 50) color = 'warning';
+            else if (val > 50 && val <= 75) color = 'info';
+            else if (val > 75 && val <= 100) color = 'success';
+
+            return `
+                    <div class="neumorphic-progress ${color}">
+                        <svg viewBox="0 0 36 36" class="circular-chart ${color}">
+                            <path class="circle-bg"
+                                d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle"
+                                stroke-dasharray="${val}, 100"
+                                d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <g transform="rotate(90, 18, 18)">
+                                <text x="18" y="20.5" class="percentage-text fw-bold">${val}%</text>
+                            </g>
+                        </svg>
+                    </div>
+                `;
+        }
+
         async function getListData(limit = 10, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
@@ -236,12 +305,14 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                    <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                                `).join('')}
+                                                                            <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                        `).join('')}
                     </ul>
                 </div>
             ` :
                 `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>`;
+
+            const percentage = data?.percentage ?? 0;
 
             return {
                 id: data?.id ?? '-',
@@ -251,6 +322,7 @@
                 id_user: data?.id_user ?? '-',
                 buyer_name: data?.buyer_name ?? '-',
                 desc: data?.desc ?? '-',
+                percentage: renderNeumorphicProgress(percentage),
                 dp: data?.dp ?? '-',
                 file: data.file,
                 status: statusHtml,
