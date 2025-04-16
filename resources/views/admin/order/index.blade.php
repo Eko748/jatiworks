@@ -304,9 +304,19 @@
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
                             <i class="fas fa-dollar ms-1 me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">DP:</span>
-                                <span>${data.dp || 0}</span>
+                            <div class="d-flex gap-3">
+                                <div>
+                                    <span class="fw-bold d-block">Deposit:</span>
+                                    <span>${data.dp || 0}</span>
+                                </div>
+                                <div>
+                                    <span class="fw-bold d-block">Balance:</span>
+                                    <span>${data.ba || 0}</span>
+                                </div>
+                                <div>
+                                    <span class="fw-bold d-block">Total:</span>
+                                    <span>${data.ta || 0}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">

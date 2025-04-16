@@ -291,6 +291,7 @@
             let getDataHtml = '';
 
             dataList.forEach((element, index) => {
+                let globalIndex = pagination.total - ((currentPage1 - 1) * pagination.per_page) - index;
                 let shortDesc = element.desc.length > 40 ? element.desc.substring(0, 40) + "..." : element.desc;
 
                 let fileContent = '-';
@@ -321,7 +322,10 @@
                     <div class="card-body d-flex flex-column">
                         ${fileContent}
                         <div class="mt-2 flex">
-                            <small class="text-white fw-bold">PO Code: ${element.code}</small>
+                            <small class="text-white">PO Code: ${element.code}</small>
+                            <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
+                                PO #${globalIndex}
+                            </h5>
                         </div>
                         <hr class="my-0 mb-2 mt-1 text-white">
                         <div class="d-flex align-items-center justify-content-between">
