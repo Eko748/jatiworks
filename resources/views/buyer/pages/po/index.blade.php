@@ -7,7 +7,7 @@
             justify-content: center;
             align-items: start;
             gap: 1rem;
-            min-height: 500px;
+            min-height: 300px;
             width: fit-content;
             margin: auto;
         }
@@ -97,20 +97,8 @@
 @section('content')
     <section id="catalogue-section" class="catalogue-section bg-green-white">
         <div class="container pt-5 pb-5">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h5 class="heading fw-bold">PO Information</h5>
-                    <h6 class="subtitle h6 mb-3" id="noteData"></h6>
-                </div>
-                <a href="{{ route('index.order.po') }}" type="button" id="toggleFilter" class="filter-data btn-success btn btn-md">
-                    <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
-                </a>
-            </div>
-            <div class="neumorphic-card mb-3 bg-green-young card p-3">
-                <div id="detail-information" class="row">
-                </div>
-            </div>
-            <hr>
+            <h3 class="heading fw-bold">Your Order</h3>
+            <h6 class="subtitle h6 mb-3" id="noteData"></h6>
             <div class="d-flex align-items-center gap-1 flex-wrap">
                 <div class="d-flex align-items-center gap-1 ms-auto">
                     <div class="position-relative">
@@ -162,125 +150,6 @@
         let customFilter1 = {}
         let storageUrl = '{{ asset('storage/uploads/po') }}'
         let imageNullUrl = '{{ asset('assets/img/public/image_null.webp') }}'
-        let urlParams = new URLSearchParams(window.location.search);
-        let dataParams = urlParams.get('r');
-
-        async function getDetailData() {
-            let requestParams = {
-                id_po: dataParams,
-            };
-
-            let getDataRest = await restAPI('GET', '{{ route('datapodetail') }}', requestParams)
-                .then(response => response)
-                .catch(error => error.response);
-
-            if (getDataRest && getDataRest.status === 200 && getDataRest.data && getDataRest.data.data) {
-                const data = getDataRest.data.data;
-                const fileUrl = data.file ? `${storageUrl}/${data.file}` : null;
-                buyer = data.buyer_name;
-                id_user = data.id_user;
-
-                let statusMapping = {
-                    'Payment Completed': {
-                        class: 'text-green bg-success border-success neu-card',
-                        icon: '<i class="fas fa-check-circle"></i>',
-                        dropdown: false
-                    },
-                    'Partial Payment': {
-                        class: 'text-warning bg-warning border-warning neu-card',
-                        icon: '<i class="fas fa-times-circle"></i>',
-                        dropdown: [{
-                            text: 'Payment Completed',
-                            value: 'PC'
-                        }]
-                    }
-                };
-
-                let statusData = statusMapping[data.status] || {
-                    class: 'text-secondary border-secondary',
-                    icon: '<i class="fas fa-question-circle"></i>',
-                    dropdown: false
-                };
-
-                let statusHtml = statusData ?
-                    `<div class="badge border px-2 py-1 ${statusData.class}">${statusData.icon} ${data?.status ?? '-'}</div>` :
-                    '-';
-
-                const html = `
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-start mb-2 neu-card p-2">
-                            <i class="fas fa-hashtag me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">PO Code:</span>
-                                <span>${data.kode_po || '-'}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start mb-2 neu-card p-2">
-                            <i class="fas fa-user-circle me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">Buyer Name:</span>
-                                <span>${data.buyer_name || '-'}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start mb-2 neu-card p-2">
-                            <i class="fas fa-dollar ms-1 me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">DP:</span>
-                                <span>${data.dp || 0}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start mb-2 neu-card p-2">
-                            <i class="fas fa-align-left me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">Description:</span>
-                                <span>${data.desc || '-'}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start mb-2 neu-card p-2">
-                            <i class="fas fa-percent me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">Progress:</span>
-                                <span>${data.percentage ? renderNeumorphicProgress(data.percentage, 'black') : renderNeumorphicProgress(0, 'black')}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start mb-2 neu-card p-2">
-                            <i class="fas fa-chart-simple me-2 mt-1"></i>
-                            <div class="mb-2">
-                                <span class="fw-bold d-block">Status:</span>
-                                <span>${statusHtml || '-'}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="neu-card p-2">
-                            <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>PO File:</span>
-                            ${fileUrl ? `
-                                                                                <div class="text-center">
-                                                                                    <div class="card-body d-flex flex-column align-items-center p-2">
-                                                                                        <iframe src="${fileUrl}"
-                                                                                            width="100%" height="325px"
-                                                                                            style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                                                                                        </iframe>
-                                                                                        <a href="${fileUrl}" target="_blank"
-                                                                                            class="btn btn-sm btn-outline-success mt-3 w-100"
-                                                                                            style="text-decoration: none;">
-                                                                                            <i class="fas fa-external-link-alt me-1"></i> View PO files in new tabs
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            ` : `<p class="ms-4">No File</p>`}
-                        </div>
-                    </div>
-                `;
-
-                const breadcrumb =
-                    `<span class="breadcrumb-text fw-bold"><span class="breadcrumb-separator"> &raquo; ${data.urutan}</span></span>`
-
-                // document.getElementById('breadcrumb-detail').innerHTML = breadcrumb;
-                document.getElementById('detail-information').innerHTML = html;
-            }
-        }
 
         function renderNeumorphicProgress(value, text) {
             const val = parseInt(value) || 0;
@@ -330,13 +199,12 @@
                 `;
         }
 
-        async function getListDataOrder(limit = 8, page = 1, ascending = 0, search = '', customFilter = {}) {
+        async function getListDataOrderPO(limit = 8, page = 1, ascending = 0, search = '', customFilter = {}) {
             let requestParams = {
                 page: page,
                 limit: limit,
                 ascending: ascending,
                 id_user: {{ Auth::user()->id }},
-                id_po: dataParams,
                 ...customFilter
             };
 
@@ -344,17 +212,17 @@
                 requestParams.search = search;
             }
 
-            let getDataRest = await restAPI('GET', '{{ route('dataorder') }}', requestParams)
+            let getDataRest = await restAPI('GET', '{{ route('datapo') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
 
             if (getDataRest && getDataRest.status == 200 && Array.isArray(getDataRest.data.data)) {
                 let handleDataArray = await Promise.all(
-                    getDataRest.data.data.map(async item => await handleListDataOrder(item))
+                    getDataRest.data.data.map(async item => await handleListDataOrderPO(item))
                 );
-                const msg = 'Please click on the show details to view the tracking details of your order.'
+                const msg = 'Please click on the show list order to view details of your orders.'
                 document.getElementById('noteData').innerHTML = msg;
-                await setListDataOrder(handleDataArray, getDataRest.data.pagination);
+                await setListDataOrderPO(handleDataArray, getDataRest.data.pagination);
             } else {
                 let errorMessage = "Failed to load data";
 
@@ -372,24 +240,49 @@
             }
         }
 
-        async function handleListDataOrder(data) {
-            let images = data?.file.length ? data.file.map(f => `{{ asset('${f.file_name}') }}`) : [imageNullUrl];
+        async function handleListDataOrderPO(data) {
+            let statusMapping = {
+                'Payment Completed': {
+                    class: 'text-dark bg-green-young border-success neumorphic-card2',
+                    icon: '<i class="fas fa-check-circle"></i>',
+                    dropdown: false
+                },
+                'Partial Payment': {
+                    class: 'text-dark bg-warning border-warning neumorphic-card2',
+                    icon: '<i class="fas fa-times-circle"></i>',
+                    dropdown: [{
+                        text: 'Payment Completed',
+                        value: 'PC'
+                    }]
+                }
+            };
+
+            let statusData = statusMapping[data.status] || {
+                class: 'text-secondary border-secondary',
+                icon: '<i class="fas fa-question-circle"></i>',
+                dropdown: false
+            };
+
+            let statusHtml = `<span class="badge ${statusData.class}">${statusData.icon} ${data.status}</span>`;
 
             const percentage = data?.percentage ?? 0;
 
             return {
                 id: data?.id ?? '-',
+                id_encrypt: data?.id_encrypt ?? '-',
+                percentage: data?.percentage ?? '-',
+                code: data?.kode_po ?? '-',
+                id_user: data?.id_user ?? '-',
                 buyer_name: data?.buyer_name ?? '-',
-                item_name: data?.item_name ?? '-',
-                code_order: data?.code_order ?? '-',
+                desc: data?.desc ?? '-',
+                dp: data?.dp ?? '-',
                 percentage: renderNeumorphicProgress(percentage, 'black'),
-                qty: data?.qty ?? '-',
-                price: data?.price ?? '-',
-                images
+                file: data.file,
+                status: statusHtml
             };
         }
 
-        async function setListDataOrder(dataList, pagination) {
+        async function setListDataOrderPO(dataList, pagination) {
             totalPage1 = pagination.total_pages;
             currentPage1 = pagination.current_page;
             let display_from = (pagination.per_page * (currentPage1 - 1)) + 1;
@@ -398,39 +291,37 @@
             let getDataHtml = '';
 
             dataList.forEach((element, index) => {
-                let carouselId = `carousel${element.id}-${index}`;
+                let shortDesc = element.desc.length > 40 ? element.desc.substring(0, 40) + "..." : element.desc;
 
-                let imageCarousel = element.images.length ? `
-                    <div class="position-relative w-100 overflow-hidden">
-                        <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner" style="height: 320px;">
-                                ${element.images.map((img, i) => `
-                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                                                    </div>
-                                                                `).join('')}
+                let fileContent = '-';
+                if (element.file) {
+                    if (element.file.endsWith('.pdf')) {
+                        fileContent = `
+                            <div class="neumorphic-card card shadow-sm text-center">
+                                <div class="card-body d-flex flex-column align-items-center p-2">
+                                    <iframe src="${storageUrl}/${element.file}"
+                                        width="100%" height="270px"
+                                        style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                    </iframe>
+                                    <a href="${storageUrl}/${element.file}" target="_blank"
+                                        class="btn btn-sm btn-outline-success mt-3 w-100"
+                                        style="text-decoration: none;">
+                                        <i class="fas fa-external-link-alt me-1"></i> View PO files in new tabs
+                                    </a>
+                                </div>
                             </div>
-                            ${element.images.length > 1 ? `
-                                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                                                    <span class="carousel-control-prev-icon"></span>
-                                                                </button>
-                                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                                                    <span class="carousel-control-next-icon"></span>
-                                                                </button>
-                                                            ` : ''}
-                        </div>
-                    </div>
-                ` : '-';
+                        `;
+                    } else {
+                        fileContent = `<a href="${storageUrl}/${element.file}" target="_blank">View file</a>`;
+                    }
+                }
 
                 getDataHtml += `
                 <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 500px;">
                     <div class="card-body d-flex flex-column">
-                        ${imageCarousel}
-                        <div class="mt-2">
-                            <small class="text-white">Code Order: ${element.code_order}</small>
-                            <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
-                                ${element.item_name}
-                            </h5>
+                        ${fileContent}
+                        <div class="mt-2 flex">
+                            <small class="text-white fw-bold">PO Code: ${element.code}</small>
                         </div>
                         <hr class="my-0 mb-2 mt-1 text-white">
                         <div class="d-flex align-items-center justify-content-between">
@@ -442,21 +333,33 @@
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <i class="bi bi-cash-stack h6 me-1 fw-bold text-white"></i>
-                                <span class="h6 fw-bold text-white">Price:</span>
+                                <i class="bi bi-credit-card h6 me-1 fw-bold text-white"></i>
+                                <span class="h6 fw-bold text-white">Status:</span>
                             </div>
-                            <p class="h6 text-dark fw-bold mb-0"><span class="badge text-dark bg-green-young h6"><i class="bi bi-currency-dollar fw-bold text-dark"></i>${element.price}</span></p>
+                            <p class="h6 fw-bold text-white mb-0">${element.status}</p>
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <i class="bi bi-layers h6 me-1 fw-bold text-white"></i>
-                                <span class="h6 fw-bold text-white">Qty:</span>
+                                <i class="bi bi-cash-stack h6 me-1 fw-bold text-white"></i>
+                                <span class="h6 fw-bold text-white">DP:</span>
                             </div>
-                            <p class="h6 fw-bold mb-0"><span class="badge text-dark bg-green-young h6">${element.qty}</span></p>
+                            <p class="h6 fw-bold text-dark mb-0"><span class="badge bg-green-young text-dark h6"><i class="bi bi-currency-dollar fw-bold text-dark"></i>${element.dp}</span></p>
+                        </div>
+                        <div class="mt-3">
+                            <p class="fw-bold text-white mb-1">Description:</p>
+                            <p class="text-white desc-short"
+                                data-full="${element.desc}"
+                                data-short="${shortDesc}"
+                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${shortDesc}
+                            </p>
+                            ${element.desc.length > 20 ? `
+                                                    <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
+                                                ` : ''}
                         </div>
                         <div class="mt-3">
                             <div class="d-flex flex-wrap gap-1">
-                                <a href="/order/detail/${element.id}" class="btn btn-sm btn-success w-100">Show Details...</a>
+                                <a href="/order?r=${element.id_encrypt}" class="btn btn-sm btn-success w-100">Show List Order</a>
                             </div>
                         </div>
                     </div>
@@ -538,7 +441,7 @@
                     const newPage = parseInt(e.target.closest('button').dataset.page);
                     if (!isNaN(newPage)) {
                         currentPage1 = newPage;
-                        await getListDataOrder(defaultLimitPage1, currentPage1, defaultAscending1,
+                        await getListDataOrderPO(defaultLimitPage1, currentPage1, defaultAscending1,
                             defaultSearch1,
                             customFilter1);
                     }
@@ -550,7 +453,7 @@
             document.getElementById('limitPage').addEventListener('change', async function() {
                 defaultLimitPage1 = parseInt(this.value);
                 currentPage1 = 1;
-                await getListDataOrder(defaultLimitPage1, currentPage1, defaultAscending1,
+                await getListDataOrderPO(defaultLimitPage1, currentPage1, defaultAscending1,
                     defaultSearch1,
                     customFilter1);
             });
@@ -559,7 +462,7 @@
                 input.addEventListener('input', debounce(async () => {
                     defaultSearch1 = input.value;
                     currentPage1 = 1;
-                    await getListDataOrder(defaultLimitPage1, currentPage1,
+                    await getListDataOrderPO(defaultLimitPage1, currentPage1,
                         defaultAscending1, defaultSearch1,
                         customFilter1);
                 }, 500));
@@ -576,8 +479,7 @@
 
         async function initPageLoad() {
             await Promise.all([
-                getDetailData(),
-                getListDataOrder(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
+                getListDataOrderPO(defaultLimitPage1, currentPage1, defaultAscending1, defaultSearch1,
                     customFilter1),
                 searchListData(),
             ])

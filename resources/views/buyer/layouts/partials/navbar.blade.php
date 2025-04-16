@@ -32,7 +32,7 @@
                 @auth
                     <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.order.*') ? 'active' : '' }}"
-                            href="{{ route('index.order.index') }}">Order</a>
+                            href="{{ route('index.order.po') }}">Order</a>
                     </li>
                     <li class="nav-item pe-4">
                         <a class="nav-link fw-bold text-old-blue {{ request()->routeIs('index.customdesign.*') ? 'active' : '' }}"

@@ -39,6 +39,23 @@ class POController extends Controller
 
         $query = Po::with(['user'])->orderBy('id', $meta['orderBy']);
 
+        if ($request->has('user_id')) {
+            $query->where('id_user', $request->user_id);
+        }
+
+        if ($request->has('id_user')) {
+            $query->where('id_user', $request->id_user);
+
+            if (!$query->exists()) {
+                return response()->json([
+                    'status'  => 400,
+                    'message' => 'User ID not found',
+                    'error'   => true,
+                    'id_user' => false
+                ], 400);
+            }
+        }
+
         if (!empty($request['search'])) {
             $searchTerm = trim(strtolower($request['search']));
             $query->whereRaw("LOWER(kode_po) LIKE ?", ["%$searchTerm%"]);
