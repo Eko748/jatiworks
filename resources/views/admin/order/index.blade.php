@@ -157,7 +157,6 @@
                             <th class="text-wrap align-top">Progress</th>
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Order</th>
-                            <th class="text-wrap align-top">Buyer</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Qty</th>
                             <th class="text-wrap align-top">Price</th>
@@ -592,7 +591,6 @@
                     <td>${element.percentage}</td>
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
                     <td>${element.code_order}</td>
-                    <td>${element.buyer_name}</td>
                     <td>${element.item_name}</td>
                     <td>${element.qty}</td>
                     <td>${element.price}</td>
