@@ -181,15 +181,18 @@ class OrderController extends Controller
                 $code_order = $id_user_str . $order_id . $random_number;
                 $order->update(['code_order' => $code_order]);
             } else {
+                $request->merge([
+                    'price' => str_replace(',', '.', $request->price),
+                ]);
                 $request->validate([
                     'item_name' => 'required|string|max:255',
                     'material'  => 'required|string|max:255',
-                    'length'    => 'required|numeric',
-                    'width'     => 'required|numeric',
-                    'height'    => 'required|numeric',
-                    'weight'    => 'required|string',
-                    'desc'      => 'required|string',
-                    'unit'      => 'required|string',
+                    'length'    => 'nullable|numeric',
+                    'width'     => 'nullable|numeric',
+                    'height'    => 'nullable|numeric',
+                    'weight'    => 'nullable|string',
+                    'desc'      => 'nullable|string',
+                    'unit'      => 'nullable|string',
                     'qty'       => 'required|integer|min:1',
                     'price'     => 'required|numeric|min:0',
                     'file'      => 'required|array',
