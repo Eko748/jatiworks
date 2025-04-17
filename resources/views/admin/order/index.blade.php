@@ -79,6 +79,14 @@
         .circular-chart.success .circle {
             stroke: #28a745;
         }
+
+        #pdf-container {
+            width: 100%;
+            max-height: 400px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
     </style>
 @endsection
 
@@ -146,7 +154,7 @@
                     <thead>
                         <tr class="tb-head">
                             <th class="text-center text-wrap align-top">No</th>
-                            <th class="text-wrap align-top">Percentage</th>
+                            <th class="text-wrap align-top">Progress</th>
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Buyer</th>
@@ -215,6 +223,7 @@
     <script src="{{ asset('assets/js/pagination.js') }}"></script>
     <script src="{{ asset('assets/js/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/js/cropper.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 @endsection
 
 @section('js')
@@ -279,8 +288,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                                                <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                                                            `).join('')}
+                                                                                                            <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                                                        `).join('')}
                     </ul>
                 </div>
             ` :
@@ -329,7 +338,7 @@
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
                             <i class="fas fa-percent me-2 mt-1"></i>
                             <div>
-                                <span class="fw-bold d-block">Percentage:</span>
+                                <span class="fw-bold d-block">Progress:</span>
                                 <span>${data.percentage ? renderNeumorphicProgress(data.percentage) : renderNeumorphicProgress(0)}</span>
                             </div>
                         </div>
@@ -345,21 +354,7 @@
                     <div class="col-md-6">
                         <div class="neumorphic-card2 p-2">
                             <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>PO File:</span>
-                            ${fileUrl ? `
-                                                                    <div class="text-center">
-                                                                        <div class="card-body d-flex flex-column align-items-center p-2">
-                                                                            <iframe src="${fileUrl}"
-                                                                                width="100%" height="345px"
-                                                                                style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                                                                            </iframe>
-                                                                            <a href="${fileUrl}" target="_blank"
-                                                                                class="btn btn-sm neumorphic-btn-success mt-3 w-100"
-                                                                                style="text-decoration: none;">
-                                                                                <i class="fas fa-external-link-alt me-1"></i> View files in new tabs
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                ` : `<p class="ms-4">No File</p>`}
+                            <div id="po-preview" class="text-center"></div>
                         </div>
                     </div>
                 `;
@@ -368,10 +363,110 @@
                     `<span class="breadcrumb-text fw-bold"><span class="breadcrumb-separator"> &raquo; ${data.urutan}</span></span>`
 
                 document.getElementById('breadcrumb-detail').innerHTML = breadcrumb;
-                document.getElementById('detail-information').innerHTML = html;
+                const detailContainer = document.getElementById('detail-information');
+                if (detailContainer) {
+                    detailContainer.innerHTML = html;
+
+                    if (fileUrl) {
+                        const previewContainer = document.getElementById('po-preview');
+
+                        if (previewContainer) {
+                            if (window.innerWidth < 768) {
+                                previewContainer.innerHTML = `
+                                <div class="card-body d-flex flex-column align-items-center p-2">
+                                    <div id="pdf-container" style="max-height: 300px; overflow-y: auto;">
+                                        <canvas id="pdf-canvas" style="width: 100%;"></canvas>
+                                    </div>
+                                    <a href="${fileUrl}" target="_blank" class="btn btn-sm neumorphic-btn-success mt-3 w-100">
+                                        <i class="fas fa-external-link-alt me-1"></i> View PO files in new tab
+                                    </a>
+                                </div>
+                                `;
+                                setTimeout(() => {
+                                    renderPdfToCanvas(fileUrl, 'pdf-canvas');
+                                }, 300);
+                            } else {
+                                previewContainer.innerHTML = `
+                                    <div class="card-body d-flex flex-column align-items-center p-2">
+                                        <iframe src="${fileUrl}" width="100%" height="345px"
+                                            style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                        </iframe>
+                                        <a href="${fileUrl}" target="_blank" class="btn btn-sm neumorphic-btn-success mt-3 w-100">
+                                            <i class="fas fa-external-link-alt me-1"></i> View PO file in new tab
+                                        </a>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                }
             } else {
                 errorListData(getDataRest);
             }
+        }
+
+        function renderPdfToCanvas(fileUrl, canvasId) {
+            const loadingTask = pdfjsLib.getDocument(fileUrl);
+            loadingTask.promise.then(pdf => {
+                const canvas = document.getElementById(canvasId);
+                const ctx = canvas.getContext('2d');
+
+                let renderPages = [];
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    renderPages.push(
+                        pdf.getPage(i).then(page => {
+                            const viewport = page.getViewport({
+                                scale: 1.5
+                            });
+                            const tempCanvas = document.createElement("canvas");
+                            const tempCtx = tempCanvas.getContext("2d");
+                            tempCanvas.width = viewport.width;
+                            tempCanvas.height = viewport.height;
+
+                            return page.render({
+                                canvasContext: tempCtx,
+                                viewport
+                            }).promise.then(() => {
+                                const separatorY = tempCanvas.height;
+                                tempCtx.beginPath();
+                                tempCtx.moveTo(0, separatorY - 1);
+                                tempCtx.lineTo(tempCanvas.width, separatorY - 1);
+                                tempCtx.lineWidth = 2;
+                                tempCtx.strokeStyle = "#000";
+                                tempCtx.stroke();
+
+                                return tempCanvas;
+                            });
+                        })
+                    );
+                }
+
+                Promise.all(renderPages).then(pages => {
+                    const width = pages[0].width;
+                    const height = pages.reduce((sum, page) => sum + page.height, 0);
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    let y = 0;
+                    pages.forEach((p, index) => {
+                        ctx.drawImage(p, 0, y);
+                        y += p.height;
+
+                        if (index < pages.length - 1) {
+                            ctx.beginPath();
+                            ctx.moveTo(0, y - 1);
+                            ctx.lineTo(canvas.width, y - 1);
+                            ctx.lineWidth = 2;
+                            ctx.strokeStyle = "#000";
+                            ctx.stroke();
+                        }
+                    });
+                });
+            }).catch(err => {
+                console.error('Error loading PDF:', err);
+            });
         }
 
         async function updatePOStatus(poId, status) {
@@ -475,19 +570,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                    </div>
-                                                                                                `).join('')}
+                                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                </div>
+                                                                                                            `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                </button>
-                                                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                </button>
-                                                                                            ` : ''}
+                                                                                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                            </button>
+                                                                                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                            </button>
+                                                                                                        ` : ''}
                     </div>
                 `;
 
@@ -1047,25 +1142,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                                                                                </button>` : ''
+                                                                                                                                                                                            <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                                                                                                <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                                                                                            </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                                                                                        <i class="fas fa-forward me-1"></i>Next
-                                                                                                                                                                                    </button>` : ''
+                                                                                                                                                                                                <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                                                                                    <i class="fas fa-forward me-1"></i>Next
+                                                                                                                                                                                                </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                                                                                    </button>
-                                                                                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                                                                                        <i class="fas fa-save me-1"></i>Submit
-                                                                                                                                                                                    </button>
-                                                                                                                                                                                ` : ''
+                                                                                                                                                                                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                                                                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                                                                                                </button>
+                                                                                                                                                                                                <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                                                                                    <i class="fas fa-save me-1"></i>Submit
+                                                                                                                                                                                                </button>
+                                                                                                                                                                                            ` : ''
                             }
                         </div>
                     </div>
