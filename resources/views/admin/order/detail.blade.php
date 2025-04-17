@@ -334,10 +334,10 @@
                             <div>
                                 <span class="fw-bold d-block">Dimensions:</span>
                                 <span>
-                                    L
-                                    {{ $orderDetails['length'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                    x W
+                                    W
                                     {{ $orderDetails['width'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                    x D
+                                    {{ $orderDetails['length'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                                     x H
                                     {{ $orderDetails['height'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                                 </span>

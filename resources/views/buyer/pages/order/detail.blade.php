@@ -195,9 +195,10 @@
                         <p>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</p>
                         <hr>
                         <h3 class="fw-bold">Dimension</h3>
-                        <p>L {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                            x W
+                        <p>
+                            W
                             {{ $order->id_katalog ? $order->katalog->width : $order->width }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            x D {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                             x H
                             {{ $order->id_katalog ? $order->katalog->height : $order->height }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                         </p>
