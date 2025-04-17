@@ -139,6 +139,7 @@ class POController extends Controller
         try {
             $request->validate([
                 'id_user'     => 'required|integer',
+                'kode_po'     => 'required|string',
                 'desc'   => 'required|string',
                 'dp'   => 'required|numeric|min:0',
                 'file'  => 'required|file|mimes:pdf|max:10240',
@@ -162,12 +163,8 @@ class POController extends Controller
                 $file->move($destinationPath, $fileName);
             }
 
-            // Generate kode_po
-            $randomDigits = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-            $kode_po = 'PO' . $request->id_user . $randomDigits;
-
             $po = Po::create([
-                'kode_po'     => $kode_po,
+                'kode_po'     => $request->kode_po,
                 'id_user'      => $request->id_user,
                 'desc'       => $request->desc,
                 'dp'       => $request->dp,
