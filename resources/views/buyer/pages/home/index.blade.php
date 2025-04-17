@@ -354,8 +354,8 @@
                         <div class="text-white mt-3">
                             <p class="fw-bold mb-1">Dimensions & Weight:</p>
                             <div class="d-grid gap-1" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));">
-                                <div>📏 Length: <span class="fw-bold">${element.dimensions.split(' x ')[0]}${element.unit}</span></div>
                                 <div>📐 Width: <span class="fw-bold">${element.dimensions.split(' x ')[1]}${element.unit}</span></div>
+                                <div>📏 Depth: <span class="fw-bold">${element.dimensions.split(' x ')[0]}${element.unit}</span></div>
                                 <div>📏 Height: <span class="fw-bold">${element.dimensions.split(' x ')[2]}${element.unit}</span></div>
                                 <div>⚖️ Weight: <span class="fw-bold">${element.weight}kg</span></div>
                             </div>
