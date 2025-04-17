@@ -51,11 +51,11 @@
                     </div>
                     <div class="d-flex align-items-center mb-2 text-white">
                         <span class="bi bi-envelope me-2 h6"></span>
-                        <span class="h6">ilham@jatiworks.com</span>
+                        <span class="h6">support@jatiworks.com</span>
                     </div>
                     <div class="d-flex align-items-center mb-2 text-white">
                         <span class="bi bi-telephone me-2 h6"></span>
-                        <span class="h6">+6282217101985 (Jatiworks Team)</span>
+                        <span class="h6">+6282217101985</span>
                     </div>
                 </div>
             </div>
