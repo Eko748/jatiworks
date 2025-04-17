@@ -91,6 +91,14 @@
         .circular-chart.success .circle {
             stroke: #28a745;
         }
+
+        .pdf-container {
+            width: 100%;
+            max-height: 400px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
     </style>
 @endsection
 
@@ -138,6 +146,7 @@
 @endsection
 
 @section('assets_js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 @endsection
 
 @section('js')
@@ -297,23 +306,43 @@
                 let fileContent = '-';
                 if (element.file) {
                     if (element.file.endsWith('.pdf')) {
-                        fileContent = `
-                            <div class="neumorphic-card card shadow-sm text-center">
-                                <div class="card-body d-flex flex-column align-items-center p-2">
-                                    <iframe src="${storageUrl}/${element.file}"
-                                        width="100%" height="270px"
-                                        style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                                    </iframe>
-                                    <a href="${storageUrl}/${element.file}" target="_blank"
-                                        class="btn btn-sm btn-outline-success mt-3 w-100"
-                                        style="text-decoration: none;">
-                                        <i class="fas fa-external-link-alt me-1"></i> View PO files in new tabs
-                                    </a>
-                                </div>
+                        const fileUrl = `${storageUrl}/${element.file}`;
+                        const canvasId = `pdf-canvas-${index}`;
+                        const isMobile = window.innerWidth <= 768;
+
+                        const scrollContainerStyle = `
+                            <div class="pdf-container" style="max-height: 300px; overflow-y: auto;">
+                                <canvas id="${canvasId}" style="width: 100%;"></canvas>
                             </div>
                         `;
-                    } else {
-                        fileContent = `<a href="${storageUrl}/${element.file}" target="_blank">View file</a>`;
+
+                        if (isMobile) {
+                            fileContent = `
+                                <div class="neumorphic-card card shadow-sm text-center">
+                                    <div class="card-body d-flex flex-column align-items-center p-2">
+                                        ${scrollContainerStyle}
+                                        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-success mt-3 w-100">
+                                            <i class="fas fa-external-link-alt me-1"></i> View PO files in new tab
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            setTimeout(() => {
+                                renderPdfToCanvas(fileUrl,
+                                    canvasId);
+                            }, 0);
+                        } else {
+                            fileContent = `
+                                <div class="neumorphic-card card shadow-sm text-center">
+                                    <div class="card-body d-flex flex-column align-items-center p-2">
+                                        <iframe src="${fileUrl}" width="100%" height="270px" style="border: 1px solid #ccc; border-radius: 8px;"></iframe>
+                                        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-success mt-3 w-100">
+                                            <i class="fas fa-external-link-alt me-1"></i> View PO files in new tab
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        }
                     }
                 }
 
@@ -358,8 +387,8 @@
                                 ${shortDesc}
                             </p>
                             ${element.desc.length > 20 ? `
-                                                    <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
-                                                ` : ''}
+                                        <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
+                                    ` : ''}
                         </div>
                         <div class="mt-3">
                             <div class="d-flex flex-wrap gap-1">
@@ -386,6 +415,69 @@
             renderPage();
         }
 
+        function renderPdfToCanvas(fileUrl, canvasId) {
+            const loadingTask = pdfjsLib.getDocument(fileUrl);
+            loadingTask.promise.then(pdf => {
+                const canvas = document.getElementById(canvasId);
+                const ctx = canvas.getContext('2d');
+
+                let renderPages = [];
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    renderPages.push(
+                        pdf.getPage(i).then(page => {
+                            const viewport = page.getViewport({
+                                scale: 1.5
+                            });
+                            const tempCanvas = document.createElement("canvas");
+                            const tempCtx = tempCanvas.getContext("2d");
+                            tempCanvas.width = viewport.width;
+                            tempCanvas.height = viewport.height;
+
+                            return page.render({
+                                canvasContext: tempCtx,
+                                viewport
+                            }).promise.then(() => {
+                                const separatorY = tempCanvas.height;
+                                tempCtx.beginPath();
+                                tempCtx.moveTo(0, separatorY - 1);
+                                tempCtx.lineTo(tempCanvas.width, separatorY - 1);
+                                tempCtx.lineWidth = 2;
+                                tempCtx.strokeStyle = "#000";
+                                tempCtx.stroke();
+
+                                return tempCanvas;
+                            });
+                        })
+                    );
+                }
+
+                Promise.all(renderPages).then(pages => {
+                    const width = pages[0].width;
+                    const height = pages.reduce((sum, page) => sum + page.height, 0);
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    let y = 0;
+                    pages.forEach((p, index) => {
+                        ctx.drawImage(p, 0, y);
+                        y += p.height;
+
+                        if (index < pages.length - 1) {
+                            ctx.beginPath();
+                            ctx.moveTo(0, y - 1);
+                            ctx.lineTo(canvas.width, y - 1);
+                            ctx.lineWidth = 2;
+                            ctx.strokeStyle = "#000";
+                            ctx.stroke();
+                        }
+                    });
+                });
+            }).catch(err => {
+                console.error('Error loading PDF:', err);
+            });
+        }
 
         function renderPage() {
             let paginationHtml = '';

@@ -91,6 +91,14 @@
         .circular-chart.success .circle {
             stroke: #28a745;
         }
+
+        #pdf-container {
+            width: 100%;
+            max-height: 400px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
     </style>
 @endsection
 
@@ -102,7 +110,8 @@
                     <h5 class="heading fw-bold">PO Information</h5>
                     <h6 class="subtitle h6 mb-3" id="noteData"></h6>
                 </div>
-                <a href="{{ route('index.order.po') }}" type="button" id="toggleFilter" class="filter-data btn-success btn btn-md">
+                <a href="{{ route('index.order.po') }}" type="button" id="toggleFilter"
+                    class="filter-data btn-success btn btn-md">
                     <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
                 </a>
             </div>
@@ -150,6 +159,7 @@
 @endsection
 
 @section('assets_js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 @endsection
 
 @section('js')
@@ -167,14 +177,14 @@
 
         async function getDetailData() {
             let requestParams = {
-                id_po: dataParams,
+                id_po: dataParams
             };
 
             let getDataRest = await restAPI('GET', '{{ route('datapodetail') }}', requestParams)
                 .then(response => response)
                 .catch(error => error.response);
 
-            if (getDataRest && getDataRest.status === 200 && getDataRest.data && getDataRest.data.data) {
+            if (getDataRest && getDataRest.status === 200 && getDataRest.data?.data) {
                 const data = getDataRest.data.data;
                 const fileUrl = data.file ? `${storageUrl}/${data.file}` : null;
                 buyer = data.buyer_name;
@@ -210,85 +220,144 @@
                     <div class="col-md-6">
                         <div class="d-flex align-items-start mb-2 neu-card p-2">
                             <i class="fas fa-hashtag me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">PO Code:</span>
-                                <span>${data.kode_po || '-'}</span>
-                            </div>
+                            <div><span class="fw-bold d-block">PO Code:</span><span>${data.kode_po || '-'}</span></div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neu-card p-2">
                             <i class="fas fa-user-circle me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">Buyer Name:</span>
-                                <span>${data.buyer_name || '-'}</span>
-                            </div>
+                            <div><span class="fw-bold d-block">Buyer Name:</span><span>${data.buyer_name || '-'}</span></div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neu-card p-2">
                             <i class="fas fa-dollar ms-1 me-2 mt-1"></i>
                             <div class="d-flex gap-3">
-                                <div>
-                                    <span class="fw-bold d-block">Deposit:</span>
-                                    <span>${data.dp || 0}</span>
-                                </div>
-                                <div>
-                                    <span class="fw-bold d-block">Balance:</span>
-                                    <span>${data.ba || 0}</span>
-                                </div>
-                                <div>
-                                    <span class="fw-bold d-block">Total:</span>
-                                    <span>${data.ta || 0}</span>
-                                </div>
+                                <div><span class="fw-bold d-block">Deposit:</span><span>${data.dp || 0}</span></div>
+                                <div><span class="fw-bold d-block">Balance:</span><span>${data.ba || 0}</span></div>
+                                <div><span class="fw-bold d-block">Total:</span><span>${data.ta || 0}</span></div>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neu-card p-2">
                             <i class="fas fa-align-left me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">Description:</span>
-                                <span>${data.desc || '-'}</span>
-                            </div>
+                            <div><span class="fw-bold d-block">Description:</span><span>${data.desc || '-'}</span></div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neu-card p-2">
                             <i class="fas fa-percent me-2 mt-1"></i>
-                            <div>
-                                <span class="fw-bold d-block">Progress:</span>
-                                <span>${data.percentage ? renderNeumorphicProgress(data.percentage, 'black') : renderNeumorphicProgress(0, 'black')}</span>
-                            </div>
+                            <div><span class="fw-bold d-block">Progress:</span><span>${data.percentage ? renderNeumorphicProgress(data.percentage, 'black') : renderNeumorphicProgress(0, 'black')}</span></div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neu-card p-2">
                             <i class="fas fa-chart-simple me-2 mt-1"></i>
-                            <div class="mb-2">
-                                <span class="fw-bold d-block">Status:</span>
-                                <span>${statusHtml || '-'}</span>
-                            </div>
+                            <div><span class="fw-bold d-block">Status:</span><span>${statusHtml || '-'}</span></div>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="neu-card p-2">
                             <span class="fw-bold d-block mb-2"><i class="fas fa-file-pdf me-2"></i>PO File:</span>
-                            ${fileUrl ? `
-                                                                                <div class="text-center">
-                                                                                    <div class="card-body d-flex flex-column align-items-center p-2">
-                                                                                        <iframe src="${fileUrl}"
-                                                                                            width="100%" height="325px"
-                                                                                            style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                                                                                        </iframe>
-                                                                                        <a href="${fileUrl}" target="_blank"
-                                                                                            class="btn btn-sm btn-outline-success mt-3 w-100"
-                                                                                            style="text-decoration: none;">
-                                                                                            <i class="fas fa-external-link-alt me-1"></i> View PO files in new tabs
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            ` : `<p class="ms-4">No File</p>`}
+                            <div id="po-preview" class="text-center"></div>
                         </div>
                     </div>
                 `;
 
-                const breadcrumb =
-                    `<span class="breadcrumb-text fw-bold"><span class="breadcrumb-separator"> &raquo; ${data.urutan}</span></span>`
+                const detailContainer = document.getElementById('detail-information');
+                if (detailContainer) {
+                    detailContainer.innerHTML = html;
 
-                document.getElementById('detail-information').innerHTML = html;
+                    if (fileUrl) {
+                        const previewContainer = document.getElementById('po-preview');
+
+                        if (previewContainer) {
+                            if (window.innerWidth < 768) {
+                                previewContainer.innerHTML = `
+                                <div class="card-body d-flex flex-column align-items-center p-2">
+                                    <div id="pdf-container" style="max-height: 300px; overflow-y: auto;">
+                                        <canvas id="pdf-canvas" style="width: 100%;"></canvas>
+                                    </div>
+                                    <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-success mt-3 w-100">
+                                        <i class="fas fa-external-link-alt me-1"></i> View PO files in new tab
+                                    </a>
+                                </div>
+                                `;
+                                setTimeout(() => {
+                                    renderPdfToCanvas(fileUrl, 'pdf-canvas');
+                                }, 300);
+                            } else {
+                                previewContainer.innerHTML = `
+                                    <div class="card-body d-flex flex-column align-items-center p-2">
+                                        <iframe src="${fileUrl}" width="100%" height="315px"
+                                            style="border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                                        </iframe>
+                                        <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-success mt-3 w-100">
+                                            <i class="fas fa-external-link-alt me-1"></i> View PO file in new tab
+                                        </a>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                }
             }
+        }
+
+        function renderPdfToCanvas(fileUrl, canvasId) {
+            const loadingTask = pdfjsLib.getDocument(fileUrl);
+            loadingTask.promise.then(pdf => {
+                const canvas = document.getElementById(canvasId);
+                const ctx = canvas.getContext('2d');
+
+                let renderPages = [];
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    renderPages.push(
+                        pdf.getPage(i).then(page => {
+                            const viewport = page.getViewport({
+                                scale: 1.5
+                            });
+                            const tempCanvas = document.createElement("canvas");
+                            const tempCtx = tempCanvas.getContext("2d");
+                            tempCanvas.width = viewport.width;
+                            tempCanvas.height = viewport.height;
+
+                            return page.render({
+                                canvasContext: tempCtx,
+                                viewport
+                            }).promise.then(() => {
+                                const separatorY = tempCanvas.height;
+                                tempCtx.beginPath();
+                                tempCtx.moveTo(0, separatorY - 1);
+                                tempCtx.lineTo(tempCanvas.width, separatorY - 1);
+                                tempCtx.lineWidth = 2;
+                                tempCtx.strokeStyle = "#000";
+                                tempCtx.stroke();
+
+                                return tempCanvas;
+                            });
+                        })
+                    );
+                }
+
+                Promise.all(renderPages).then(pages => {
+                    const width = pages[0].width;
+                    const height = pages.reduce((sum, page) => sum + page.height, 0);
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    let y = 0;
+                    pages.forEach((p, index) => {
+                        ctx.drawImage(p, 0, y);
+                        y += p.height;
+
+                        if (index < pages.length - 1) {
+                            ctx.beginPath();
+                            ctx.moveTo(0, y - 1);
+                            ctx.lineTo(canvas.width, y - 1);
+                            ctx.lineWidth = 2;
+                            ctx.strokeStyle = "#000";
+                            ctx.stroke();
+                        }
+                    });
+                });
+            }).catch(err => {
+                console.error('Error loading PDF:', err);
+            });
         }
 
         function renderNeumorphicProgress(value, text) {
@@ -412,27 +481,27 @@
                 let imageCarousel = element.images.length ? `
                     <div class="position-relative w-100 overflow-hidden">
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner" style="height: 320px;">
+                            <div class="carousel-inner" style="height: 270px;">
                                 ${element.images.map((img, i) => `
-                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                                                    </div>
-                                                                `).join('')}
+                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                                                                                    </div>
+                                                                                                `).join('')}
                             </div>
                             ${element.images.length > 1 ? `
-                                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                                                    <span class="carousel-control-prev-icon"></span>
-                                                                </button>
-                                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                                                    <span class="carousel-control-next-icon"></span>
-                                                                </button>
-                                                            ` : ''}
+                                                                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                                                                    <span class="carousel-control-prev-icon"></span>
+                                                                                                </button>
+                                                                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                                                                    <span class="carousel-control-next-icon"></span>
+                                                                                                </button>
+                                                                                            ` : ''}
                         </div>
                     </div>
                 ` : '-';
 
                 getDataHtml += `
-                <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 500px;">
+                <div class="card shadow-smooth bg-green-old card-radius overflow-hidden" style="width: 300px;">
                     <div class="card-body d-flex flex-column">
                         ${imageCarousel}
                         <div class="mt-2">
