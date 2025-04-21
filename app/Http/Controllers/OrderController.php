@@ -421,9 +421,9 @@ class OrderController extends Controller
 
         $orderDetails = [
             'material' => $order->id_katalog === null ? $order->material : ($order->katalog->material ?? null),
-            'length' => $order->id_katalog === null ? $order->length : ($order->katalog->length ?? null),
-            'width' => $order->id_katalog === null ? $order->width : ($order->katalog->width ?? null),
-            'height' => $order->id_katalog === null ? $order->height : ($order->katalog->height ?? null),
+            'length' => $order->id_katalog === null ? ($order->length ?? 0) : ($order->katalog->length ?? 0),
+            'width' => $order->id_katalog === null ? ($order->width ?? 0) : ($order->katalog->width ?? 0),
+            'height' => $order->id_katalog === null ? ($order->height ?? 0) : ($order->katalog->height ?? 0),
             'weight' => $order->id_katalog === null ? $order->weight : ($order->katalog->weight ?? null),
             'unit' => $order->id_katalog === null ? $order->unit : ($order->katalog->unit ?? null),
             'desc' => $order->id_katalog === null ? $order->desc : ($order->katalog->desc ?? null)

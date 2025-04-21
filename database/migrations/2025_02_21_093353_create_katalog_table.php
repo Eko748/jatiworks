@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('item_name');
             $table->string('code');
             $table->string('material');
-            $table->decimal('length');
-            $table->decimal('width');
-            $table->decimal('height');
+            $table->decimal('length')->nullable();
+            $table->decimal('width')->nullable();
+            $table->decimal('height')->nullable();
             $table->decimal('weight');
             $table->text('desc');
             $table->enum('unit',['mm', 'm', 'cm']);

@@ -230,6 +230,7 @@ class POController extends Controller
 
             $totalAmount = $orders->sum('price');
             $balanceAmount = $totalAmount - $po->dp;
+            $balanceAmountDisplay = $balanceAmount < 0 ? 'N/A' : $balanceAmount;
 
             return response()->json([
                 'status_code' => 200,
@@ -247,7 +248,7 @@ class POController extends Controller
                     'status'     => OrderStatus::from($po->status)->label(),
                     'urutan'     => $po->user->name . ' #' . $urutan,
                     'ta'         => $totalAmount,
-                    'ba'         => $balanceAmount
+                    'ba'         => $balanceAmountDisplay
                 ]
             ], 200);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
