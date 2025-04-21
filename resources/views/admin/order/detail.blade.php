@@ -165,7 +165,7 @@
                                             <small
                                                 class="neumorphic-card2 text-white px-2 py-1
                                                 {{ $tracking->status === 'completed' ? 'bg-success' : ($tracking->status === 'in_progress' ? 'bg-primary' : 'bg-secondary') }}">
-                                                {{ ucfirst($tracking->status) }}
+                                                {{ ucwords(str_replace('_', ' ', $tracking->status)) }}
                                             </small>
                                             @if ($tracking->completed_at)
                                                 <small class="text-success fw-bold" style="font-size: 11px;">

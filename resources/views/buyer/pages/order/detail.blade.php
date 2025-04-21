@@ -198,7 +198,8 @@
                         <p>
                             W
                             {{ $order->id_katalog ? $order->katalog->width : $order->width }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                            x D {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            x D
+                            {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                             x H
                             {{ $order->id_katalog ? $order->katalog->height : $order->height }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                         </p>
@@ -221,7 +222,8 @@
                                         <i
                                             class="fas {{ $tracking->status === 'completed' ? 'fa-check' : ($tracking->status === 'in_progress' ? 'fa-spinner fa-spin' : 'fa-hourglass-start') }} text-white"></i>
                                     </div>
-                                    <div class="timeline-content neumorphic-card p-3 bg-green-white" style="width: 100%; max-width: 1000px;">
+                                    <div class="timeline-content neumorphic-card p-3 bg-green-white"
+                                        style="width: 100%; max-width: 1000px;">
                                         <div class="d-flex flex-column flex-sm-row justify-content-between">
                                             <h4><i class="fas fa-step-forward me-1"></i> Step {{ $index + 1 }}:
                                                 {{ $tracking->trackingStep->step_name }}</h4>
@@ -230,7 +232,7 @@
                                                 <small
                                                     class="neumorphic-card text-white px-2 py-1
                                                         {{ $tracking->status === 'completed' ? 'bg-success' : ($tracking->status === 'in_progress' ? 'bg-primary' : 'bg-secondary') }}">
-                                                    {{ ucfirst($tracking->status) }}
+                                                    {{ ucwords(str_replace('_', ' ', $tracking->status)) }}
                                                 </small>
                                                 @if ($tracking->completed_at)
                                                     <small class="text-success fw-bold" style="font-size: 11px;">
@@ -333,7 +335,7 @@
                 files.forEach((file, index) => {
                     const isActive = index === 0 ? 'active' : '';
                     const imageUrl =
-                    `{{ asset('storage/uploads/tracking/') }}/${file}`;
+                        `{{ asset('storage/uploads/tracking/') }}/${file}`;
 
                     carouselInner.innerHTML += `
                         <div class="carousel-item ${isActive}">
