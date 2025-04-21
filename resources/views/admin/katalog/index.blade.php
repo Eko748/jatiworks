@@ -187,7 +187,7 @@
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
-                dimensions: `${data?.width ?? '-'} x ${data?.length ?? '-'} x ${data?.height ?? '-'}`,
+                dimensions: `${data?.width ?? 0} x ${data?.length ?? 0} x ${data?.height ?? 0}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : [],
                 actions

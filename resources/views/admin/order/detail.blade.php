@@ -335,11 +335,11 @@
                                 <span class="fw-bold d-block">Dimensions:</span>
                                 <span>
                                     W
-                                    {{ $orderDetails['width'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                    {{ $orderDetails['width'] ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                                     x D
-                                    {{ $orderDetails['length'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                    {{ $orderDetails['length'] ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                                     x H
-                                    {{ $orderDetails['height'] }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                                    {{ $orderDetails['height'] ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                                 </span>
                             </div>
                         </div>
