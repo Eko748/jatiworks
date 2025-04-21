@@ -260,13 +260,13 @@
 
                 let statusMapping = {
                     'Payment Completed': {
-                        class: 'text-green border-success neumorphic-card2',
+                        class: 'text-white bg-success neumorphic-card2',
                         icon: '<i class="fas fa-check-circle"></i>',
                         dropdown: false
                     },
                     'Partial Payment': {
-                        class: 'text-warning border-warning neumorphic-card2',
-                        icon: '<i class="fas fa-times-circle"></i>',
+                        class: 'text-dark bg-warning neumorphic-card2',
+                        icon: '<i class="fas fa-hourglass-half"></i>',
                         dropdown: [{
                             text: 'Payment Completed',
                             value: 'PC'
@@ -285,10 +285,11 @@
                     <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         ${statusData.icon} ${data?.status ?? '-'}
                     </button>
+                    ${data.status === 'Partial Payment' ? '<small class="ms-1 text-secondary">Click to change status</small>' : ''}
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                                                                                                        <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                                                                                                                    `).join('')}
+                                                                                                                                                            <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                                                                                                        `).join('')}
                     </ul>
                 </div>
             ` :
@@ -569,19 +570,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                                                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                                                                <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                                                            </div>
-                                                                                                                                                        `).join('')}
+                                                                                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                                                                </div>
+                                                                                                                                                            `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                                                        <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                                                            <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                                                        </button>
-                                                                                                                                                        <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                                                            <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                                                        </button>
-                                                                                                                                                    ` : ''}
+                                                                                                                                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                                                            </button>
+                                                                                                                                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                                                            </button>
+                                                                                                                                                        ` : ''}
                     </div>
                 `;
 
@@ -1168,25 +1169,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                                                                                                                                        <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                                                                                                                                            <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                                                                                                                                        </button>` : ''
+                                                                                                                                                                                                                                            <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                                                                                                                                                <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                                                                                                                                            </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                                                                                                                                            <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                                                                                                                                                <i class="fas fa-forward me-1"></i>Next
-                                                                                                                                                                                                                                            </button>` : ''
+                                                                                                                                                                                                                                                <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                                                                                                                                    <i class="fas fa-forward me-1"></i>Next
+                                                                                                                                                                                                                                                </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                                                                                                                                            <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                                                                                                                                                <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                                                            <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                                                                                                                                                <i class="fas fa-save me-1"></i>Submit
-                                                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                                                        ` : ''
+                                                                                                                                                                                                                                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                                                                                                                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                                                                                                                                                </button>
+                                                                                                                                                                                                                                                <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                                                                                                                                    <i class="fas fa-save me-1"></i>Submit
+                                                                                                                                                                                                                                                </button>
+                                                                                                                                                                                                                                            ` : ''
                             }
                         </div>
                     </div>

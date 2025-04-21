@@ -258,7 +258,7 @@
                 },
                 'Partial Payment': {
                     class: 'text-dark bg-warning border-warning neumorphic-card2',
-                    icon: '<i class="fas fa-times-circle"></i>',
+                    icon: '<i class="fas fa-hourglass-half"></i>',
                     dropdown: [{
                         text: 'Payment Completed',
                         value: 'PC'

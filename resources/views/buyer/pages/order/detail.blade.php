@@ -181,36 +181,38 @@
 
                     <div class="neumorphic-card p-3 mb-3 bg-green-young">
                         <div class="d-flex gap-3">
-                            <h6 class="fw-bold text-old-blue">Status Payment :
-                                <span class="badge {{ $order->status === 'PC' ? 'bg-success' : 'bg-warning' }}">
+                            <h5 class="fw-bold text-old-blue">Status Payment :
+                                <span
+                                    class="badge {{ $order->status->label() === 'Payment Completed' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                    <i class="fa  {{ $order->status->label() === 'Payment Completed' ? 'fa-circle-check' : 'fa-hourglass-half' }}"></i>
                                     {{ $order->status->label() }}
                                 </span>
-                            </h6>
+                            </h5>
                         </div>
                         <br>
-                        <h3 class="fw-bold">Description</h3>
-                        <p>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</p>
+                        <h5 class="fw-bold">Description</h5>
+                        <p>{{ $order->id_katalog ? $order->katalog->desc ?? '-' : $order->desc ?? '-' }}</p>
                         <hr>
-                        <h3 class="fw-bold">Material</h3>
+                        <h5 class="fw-bold">Material</h5>
                         <p>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</p>
                         <hr>
-                        <h3 class="fw-bold">Dimension</h3>
+                        <h5 class="fw-bold">Dimension</h5>
                         <p>
-                            W
-                            {{ $order->id_katalog ? $order->katalog->width : $order->width }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                            x D
-                            {{ $order->id_katalog ? $order->katalog->length : $order->length }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                            x H
-                            {{ $order->id_katalog ? $order->katalog->height : $order->height }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            Width
+                            {{ $order->id_katalog ? $order->katalog->width ?? 0 : $order->width ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            x Depth
+                            {{ $order->id_katalog ? $order->katalog->length ?? 0 : $order->length ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            x Height
+                            {{ $order->id_katalog ? $order->katalog->height ?? 0 : $order->height ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
                         </p>
                         <hr>
-                        <h3 class="fw-bold">Weight</h3>
+                        <h5 class="fw-bold">Weight</h5>
                         <p>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }}kg</p>
                     </div>
                 </div>
                 <div class="col-md-8">
                     <div class="neumorphic-card p-3 mb-3 bg-green-young">
-                        <h5 class="fw-bold">Order Progress</h5>
+                        <h4 class="fw-bold">Order Progress</h4>
                         <hr>
                         <div class="timeline position-relative">
                             <div class="timeline-line"></div>
@@ -225,8 +227,8 @@
                                     <div class="timeline-content neumorphic-card p-3 bg-green-white"
                                         style="width: 100%; max-width: 1000px;">
                                         <div class="d-flex flex-column flex-sm-row justify-content-between">
-                                            <h4><i class="fas fa-step-forward me-1"></i> Step {{ $index + 1 }}:
-                                                {{ $tracking->trackingStep->step_name }}</h4>
+                                            <h5><i class="fas fa-step-forward me-1"></i> Step {{ $index + 1 }}:
+                                                {{ $tracking->trackingStep->step_name }}</h5>
                                             <div
                                                 class="d-flex flex-row flex-sm-column align-items-center align-items-sm-end gap-2 mt-2 mt-sm-0">
                                                 <small
@@ -282,6 +284,14 @@
                                                             attachments available.</p>
                                                     @endif
                                                 @endif
+                                            </div>
+                                        @else
+                                            <hr>
+                                            <div class="neumorphic-card p-3 bg-green-young">
+                                                <div class="d-flex align-items-center text-primary">
+                                                    <i class="fas fa-sticky-note me-2"></i>
+                                                    <p class="mb-0">There are no notes in this order.</p>
+                                                </div>
                                             </div>
                                         @endif
                                     </div>

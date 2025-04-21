@@ -188,8 +188,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="dp" class="form-label fw-bold">DP</label>
-                                <input type="number" class="form-control neumorphic-card" id="dp" name="dp" step="any"
-                                    placeholder="Enter DP" autocomplete="off" required>
+                                <input type="number" class="form-control neumorphic-card" id="dp" name="dp"
+                                    step="any" placeholder="Enter DP" autocomplete="off" required>
                             </div>
                             <div class="col-md-12">
                                 <label for="desc" class="form-label fw-bold">Description</label>
@@ -292,13 +292,13 @@
         async function handleListData(data) {
             let statusMapping = {
                 'Payment Completed': {
-                    class: 'text-green border-success neumorphic-card2',
+                    class: 'text-white bg-success neumorphic-card2',
                     icon: '<i class="fas fa-check-circle"></i>',
                     dropdown: false
                 },
                 'Partial Payment': {
-                    class: 'text-warning border-warning neumorphic-card2',
-                    icon: '<i class="fas fa-times-circle"></i>',
+                    class: 'text-dark bg-warning neumorphic-card2',
+                    icon: '<i class="fas fa-hourglass-half"></i>',
                     dropdown: [{
                         text: 'Payment Completed',
                         value: 'PC'
@@ -314,13 +314,15 @@
 
             let statusHtml = statusData.dropdown ? `
                 <div class="dropdown">
-                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ${statusData.icon} ${data?.status ?? '-'}
+                    <button class="badge border px-2 py-1 ${statusData.class} dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ${statusData.icon}
+                        <span>${data?.status ?? '-'}</span>
                     </button>
+                    ${data.status === 'Partial Payment' ? '<small class="ms-1 text-secondary">Click to change status</small>' : ''}
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                                    <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                                                `).join('')}
+                            <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                        `).join('')}
                     </ul>
                 </div>
             ` :

@@ -303,12 +303,11 @@
                             <div>
                                 <span class="fw-bold d-block">Status:</span>
                                 <span
-                                    class="neumorphic-card2 fw-bold text-white px-2
-                                        {{ $order->status->label() === 'Not Completed'
-                                            ? 'bg-warning'
-                                            : ($order->status->label() === 'Waiting for Payment'
-                                                ? 'bg-info'
-                                                : 'bg-success') }}">
+                                    class="neumorphic-card2 fw-bold px-2
+                                        {{ $order->status->label() === 'Partial Payment'
+                                            ? 'bg-warning text-dark' : 'bg-success text-white' }}">
+                                <i class="fa {{ $order->status->label() === 'Partial Payment'
+                                                        ? 'fa-hourglass-half' : 'fa-circle-check' }}"></i>
                                     {{ $order->status->label() }}
                                 </span>
                             </div>

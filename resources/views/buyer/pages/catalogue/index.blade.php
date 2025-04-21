@@ -148,7 +148,7 @@
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
                 code: data?.code ?? '-',
-                dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
+                dimensions: `${data?.length ?? 0} x ${data?.width ?? 0} x ${data?.height ?? 0}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : []
             };
@@ -210,8 +210,8 @@
                     <div class="text-white mt-3">
                         <p class="fw-bold mb-1">Dimensions & Weight:</p>
                         <div class="d-grid gap-1">
-                            <div>📏 Length: <span class="fw-bold">${element.dimensions.split(' x ')[0]}${element.unit}</span></div>
                             <div>📐 Width: <span class="fw-bold">${element.dimensions.split(' x ')[1]}${element.unit}</span></div>
+                            <div>📏 Depth: <span class="fw-bold">${element.dimensions.split(' x ')[0]}${element.unit}</span></div>
                             <div>📏 Height: <span class="fw-bold">${element.dimensions.split(' x ')[2]}${element.unit}</span></div>
                             <div>⚖️ Weight: <span class="fw-bold">${element.weight}kg</span></div>
                         </div>

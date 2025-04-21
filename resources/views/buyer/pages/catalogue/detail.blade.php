@@ -152,9 +152,9 @@
             setData('itemNameData', data.item_name);
             setData('codeData',`Code Catalogue : ${data.code}`);
             setData('materialData', data.material);
-            setData('lengthData', data.length ? `Length: ${data.length}${data.unit}` : '-');
-            setData('widthData', data.width ? `Width: ${data.width}${data.unit}` : '-');
-            setData('heightData', data.height ? `Height: ${data.height}${data.unit}` : '-');
+            setData('lengthData', data.length ? `Depth: ${data.length}${data.unit}` : `Depth: 0${data.unit}`);
+            setData('widthData', data.width ? `Width: ${data.width}${data.unit}` : `Width: 0${data.unit}`);
+            setData('heightData', data.height ? `Height: ${data.height}${data.unit}` : `Height: 0${data.unit}`);
             setData('weightData', data.weight ? `Weight: ${data.weight}kg` : '-');
             setData('priceData', data.price ? `<i class="bi bi-currency-dollar"></i> ${data.price.toLocaleString()}` :
                 '-');
