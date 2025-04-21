@@ -128,8 +128,8 @@
 @endsection
 
 @section('back')
-    <a href="{{ route('admin.po.order.index') }}" id="btnBack" class="btn btn-outline-dark neumorphic-button" data-bs-toggle="tooltip"
-        data-bs-placement="top" title="Back to {{ $title }} page" onclick="hideTooltip(this)">
+    <a href="{{ route('admin.po.order.index') }}" id="btnBack" class="btn btn-outline-dark neumorphic-button"
+        data-bs-toggle="tooltip" data-bs-placement="top" title="Back to {{ $title }} page" onclick="hideTooltip(this)">
         <i class="fas fa-circle-chevron-left"></i><span class="d-none d-sm-inline ms-1">Back</span>
     </a>
 @endsection
@@ -304,10 +304,9 @@
                                 <span class="fw-bold d-block">Status:</span>
                                 <span
                                     class="neumorphic-card2 fw-bold px-2
-                                        {{ $order->status->label() === 'Partial Payment'
-                                            ? 'bg-warning text-dark' : 'bg-success text-white' }}">
-                                <i class="fa {{ $order->status->label() === 'Partial Payment'
-                                                        ? 'fa-hourglass-half' : 'fa-circle-check' }}"></i>
+                                        {{ $order->status->label() === 'Partial Payment' ? 'bg-warning text-dark' : 'bg-success text-white' }}">
+                                    <i
+                                        class="fa {{ $order->status->label() === 'Partial Payment' ? 'fa-hourglass-half' : 'fa-circle-check' }}"></i>
                                     {{ $order->status->label() }}
                                 </span>
                             </div>
@@ -328,25 +327,49 @@
                                 <span>{{ $order->id_katalog ? $order->katalog->material : $order->material }}</span>
                             </div>
                         </div>
+                        @php
+                            $width = $orderDetails['width'] ?? null;
+                            $length = $orderDetails['length'] ?? null;
+                            $height = $orderDetails['height'] ?? null;
+                            $unit = $order->id_katalog ? $order->katalog->unit : $order->unit;
+
+                            $hasAnyDimension = $width || $length || $height;
+                        @endphp
+
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
                             <i class="fas fa-ruler-combined me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">Dimensions:</span>
-                                <span>
-                                    W
-                                    {{ $orderDetails['width'] ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                    x D
-                                    {{ $orderDetails['length'] ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                    x H
-                                    {{ $orderDetails['height'] ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                                </span>
+                                @if ($hasAnyDimension)
+                                    <span>
+                                        @if ($width)
+                                            W {{ $width }}{{ $unit }}
+                                        @endif
+                                        @if ($length)
+                                            x D {{ $length }}{{ $unit }}
+                                        @endif
+                                        @if ($height)
+                                            x H {{ $height }}{{ $unit }}
+                                        @endif
+                                    </span>
+                                @else
+                                    <span>-</span>
+                                @endif
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
                             <i class="fas fa-weight-hanging me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">Weight:</span>
-                                <span>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }} kg</span>
+                                <span>
+                                    @if ($order->id_katalog && $order->katalog->weight)
+                                        {{ $order->katalog->weight }} kg
+                                    @elseif ($order->weight)
+                                        {{ $order->weight }} kg
+                                    @else
+                                        -
+                                    @endif
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -355,7 +378,7 @@
                             <i class="fas fa-sticky-note me-2 mt-1"></i>
                             <div>
                                 <span class="fw-bold d-block">Description:</span>
-                                <span>{{ $order->id_katalog ? $order->katalog->desc : $order->desc }}</span>
+                                <span>{{ $order->id_katalog ? $order->katalog->desc ?? '-' : $order->desc ?? '-' }}</span>
                             </div>
                         </div>
                     </div>

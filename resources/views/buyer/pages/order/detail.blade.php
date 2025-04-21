@@ -184,7 +184,8 @@
                             <h5 class="fw-bold text-old-blue">Status Payment :
                                 <span
                                     class="badge {{ $order->status->label() === 'Payment Completed' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
-                                    <i class="fa  {{ $order->status->label() === 'Payment Completed' ? 'fa-circle-check' : 'fa-hourglass-half' }}"></i>
+                                    <i
+                                        class="fa  {{ $order->status->label() === 'Payment Completed' ? 'fa-circle-check' : 'fa-hourglass-half' }}"></i>
                                     {{ $order->status->label() }}
                                 </span>
                             </h5>
@@ -198,16 +199,30 @@
                         <hr>
                         <h5 class="fw-bold">Dimension</h5>
                         <p>
-                            Width
-                            {{ $order->id_katalog ? $order->katalog->width ?? 0 : $order->width ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                            x Depth
-                            {{ $order->id_katalog ? $order->katalog->length ?? 0 : $order->length ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
-                            x Height
-                            {{ $order->id_katalog ? $order->katalog->height ?? 0 : $order->height ?? 0 }}{{ $order->id_katalog ? $order->katalog->unit : $order->unit }}
+                            @if ($order->id_katalog && ($order->katalog->width || $order->katalog->length || $order->katalog->height))
+                                Width {{ $order->katalog->width ?? '-' }}{{ $order->katalog->unit }}
+                                x Depth {{ $order->katalog->length ?? '-' }}{{ $order->katalog->unit }}
+                                x Height {{ $order->katalog->height ?? '-' }}{{ $order->katalog->unit }}
+                            @elseif ($order->width || $order->length || $order->height)
+                                Width {{ $order->width ?? '-' }}{{ $order->unit }}
+                                x Depth {{ $order->length ?? '-' }}{{ $order->unit }}
+                                x Height {{ $order->height ?? '-' }}{{ $order->unit }}
+                            @else
+                                -
+                            @endif
                         </p>
                         <hr>
+
                         <h5 class="fw-bold">Weight</h5>
-                        <p>{{ $order->id_katalog ? $order->katalog->weight : $order->weight }}kg</p>
+                        <p>
+                            @if ($order->id_katalog && $order->katalog->weight)
+                                {{ $order->katalog->weight }}kg
+                            @elseif ($order->weight)
+                                {{ $order->weight }}kg
+                            @else
+                                -
+                            @endif
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-8">

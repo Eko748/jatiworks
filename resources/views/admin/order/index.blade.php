@@ -1016,7 +1016,7 @@
                             <div class="col-md-3">
                                 <label for="weight" class="form-label fw-bold">Weight (kg)</label>
                                 <input type="number" class="form-control required-input neumorphic-card" id="weight"
-                                    name="weight" placeholder="Enter weight" required>
+                                    name="weight" placeholder="Enter weight">
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label fw-bold">Dimensions:</label>
@@ -1038,8 +1038,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="unit" class="form-label">Unit</label>
-                                        <select id="unit" class="form-control required-input neumorphic-card" name="unit"
-                                            required>
+                                        <select id="unit" class="form-control required-input neumorphic-card" name="unit">
                                             <option value="m">m (Meter)</option>
                                             <option value="cm">cm (Centimeter)</option>
                                             <option value="mm">mm (Milimeter)</option>

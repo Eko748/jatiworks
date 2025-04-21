@@ -483,19 +483,19 @@
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner" style="height: 270px;">
                                 ${element.images.map((img, i) => `
-                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                        <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
-                                                                                                    </div>
-                                                                                                `).join('')}
+                                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                    <img src="${img}" class="d-block w-100 card-radius" style="height: 100%; object-fit: cover;">
+                                                                                                                </div>
+                                                                                                            `).join('')}
                             </div>
                             ${element.images.length > 1 ? `
-                                                                                                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                                                                                                    <span class="carousel-control-prev-icon"></span>
-                                                                                                </button>
-                                                                                                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                                                                                                    <span class="carousel-control-next-icon"></span>
-                                                                                                </button>
-                                                                                            ` : ''}
+                                                                                                            <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+                                                                                                                <span class="carousel-control-prev-icon"></span>
+                                                                                                            </button>
+                                                                                                            <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+                                                                                                                <span class="carousel-control-next-icon"></span>
+                                                                                                            </button>
+                                                                                                        ` : ''}
                         </div>
                     </div>
                 ` : '-';
@@ -506,9 +506,15 @@
                         ${imageCarousel}
                         <div class="mt-2">
                             <small class="text-white">Code Order: ${element.code_order}</small>
-                            <h5 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
-                                ${element.item_name}
-                            </h5>
+                            <h6 class="fw-bold text-white mb-2 mb-md-0 text-truncate">
+                                <span
+                                style="cursor: pointer;"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover focus"
+                                data-bs-placement="top"
+                                data-bs-content="${element.item_name}"
+                                title="Item Name">${element.item_name}</span>
+                            </h6>
                         </div>
                         <hr class="my-0 mb-2 mt-1 text-white">
                         <div class="d-flex align-items-center justify-content-between">
@@ -555,6 +561,10 @@
             });
 
             renderPage();
+
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function(el) {
+                new bootstrap.Popover(el);
+            });
         }
 
 
