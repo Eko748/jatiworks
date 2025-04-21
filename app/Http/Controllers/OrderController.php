@@ -42,7 +42,7 @@ class OrderController extends Controller
 
         try {
             $decryptedId = Crypt::decryptString($request->id_po);
-            $meta['orderBy'] = $request->ascending ? 'asc' : 'desc';
+            $meta['orderBy'] = $request->descending ? 'desc' : 'asc';
             $meta['limit'] = $request->has('limit') && $request->limit <= 30 ? $request->limit : 30;
 
             $query = Order::with(['katalog', 'user'])->where('id_po', $decryptedId)->orderBy('id', $meta['orderBy']);
