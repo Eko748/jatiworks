@@ -87,7 +87,7 @@
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Material</th>
                             <th class="text-wrap align-top">Weight (kg)</th>
-                            <th class="text-wrap align-top">Dimensions (l x w x h)</th>
+                            <th class="text-wrap align-top">Dimensions (W x D x H)</th>
                             <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Category</th>
                             <th class="text-wrap align-top">Action</th>
@@ -187,7 +187,7 @@
                 material: data?.material ?? '-',
                 unit: data?.unit ?? '-',
                 weight: data?.weight ?? '-',
-                dimensions: `${data?.length ?? '-'} x ${data?.width ?? '-'} x ${data?.height ?? '-'}`,
+                dimensions: `${data?.width ?? '-'} x ${data?.length ?? '-'} x ${data?.height ?? '-'}`,
                 category: data?.category.length ? data.category.map(c => c.name_category ?? '-').join(', ') : '-',
                 images: data?.file.length ? data.file.map(f => f.file_name) : [],
                 actions
@@ -620,18 +620,18 @@
                                                 name="weight" placeholder="Enter weight" required>
                                         </div>
                                         <div class="col-md-12">
-                                            <label class="form-label fw-bold">Dimensions (L × W × H):</label>
+                                            <label class="form-label fw-bold">Dimensions:</label>
                                             <div class="row g-2">
-                                                <div class="col-md-3">
-                                                    <label for="length" class="form-label">Length</label>
-                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                        id="length" name="length" placeholder="Enter length" required>
-                                                </div>
                                                 <div class="col-md-3">
                                                     <label for="width" class="form-label">Width</label>
                                                     <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                        id="width" name="width" placeholder="Enter width" required>
+                                                    id="width" name="width" placeholder="Enter width" required>
                                                 </div>
+                                                <div class="col-md-3">
+                                                    <label for="length" class="form-label">Depth</label>
+                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                        id="length" name="length" placeholder="Enter length" required>
+                                                    </div>
                                                 <div class="col-md-3">
                                                     <label for="height" class="form-label">Height</label>
                                                     <input type="number" step="0.01" class="form-control neumorphic-card"

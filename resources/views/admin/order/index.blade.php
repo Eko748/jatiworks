@@ -958,7 +958,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="price" class="form-label">Price</label>
-                            <input type="number" class="form-control neumorphic-card" name="price" placeholder="Enter price">
+                            <input type="number" class="form-control neumorphic-card" name="price" step="any" placeholder="Enter price">
                         </div>
                     </div>
                 `;
@@ -988,7 +988,7 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label for="buyer" class="form-label">Buyer</label>
-                                <input type="text" class="form-control neumorphic-card-reverse" value="${buyer}" disabled>
+                                <input type="text" class="text-dark form-control neumorphic-card-reverse" value="${buyer}" disabled>
                             </div>
                             <div class="col-md-6">
                                 <label for="qty" class="form-label">Qty</label>
@@ -996,7 +996,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="price" class="form-label">Price</label>
-                                <input type="number" class="form-control required-input neumorphic-card" name="price" placeholder="Enter price" required>
+                                <input type="number" class="form-control required-input neumorphic-card" name="price" step="any" placeholder="Enter price" required>
                             </div>
                         </div>
                     </div>`,
@@ -1022,18 +1022,18 @@
                                 <div class="row g-2">
                                     <div class="col-md-3">
                                         <label for="width" class="form-label">Width</label>
-                                        <input type="number" step="0.01" class="form-control required-input neumorphic-card"
-                                        id="width" name="width" placeholder="Enter width" required>
+                                        <input type="number" step="any" class="form-control required-input neumorphic-card"
+                                        id="width" name="width" placeholder="Enter width">
                                     </div>
                                     <div class="col-md-3">
                                         <label for="length" class="form-label">Depth</label>
-                                        <input type="number" step="0.01" class="form-control required-input neumorphic-card"
-                                            id="length" name="length" placeholder="Enter depth" required>
+                                        <input type="number" step="any" class="form-control required-input neumorphic-card"
+                                            id="length" name="length" placeholder="Enter depth">
                                     </div>
                                     <div class="col-md-3">
                                         <label for="height" class="form-label">Height</label>
-                                        <input type="number" step="0.01" class="form-control required-input neumorphic-card"
-                                            id="height" name="height" placeholder="Enter height" required>
+                                        <input type="number" step="any" class="form-control required-input neumorphic-card"
+                                            id="height" name="height" placeholder="Enter height">
                                     </div>
                                     <div class="col-md-3">
                                         <label for="unit" class="form-label">Unit</label>

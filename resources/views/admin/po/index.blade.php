@@ -188,7 +188,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="dp" class="form-label fw-bold">DP</label>
-                                <input type="number" class="form-control neumorphic-card" id="dp" name="dp"
+                                <input type="number" class="form-control neumorphic-card" id="dp" name="dp" step="any"
                                     placeholder="Enter DP" autocomplete="off" required>
                             </div>
                             <div class="col-md-12">
