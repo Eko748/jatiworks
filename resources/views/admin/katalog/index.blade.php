@@ -625,17 +625,17 @@
                                                 <div class="col-md-3">
                                                     <label for="width" class="form-label">Width</label>
                                                     <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                    id="width" name="width" placeholder="Enter width" required>
+                                                    id="width" name="width" placeholder="Enter width">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="length" class="form-label">Depth</label>
                                                     <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                        id="length" name="length" placeholder="Enter length" required>
+                                                        id="length" name="length" placeholder="Enter depth">
                                                     </div>
                                                 <div class="col-md-3">
                                                     <label for="height" class="form-label">Height</label>
                                                     <input type="number" step="0.01" class="form-control neumorphic-card"
-                                                        id="height" name="height" placeholder="Enter height" required>
+                                                        id="height" name="height" placeholder="Enter height">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="unit" class="form-label">Unit</label>
