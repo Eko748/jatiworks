@@ -1,12 +1,31 @@
+#main-content {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    min-width: 0;
+}
+
 #sidebar {
     width: 250px;
     min-width: 250px;
     max-width: 250px;
     flex-shrink: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-#main-content {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    min-width: 0;
+#sidebar.sidebar-collapsed {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+}
+
+#sidebar.sidebar-collapsed .sidebar-text {
+    display: none;
+}
+
+#sidebar.sidebar-hidden {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
 }

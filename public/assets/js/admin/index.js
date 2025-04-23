@@ -189,13 +189,47 @@ function multiSelectData(isParameter, isPlaceholder) {
     }
 }
 
-
 function toggleSidebar() {
-    let sidebar = document.getElementById('sidebar');
+    const sidebar = document.getElementById('sidebar');
+
     if (window.innerWidth < 768) {
-        sidebar.classList.toggle('d-none');
+        if (!document.getElementById('mobileSidebarStyles')) {
+            const style = document.createElement('style');
+            style.id = 'mobileSidebarStyles';
+            style.innerHTML = `
+                #sidebar {
+                    transition: transform 0.3s ease, opacity 0.3s ease;
+                    transform: translateX(0);
+                    opacity: 1;
+                    z-index: 9999;
+                }
+                #sidebar.sidebar-hidden {
+                    transform: translateX(-100%);
+                    opacity: 0;
+                    pointer-events: none;
+                }
+                #sidebar.d-none {
+                    display: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        if (sidebar.classList.contains('sidebar-hidden')) {
+            sidebar.classList.remove('d-none');
+
+            void sidebar.offsetWidth;
+
+            sidebar.classList.remove('sidebar-hidden');
+        } else {
+            sidebar.classList.add('sidebar-hidden');
+            setTimeout(() => {
+                sidebar.classList.add('d-none');
+            }, 300);
+        }
+    } else {
+        sidebar.classList.toggle('sidebar-collapsed');
     }
-    sidebar.classList.toggle('sidebar-collapsed');
 }
 
 document.getElementById('toggleTheme').addEventListener('click', function () {
