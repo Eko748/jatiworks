@@ -241,6 +241,11 @@
         let id_user = null;
         let buyer = '';
 
+        function formatNumber(value) {
+            if (isNaN(value)) return 0;
+            return parseFloat(value).toFixed(3).replace(/\.?0+$/, '');
+        }
+
         async function getDetailData() {
             let requestParams = {
                 id_po: dataParams,
@@ -288,8 +293,8 @@
                     ${data.status === 'Partial Payment' ? '<small class="ms-1 text-secondary">Click to change status</small>' : ''}
                     <ul class="dropdown-menu">
                         ${statusData.dropdown.map(item => `
-                                                                                                                                                            <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
-                                                                                                                                                        `).join('')}
+                                                                                                                                                                <li><a class="dropdown-item" href="#" onclick="updatePOStatus('${data.id}', '${item.value}')">${item.text}</a></li>
+                                                                                                                                                            `).join('')}
                     </ul>
                 </div>
             ` :
@@ -316,23 +321,23 @@
                             <div class="d-flex gap-3">
                                 <div>
                                     <span class="fw-bold d-block">Deposit:</span>
-                                    <span>${data.dp || 0}</span>
+                                    <span>${formatNumber(data.dp)}</span>
                                 </div>
                                 <div>
                                     <span class="fw-bold d-block">Balance:</span>
-                                    <span>${data.ba || 0}</span>
+                                    <span>${formatNumber(data.ba)}</span>
                                 </div>
                                 <div>
                                     <span class="fw-bold d-block">Total:</span>
-                                    <span>${data.ta || 0}</span>
+                                    <span>${formatNumber(data.ta)}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
                             <i class="fas fa-align-left me-2 mt-1"></i>
-                            <div>
+                            <div style="max-width: 100%;" class="me-2">
                                 <span class="fw-bold d-block">Description:</span>
-                                <span>${data.desc || '-'}</span>
+                                <span style="display: block; text-align: justify; word-wrap: break-word;">${data.desc || '-'}</span>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-2 neumorphic-card2 p-2">
@@ -570,19 +575,19 @@
                     <div id="carousel${element.id}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="width: 150px;">
                         <div class="carousel-inner" style="width: 100%; max-height: 100px; overflow: hidden;">
                             ${element.images.map((img, i) => `
-                                                                                                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                                                                                                    <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
-                                                                                                                                                                </div>
-                                                                                                                                                            `).join('')}
+                                                                                                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                                                                                                        <img src="${img}" class="d-block w-100" style="max-height: 100px; object-fit: contain;">
+                                                                                                                                                                    </div>
+                                                                                                                                                                `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                                                                                                            <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
-                                                                                                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                                                                                                            </button>
-                                                                                                                                                            <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
-                                                                                                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                                                                                                            </button>
-                                                                                                                                                        ` : ''}
+                                                                                                                                                                <button class="carousel-control-prev neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="prev">
+                                                                                                                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                                                                                                </button>
+                                                                                                                                                                <button class="carousel-control-next neu-text" type="button" data-bs-target="#carousel${element.id}" data-bs-slide="next">
+                                                                                                                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                                                                                                </button>
+                                                                                                                                                            ` : ''}
                     </div>
                 `;
 
@@ -592,7 +597,7 @@
                     <td>${element.percentage}</td>
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
                     <td>${element.code_order}</td>
-                    <td>${element.item_name}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.item_name}</td>
                     <td>${element.qty}</td>
                     <td>${element.price}</td>
                     <td>
@@ -1168,25 +1173,25 @@
                     <div class="d-flex justify-content-between w-100">
                         <div>
                             ${currentStep > 1 ? `
-                                                                                                                                                                                                                                            <button type="button" id="prevBtn" class="btn neumorphic-button">
-                                                                                                                                                                                                                                                <i class="fas fa-backward me-1"></i>Previous
-                                                                                                                                                                                                                                            </button>` : ''
+                                                                                                                                                                                                                                                <button type="button" id="prevBtn" class="btn neumorphic-button">
+                                                                                                                                                                                                                                                    <i class="fas fa-backward me-1"></i>Previous
+                                                                                                                                                                                                                                                </button>` : ''
                         }
                         </div>
                         <div class="d-flex gap-2">
                             ${currentStep < totalSteps ? `
-                                                                                                                                                                                                                                                <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
-                                                                                                                                                                                                                                                    <i class="fas fa-forward me-1"></i>Next
-                                                                                                                                                                                                                                                </button>` : ''
+                                                                                                                                                                                                                                                    <button type="button" id="nextBtn" class="btn neumorphic-button-outline">
+                                                                                                                                                                                                                                                        <i class="fas fa-forward me-1"></i>Next
+                                                                                                                                                                                                                                                    </button>` : ''
                             }
                             ${currentStep === totalSteps ? `
-                                                                                                                                                                                                                                                <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
-                                                                                                                                                                                                                                                    <i class="fas fa-circle-xmark me-1"></i>Cancel
-                                                                                                                                                                                                                                                </button>
-                                                                                                                                                                                                                                                <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
-                                                                                                                                                                                                                                                    <i class="fas fa-save me-1"></i>Submit
-                                                                                                                                                                                                                                                </button>
-                                                                                                                                                                                                                                            ` : ''
+                                                                                                                                                                                                                                                    <button type="button" id="closeBtn" class="btn neumorphic-button" data-bs-dismiss="modal">
+                                                                                                                                                                                                                                                        <i class="fas fa-circle-xmark me-1"></i>Cancel
+                                                                                                                                                                                                                                                    </button>
+                                                                                                                                                                                                                                                    <button type="submit" form="addDataForm" id="submitBtn" class="btn neumorphic-button-outline fw-bold">
+                                                                                                                                                                                                                                                        <i class="fas fa-save me-1"></i>Submit
+                                                                                                                                                                                                                                                    </button>
+                                                                                                                                                                                                                                                ` : ''
                             }
                         </div>
                     </div>

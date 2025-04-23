@@ -227,12 +227,12 @@
                     <td class="text-center">${display_from + index}.</td>
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
                     <td>${element.code}</td>
-                    <td>${element.item_name}</td>
-                    <td>${element.material}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.item_name}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.material}</td>
                     <td>${element.weight}</td>
                     <td>${element.dimensions}</td>
                     <td>${element.unit}</td>
-                    <td>${element.category}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.category}</td>
                     <td>${element.actions}</td>
                 </tr>`
             })

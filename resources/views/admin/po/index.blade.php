@@ -421,7 +421,7 @@
                     <td>${element.percentage}</td>
                     <td>${element.code}</td>
                     <td>${element.buyer_name}</td>
-                    <td>${element.desc}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.desc}</td>
                     <td>${element.dp}</td>
                     <td>${element.status}</td>
                     <td>

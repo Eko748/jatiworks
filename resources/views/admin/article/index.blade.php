@@ -267,7 +267,7 @@
                     <td>${element.images}</td>
                     <td>${element.status}</td>
                     <td>${element.title}</td>
-                    <td>${element.desc}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.desc}</td>
                     <td>${element.date_range}</td>
                     <td>${element.actions}</td>
                 </tr>`;
