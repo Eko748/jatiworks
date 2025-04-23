@@ -301,7 +301,7 @@
 
             dataList.forEach((element, index) => {
                 let globalIndex = pagination.total - ((currentPage1 - 1) * pagination.per_page) - index;
-                let shortDesc = element.desc.length > 40 ? element.desc.substring(0, 40) + "..." : element.desc;
+                let shortDesc = element.desc.length > 30 ? element.desc.substring(0, 30) + "..." : element.desc;
 
                 let fileContent = '-';
                 if (element.file) {
@@ -380,15 +380,17 @@
                         </div>
                         <div class="mt-3">
                             <p class="fw-bold text-white mb-1">Description:</p>
-                            <p class="text-white desc-short"
-                                data-full="${element.desc}"
-                                data-short="${shortDesc}"
-                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                ${shortDesc}
-                            </p>
-                            ${element.desc.length > 20 ? `
-                                        <button class="btn btn-link btn-sm text-white toggle-desc" data-id="${index}">Read More</button>
-                                    ` : ''}
+                            <div class="desc-wrapper d-flex text-white" style="justify-content: space-between; align-items: start; overflow: hidden;">
+                                <span class="desc-short my-1"
+                                    data-full="${element.desc}"
+                                    data-short="${shortDesc}"
+                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; text-align: justify;">
+                                    ${shortDesc}
+                                </span>
+                                ${element.desc.length > 30 ? `
+                                    <button class="btn btn-link btn-sm text-white toggle-desc ms-2 flex-shrink-0" data-id="${index}">Read More</button>
+                                ` : ''}
+                            </div>
                         </div>
                         <div class="mt-3">
                             <div class="d-flex flex-wrap gap-1">
@@ -409,6 +411,28 @@
                     ride: 'carousel',
                     pause: false,
                     wrap: true
+                });
+            });
+
+            document.querySelectorAll('.toggle-desc').forEach(button => {
+                button.addEventListener('click', function() {
+                    let index = this.getAttribute('data-id');
+                    let descElement = document.querySelectorAll('.desc-short')[index];
+                    let isExpanded = this.textContent === "Read Less";
+
+                    if (isExpanded) {
+                        descElement.textContent = descElement.getAttribute('data-short');
+                        descElement.style.whiteSpace = "nowrap";
+                        descElement.style.overflow = "hidden";
+                        descElement.style.textOverflow = "ellipsis";
+                        this.textContent = "Read More";
+                    } else {
+                        descElement.textContent = descElement.getAttribute('data-full');
+                        descElement.style.whiteSpace = "normal";
+                        descElement.style.overflow = "visible";
+                        descElement.style.textOverflow = "unset";
+                        this.textContent = "Read Less";
+                    }
                 });
             });
 
