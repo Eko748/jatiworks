@@ -217,9 +217,7 @@ function toggleSidebar() {
 
         if (sidebar.classList.contains('sidebar-hidden')) {
             sidebar.classList.remove('d-none');
-
             void sidebar.offsetWidth;
-
             sidebar.classList.remove('sidebar-hidden');
         } else {
             sidebar.classList.add('sidebar-hidden');
