@@ -266,7 +266,7 @@
                     <td class="text-center">${display_from + index}.</td>
                     <td>${element.images}</td>
                     <td>${element.status}</td>
-                    <td>${element.title}</td>
+                    <td style="text-align: justify; word-wrap: break-word;">${element.title}</td>
                     <td style="text-align: justify; word-wrap: break-word;">${element.desc}</td>
                     <td>${element.date_range}</td>
                     <td>${element.actions}</td>
