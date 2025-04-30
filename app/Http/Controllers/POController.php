@@ -228,7 +228,10 @@ class POController extends Controller
                 ? (int) $percentage // Kalau bulat, jadikan integer
                 : round($percentage, 1); // Kalau ada koma, bulatkan 1 angka di belakang koma
 
-            $totalAmount = $orders->sum('price');
+                $totalAmount = $orders->sum(function ($order) {
+                    return $order->price * $order->qty;
+                });
+
             $balanceAmount = $totalAmount - $po->dp;
             $balanceAmountDisplay = $balanceAmount < 0 ? 'N/A' : $balanceAmount;
 

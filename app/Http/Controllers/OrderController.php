@@ -107,6 +107,7 @@ class OrderController extends Controller
                     'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
                     'qty' => $item->qty,
                     'price' => $item->price,
+                    'total' => $item->price * $item->qty,
                     'status' => $item->status->label(),
                     'percentage' => $percentage . '%',
                     'detail_url' => route('admin.po.order.detail', $item->id),
