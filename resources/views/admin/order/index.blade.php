@@ -158,9 +158,10 @@
                             <th class="text-wrap align-top">Image</th>
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Item Name</th>
-                            <th class="text-wrap align-top">Qty</th>
-                            <th class="text-wrap align-top">Price</th>
-                            <th class="text-wrap align-top">Action</th>
+                            <th class="text-wrap align-top text-end">Qty</th>
+                            <th class="text-wrap align-top text-end">Price</th>
+                            <th class="text-wrap align-top text-end">Total</th>
+                            <th class="text-wrap align-top text-end">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -558,6 +559,7 @@
                 code_order: data?.code_order ?? '-',
                 qty: data?.qty ?? '-',
                 price: data?.price ?? '-',
+                total: data?.total ?? '-',
                 percentage: renderNeumorphicProgress(percentage),
                 images
             };
@@ -598,9 +600,10 @@
                     <td style="width: 150px; text-align: center;">${imageCarousel}</td>
                     <td>${element.code_order}</td>
                     <td style="text-align: justify; word-wrap: break-word;">${element.item_name}</td>
-                    <td>${element.qty}</td>
-                    <td>${element.price}</td>
-                    <td>
+                    <td class="text-end">${element.qty}</td>
+                    <td class="text-end">${element.price}</td>
+                    <td class="text-end">${element.total}</td>
+                    <td class="text-end">
                         <a href="/admin/order/${element.id}/detail?r=${dataParams}" class="btn btn-sm neumorphic-card2">
                             <i class="fas fa-eye text-info me-1"></i>Detail
                         </a>
