@@ -87,7 +87,7 @@ class UserController extends Controller
                 'email' => $item->email,
                 'status' => $item->status,
                 'last_login_at' => $item->last_login_at,
-            ];
+            ]; 
         });
 
         return response()->json([
