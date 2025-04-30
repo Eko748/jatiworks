@@ -99,6 +99,7 @@ class OrderController extends Controller
                 $totalSteps = $item->orderTracking()->count();
                 $completedSteps = $item->orderTracking()->where('status', 'completed')->count();
                 $percentage = $totalSteps > 0 ? round(($completedSteps / $totalSteps) * 100) : 0;
+                $total = $item->price * $item->qty;
 
                 return [
                     'id' => $item->id,
@@ -107,7 +108,9 @@ class OrderController extends Controller
                     'item_name' => $item->id_katalog === null ? $item->item_name : ($item->katalog->item_name ?? null),
                     'qty' => $item->qty,
                     'price' => $item->price,
-                    'total' => $item->price * $item->qty,
+                    'total' => fmod($total, 1) == 0
+                    ? (int) $total
+                    : round($total, 1),
                     'status' => $item->status->label(),
                     'percentage' => $percentage . '%',
                     'detail_url' => route('admin.po.order.detail', $item->id),
