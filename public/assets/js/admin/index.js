@@ -193,6 +193,7 @@ function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
 
     if (window.innerWidth < 768) {
+        // Mobile logic (tidak perlu simpan di localStorage)
         if (!document.getElementById('mobileSidebarStyles')) {
             const style = document.createElement('style');
             style.id = 'mobileSidebarStyles';
@@ -226,7 +227,10 @@ function toggleSidebar() {
             }, 300);
         }
     } else {
+        // Desktop logic with localStorage
         sidebar.classList.toggle('sidebar-collapsed');
+        const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+        localStorage.setItem('sidebar-collapsed', isCollapsed);
     }
 }
 
@@ -241,7 +245,6 @@ document.getElementById('toggleTheme').addEventListener('click', function () {
         this.innerHTML = '<i class="fas fa-moon"></i>';
     }
 });
-
 
 document.getElementById('toggleFullscreen').addEventListener('click', function () {
     if (!document.fullscreenElement) {

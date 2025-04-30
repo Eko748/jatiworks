@@ -2,6 +2,18 @@
 <html lang="id">
 
 <head>
+    <style>
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+    </style>
+    <script>
+        (function() {
+            if (window.innerWidth >= 768 && localStorage.getItem('sidebar-collapsed') === 'true') {
+                document.documentElement.classList.add('sidebar-is-collapsed');
+            }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -34,6 +46,10 @@
     @yield('js')
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
+            const sidebar = document.getElementById('sidebar');
+            if (document.documentElement.classList.contains('sidebar-is-collapsed')) {
+                sidebar.classList.add('sidebar-collapsed');
+            }
             const savedTheme = localStorage.getItem('theme');
             const toggleThemeBtn = document.getElementById('toggleTheme');
 

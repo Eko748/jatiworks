@@ -1,4 +1,4 @@
-<aside id="sidebar" class="sidebar p-4 neumorphic-sidebar d-none d-md-block">
+<aside id="sidebar" class="sidebar p-4 neumorphic-sidebar d-none d-md-block {{ request()->is('sidebar-is-collapsed') ? 'sidebar-collapsed' : '' }}">
     <div class="sidebar-header mb-3 d-flex justify-content-between align-items-center">
         <h2 class="fs-4 fw-semibold sidebar-text">
             {{ ucwords(strtolower(Auth::user()->role->role_name)) }}
