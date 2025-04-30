@@ -159,7 +159,7 @@
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top text-end">Qty</th>
-                            <th class="text-wrap align-top text-end">Price</th>
+                            <th class="text-wrap align-top text-end">Price/Item</th>
                             <th class="text-wrap align-top text-end">Total</th>
                             <th class="text-wrap align-top text-end">Action</th>
                         </tr>
