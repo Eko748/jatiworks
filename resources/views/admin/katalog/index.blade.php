@@ -616,7 +616,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label for="weight" class="form-label fw-bold">Weight (kg)</label>
-                                            <input type="number" class="form-control neumorphic-card" id="weight"
+                                            <input type="number" step="any" class="form-control neumorphic-card" id="weight"
                                                 name="weight" placeholder="Enter weight" required>
                                         </div>
                                         <div class="col-md-12">
@@ -624,17 +624,17 @@
                                             <div class="row g-2">
                                                 <div class="col-md-3">
                                                     <label for="width" class="form-label">Width</label>
-                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                    <input type="number" step="any" class="form-control neumorphic-card"
                                                     id="width" name="width" placeholder="Enter width">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="length" class="form-label">Depth</label>
-                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                    <input type="number" step="any" class="form-control neumorphic-card"
                                                         id="length" name="length" placeholder="Enter depth">
                                                     </div>
                                                 <div class="col-md-3">
                                                     <label for="height" class="form-label">Height</label>
-                                                    <input type="number" step="0.01" class="form-control neumorphic-card"
+                                                    <input type="number" step="any" class="form-control neumorphic-card"
                                                         id="height" name="height" placeholder="Enter height">
                                                 </div>
                                                 <div class="col-md-3">

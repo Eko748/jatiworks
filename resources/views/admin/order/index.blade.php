@@ -1026,7 +1026,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="weight" class="form-label fw-bold">Weight (kg)</label>
-                                <input type="number" class="form-control required-input neumorphic-card" id="weight"
+                                <input type="number" step="any" class="form-control required-input neumorphic-card" id="weight"
                                     name="weight" placeholder="Enter weight">
                             </div>
                             <div class="col-md-12">
