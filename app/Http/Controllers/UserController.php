@@ -38,12 +38,23 @@ class UserController extends Controller
             });
         }
 
-        if ($request->has('startDate') && $request->has('endDate')) {
-            $startDate = $request->input('startDate');
-            $endDate = $request->input('endDate');
+        if ($request->has('status_login')) {
+            $params = $request->input('status_login');
 
-            // Lakukan filter berdasarkan tanggal
-            $query->whereBetween('id', [$startDate, $endDate]);
+            $query->whereIn('status', $params);
+        }
+
+        if ($request->has('role')) {
+            $params = $request->input('role');
+
+            $query->whereIn('id_role', $params);
+        }
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $query->whereBetween('last_login_at', [$startDate, $endDate]);
         }
 
         $data = $query->paginate($meta['limit']);
@@ -64,7 +75,7 @@ class UserController extends Controller
             return response()->json([
                 'status_code' => 400,
                 'errors' => true,
-                'message' => 'Tidak ada data'
+                'message' => 'No data'
             ], 400);
         }
 

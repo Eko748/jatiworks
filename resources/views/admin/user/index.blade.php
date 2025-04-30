@@ -5,6 +5,7 @@
 @endsection
 
 @section('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/flatpickr.min.css') }}">
 @endsection
 
 @section('content')
@@ -39,14 +40,19 @@
             <div id="filterContainer" class="neumorphic-card p-3 mb-3 collapse">
                 <form id="filterForm">
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="filterStatusLogin" class="form-label">Status Login</label>
+                        <div class="col-md-4">
+                            <label for="filterDateRange" class="form-label">Last Login</label>
+                            <input type="text" class="form-control neumorphic-card" id="filterDateRange"
+                                placeholder="Select range last login" autocomplete="off" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="filterStatusLogin" class="form-label">Status</label>
                             <select id="filterStatusLogin" class="form-control" multiple>
                                 <option value="Online">Online</option>
-                                <option value="Online">Offline</option>
+                                <option value="Offline">Offline</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="filterRole" class="form-label">Role</label>
                             <select id="filterRole" class="form-control" multiple>
                                 <option value="1">Admin</option>
@@ -98,7 +104,8 @@
             <div class="modal-content neumorphic-modal p-3">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold" id="addDataModalLabel">Add New User</h5>
-                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close neumorphic-btn-danger" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addDataForm">
@@ -143,6 +150,7 @@
 
 @section('assets_js')
     <script src="{{ asset('assets/js/pagination.js') }}"></script>
+    <script src="{{ asset('assets/js/flatpickr.min.js') }}"></script>
 @endsection
 
 @section('js')
@@ -224,6 +232,19 @@
         }
 
         async function getFilterListData() {
+            let dateRangeValue = document.getElementById("filterDateRange").value;
+            let start_date;
+            let end_date;
+
+            if (dateRangeValue) {
+                const dateRangeArray = dateRangeValue.split(
+                    " to ");
+                if (dateRangeArray.length === 2) {
+                    start_date = dateRangeArray[0];
+                    end_date = dateRangeArray[1];
+                }
+            }
+
             let selectedStatusLogin = Array.from(document.getElementById("filterStatusLogin").selectedOptions)
                 .map(option => option.value)
                 .filter(value => value !== "");
@@ -233,6 +254,8 @@
                 .filter(value => value !== "");
 
             let filterData = {
+                start_date: start_date,
+                end_date: end_date,
                 status_login: selectedStatusLogin.length ? selectedStatusLogin : null,
                 role: selectedRoles.length ? selectedRoles : null
             };
@@ -379,15 +402,26 @@
             });
         }
 
+        function dateRangeInput(isParameter) {
+            flatpickr(isParameter, {
+                mode: "range",
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                locale: "en"
+            });
+        }
+
         async function initPageLoad() {
             await Promise.all([
                 getListData(defaultLimitPage, currentPage, defaultAscending, defaultSearch, customFilter),
                 searchListData(),
                 setFilterListData(),
                 toggleFilterButton(),
-                multiSelectData('#filterStatusLogin', 'Select Status Login'),
+                multiSelectData('#filterStatusLogin', 'Select Status'),
                 multiSelectData('#filterRole', 'Select Role'),
-                handlePasswordUser()
+                handlePasswordUser(),
+                dateRangeInput('#filterDateRange'),
             ])
         }
     </script>
