@@ -76,8 +76,9 @@
                             <th class="text-wrap align-top">Name</th>
                             <th class="text-wrap align-top">Email</th>
                             <th class="text-wrap align-top">Role</th>
-                            <th class="text-wrap align-top">Status Login</th>
+                            <th class="text-wrap align-top">Status</th>
                             <th class="text-wrap align-top">Last Login</th>
+                            <th class="text-wrap align-top text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -199,13 +200,21 @@
                 statusClass += 'text-danger border-danger';
             }
 
+            let actions = `
+                    <button class="reset-data btn btn-md neumorphic-card2" data-id="${data.id}" onclick="resetPassword(this)" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="Reset Password">
+                        <i class="fas fa-rotate text-warning"></i>
+                    </button>
+                `;
+
             return {
                 id: data?.id ?? '-',
                 name: data?.name ?? '-',
                 role_name: data?.role_name ?? '-',
                 email: data?.email ?? '-',
                 last_login_at: data?.last_login_at ?? '-',
-                status: `<span class="${statusClass}">${data?.status ?? '-'}</span>`
+                status: `<span class="${statusClass}">${data?.status ?? '-'}</span>`,
+                actions
             };
         }
 
@@ -225,10 +234,50 @@
                     <td>${element.role_name}</td>
                     <td>${element.status}</td>
                     <td>${element.last_login_at}</td>
+                    <td class="text-center">${element.actions}</td>
                 </tr>`;
             });
 
             renderListData(getDataTable, pagination, display_from, display_to);
+        }
+
+        async function resetPassword(button) {
+            let id = button.dataset.id;
+
+            if (!id) {
+                notyf.error("ID not found!");
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: "Reset Password?",
+                text: "password will be reset to password123",
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonColor: "#d33",
+                confirmButtonColor: "#3085d6",
+                cancelButtonText: "Yes, Reset!",
+                confirmButtonText: "Cancel"
+            });
+
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                let deleteResponse = await restAPI(
+                    "PUT",
+                    `{{ route('admin.user.updatePassword') }}`, {
+                        id: id
+                    }
+                );
+
+                if (deleteResponse && deleteResponse.status === 200) {
+                    await notyf.success("Reset password successfully.");
+
+                    setTimeout(async () => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    notyf.error("Failed to reset password.");
+                }
+            }
         }
 
         async function getFilterListData() {
@@ -418,8 +467,8 @@
                 searchListData(),
                 setFilterListData(),
                 toggleFilterButton(),
-                multiSelectData('#filterStatusLogin', 'Select Status'),
-                multiSelectData('#filterRole', 'Select Role'),
+                multiSelectData('#filterStatusLogin', 'Select status'),
+                multiSelectData('#filterRole', 'Select role'),
                 handlePasswordUser(),
                 dateRangeInput('#filterDateRange'),
             ])

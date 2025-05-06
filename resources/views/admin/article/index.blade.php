@@ -85,7 +85,7 @@
                             <th class="text-wrap align-top">Title</th>
                             <th class="text-wrap align-top">Description</th>
                             <th class="text-wrap align-top">Content Date Range</th>
-                            <th class="text-wrap align-top">Action</th>
+                            <th class="text-wrap align-top text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -237,8 +237,9 @@
                 '-';
 
             let actions = `
-                    <button class="delete-data btn btn-sm neumorphic-card2" data-id="${data.id}" onclick="deleteListData(this)">
-                        <i class="fas fa-trash-alt text-danger me-1"></i>Delete
+                    <button class="delete-data btn btn-md neumorphic-card2" data-id="${data.id}" onclick="deleteListData(this)" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="Delete">
+                        <i class="fas fa-trash-alt text-danger"></i>
                     </button>
                 `;
 
@@ -269,7 +270,7 @@
                     <td>${element.title}</td>
                     <td style="text-align: justify; word-wrap: break-word;">${element.desc}</td>
                     <td>${element.date_range}</td>
-                    <td>${element.actions}</td>
+                    <td class="text-center">${element.actions}</td>
                 </tr>`;
             });
 

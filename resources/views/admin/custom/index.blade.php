@@ -90,7 +90,7 @@
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top">Description</th>
                             <th class="text-wrap align-top">Price</th>
-                            <th class="text-wrap align-top">Action</th>
+                            <th class="text-wrap align-top text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -292,8 +292,9 @@
             let images = data?.file.length ? data.file.map(f => `${storageUrl}/${f.file_name}`) : [imageNullUrl];
 
             let actions = `
-                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-sm neumorphic-card2">
-                    <i class="fas fa-eye text-info me-1"></i>Detail
+                <a href="{{ route('admin.custom.detail') }}?r=${encodeURIComponent(data.id)}" class="btn btn-md neumorphic-card2" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="Detail">
+                    <i class="fas fa-eye text-info"></i>
                 </a>
             `;
             return {
@@ -365,7 +366,7 @@
                     <td>${element.item_name}</td>
                     <td>${element.desc}</td>
                     <td>${element.price}</td>
-                    <td>${element.actions}</td>
+                    <td class="text-center">${element.actions}</td>
                 </tr>`
             })
 

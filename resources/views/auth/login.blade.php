@@ -35,6 +35,10 @@
                                 <input class="form-check-input" type="checkbox" id="rememberMe">
                                 <label class="form-check-label text-dark" for="rememberMe">Remember Me</label>
                             </div>
+                            <div class="form-check">
+                                <a href="https://wa.me/6282217101985?text=I%20want%20to%20reset%20my%20password"
+                                    target="_blank" class="text-dark">Forget password?</a>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-dark w-100 mb-4 btn-lg fs-6 fw-bold">Sign In</button>
                     </form>

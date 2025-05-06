@@ -159,9 +159,9 @@
                             <th class="text-wrap align-top">Code Order</th>
                             <th class="text-wrap align-top">Item Name</th>
                             <th class="text-wrap align-top text-end">Qty</th>
-                            <th class="text-wrap align-top text-end">Price/Item</th>
+                            <th class="text-wrap align-top text-end">Unit Price</th>
                             <th class="text-wrap align-top text-end">Total</th>
-                            <th class="text-wrap align-top text-end">Action</th>
+                            <th class="text-wrap align-top text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -603,9 +603,10 @@
                     <td class="text-end">${element.qty}</td>
                     <td class="text-end">${element.price}</td>
                     <td class="text-end">${element.total}</td>
-                    <td class="text-end">
-                        <a href="/admin/order/${element.id}/detail?r=${dataParams}" class="btn btn-sm neumorphic-card2">
-                            <i class="fas fa-eye text-info me-1"></i>Detail
+                    <td class="text-center">
+                        <a href="/admin/order/${element.id}/detail?r=${dataParams}" class="btn btn-md neumorphic-card2" data-bs-toggle="tooltip"
+                            data-bs-placement="top" title="Detail">
+                            <i class="fas fa-eye text-info"></i>
                         </a>
                     </td>
                 </tr>`;

@@ -90,7 +90,7 @@
                             <th class="text-wrap align-top">Dimensions (W x D x H)</th>
                             <th class="text-wrap align-top">Unit</th>
                             <th class="text-wrap align-top">Category</th>
-                            <th class="text-wrap align-top">Action</th>
+                            <th class="text-wrap align-top text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="listData">
@@ -175,8 +175,9 @@
 
         async function handleListData(data) {
             let actions = `
-                    <button class="delete-data btn btn-sm neumorphic-card2" data-id="${data.id}" onclick="deleteListData(this)">
-                        <i class="fas fa-trash-alt text-danger me-1"></i>Delete
+                    <button class="delete-data btn btn-md neumorphic-card2" data-id="${data.id}" onclick="deleteListData(this)" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="Delete">
+                        <i class="fas fa-trash-alt text-danger"></i>
                     </button>
                 `;
 
@@ -233,7 +234,7 @@
                     <td>${element.dimensions}</td>
                     <td>${element.unit}</td>
                     <td style="text-align: justify; word-wrap: break-word;">${element.category}</td>
-                    <td>${element.actions}</td>
+                    <td class="text-center">${element.actions}</td>
                 </tr>`
             })
 
