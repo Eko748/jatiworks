@@ -87,7 +87,7 @@ class UserController extends Controller
                 'email' => $item->email,
                 'status' => $item->status,
                 'last_login_at' => $item->last_login_at,
-            ]; 
+            ];
         });
 
         return response()->json([
@@ -104,5 +104,27 @@ class UserController extends Controller
         $title = $this->title[0];
 
         return view('admin.user.index', compact('title'));
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            $user = User::findOrFail($request->id);
+            $user->password = bcrypt('password123');
+            $user->save();
+
+            return response()->json([
+                'status_code' => 200,
+                'errors' => false,
+                'message' => 'Password has been reset successfully'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'errors' => true,
+                'message' => 'Failed to reset password'
+            ], 500);
+        }
     }
 }

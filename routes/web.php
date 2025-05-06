@@ -129,6 +129,7 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     // User Management
     Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
     Route::get('/getdatauser', [UserController::class, 'getdatauser'])->name('getdatauser');
+    Route::put('/user/{id}/update', [UserController::class, 'update'])->name('admin.user.update');
 
     // Category Management
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
