@@ -71,6 +71,17 @@
                     </div>
                 </li>
             </a>
+            <p>CMS</p>
+            <a href="{{ route('admin.cms.information.index') }}" class="text-decoration-none">
+                <li
+                    class="mb-3 neumorphic-card sidebar-item {{ request()->routeIs('admin.cms.information.*') ? 'active' : '' }}">
+                    <div
+                        class="d-flex align-items-center neu-text gap-2 sidebar-button {{ request()->routeIs('admin.cms.information.*') ? 'active' : '' }}">
+                        <i class="fas fa-circle-info"></i>
+                        <span class="sidebar-text">Information</span>
+                    </div>
+                </li>
+            </a>
         </ul>
     </nav>
 </aside>

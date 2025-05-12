@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Enums\OrderStatus;
+use App\Models\Information;
 
 class IndexController extends Controller
 {
     public function indexHome()
     {
         $title = 'Home';
+
         return view('buyer.pages.home.index', compact('title'));
     }
 

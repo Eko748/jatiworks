@@ -3,10 +3,9 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CMS\InformationController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Content\KatalogLandingController;
 use App\Http\Controllers\CustomDesignController;
 use App\Http\Controllers\Home\IndexController;
 use App\Http\Controllers\KatalogController;
@@ -172,12 +171,13 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
     Route::put('/design/update-tracking', [CustomDesignController::class, 'updateTrackingStep'])->name('custom.updateTracking');
     Route::get('/design-detail', [CustomDesignController::class, 'detail'])->name('admin.custom.detail');
     Route::get('/design-detail-data', [CustomDesignController::class, 'getDetailDataDesign'])->name('admin.custom.data');
+
+    Route::get('/information', [InformationController::class, 'index'])->name('admin.cms.information.index');
+    Route::post('/information', [InformationController::class, 'store'])->name('admin.cms.information.store');
 });
 
 // Buyer Routes (buyer only)
 Route::middleware(['auth', IsBuyer::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
-    // Route::get('/catalogue', [KatalogLandingController::class, 'index'])->name('katalog.index');
 });
