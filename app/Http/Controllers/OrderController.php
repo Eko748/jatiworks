@@ -328,7 +328,7 @@ class OrderController extends Controller
                 'id_tracking_step' => 'required|exists:tracking_step,id',
                 'status' => 'nullable|in:pending,in_progress,completed',
                 'notes' => 'nullable|string',
-                'file.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048' // Allow multiple files
+                'file.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:2048' // Allow multiple files
             ], [
                 'id_tracking_step.required' => 'The tracking step ID is required.',
                 'id_tracking_step.exists' => 'The selected tracking step does not exist.',
