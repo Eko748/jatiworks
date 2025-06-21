@@ -109,7 +109,7 @@ class POController extends Controller
                 'file'  => $item->file,
                 'desc'  => $item->desc,
                 'dp'  => $item->dp,
-                'percentage' => $percentage. '%',
+                'percentage' => $percentage . '%',
                 'status' => OrderStatus::from($item->status)->label()
             ];
         });
@@ -152,15 +152,8 @@ class POController extends Controller
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $destinationPath = public_path('storage/uploads/po');
 
-                // Pastikan folder tujuan ada
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-
-                // Pindahkan file langsung ke public/storage
-                $file->move($destinationPath, $fileName);
+                $file->storeAs('public/uploads/po', $fileName);
             }
 
             $po = Po::create([
@@ -228,9 +221,9 @@ class POController extends Controller
                 ? (int) $percentage // Kalau bulat, jadikan integer
                 : round($percentage, 1); // Kalau ada koma, bulatkan 1 angka di belakang koma
 
-                $totalAmount = $orders->sum(function ($order) {
-                    return $order->price * $order->qty;
-                });
+            $totalAmount = $orders->sum(function ($order) {
+                return $order->price * $order->qty;
+            });
 
             $balanceAmount = $totalAmount - $po->dp;
             $balanceAmountDisplay = $balanceAmount < 0 ? 'N/A' : $balanceAmount;

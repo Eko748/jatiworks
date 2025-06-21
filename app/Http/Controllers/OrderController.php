@@ -109,8 +109,8 @@ class OrderController extends Controller
                     'qty' => $item->qty,
                     'price' => $item->price,
                     'total' => fmod($total, 1) == 0
-                    ? (int) $total
-                    : round($total, 1),
+                        ? (int) $total
+                        : round($total, 1),
                     'status' => $item->status->label(),
                     'percentage' => $percentage . '%',
                     'detail_url' => route('admin.po.order.detail', $item->id),
@@ -232,19 +232,12 @@ class OrderController extends Controller
                 if ($request->hasFile('file')) {
                     foreach ($request->file('file') as $file) {
                         $filename = time() . '_' . $file->getClientOriginalName();
-                        $destinationPath = public_path('storage/uploads/order');
 
-                        // Pastikan folder tujuan ada
-                        if (!file_exists($destinationPath)) {
-                            mkdir($destinationPath, 0777, true);
-                        }
-
-                        // Pindahkan file langsung ke public/storage
-                        $file->move($destinationPath, $filename);
+                        $file->storeAs('public/uploads/order', $filename);
 
                         File::create([
-                            'id_order' => $order->id,
-                            'file_name' => $filename
+                            'id_order'  => $order->id,
+                            'file_name' => $filename,
                         ]);
                     }
                 }

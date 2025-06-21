@@ -94,19 +94,11 @@ class CustomDesignController extends Controller
             $code_design = $id_user_str . $design_id . $random_number;
             $customDesign->update(['code_design' => $code_design]);
 
-            // Handle file uploads
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $destinationPath = public_path('storage/uploads/custom');
 
-                    // Pastikan folder tujuan ada
-                    if (!file_exists($destinationPath)) {
-                        mkdir($destinationPath, 0777, true);
-                    }
-
-                    // Pindahkan file langsung ke public/storage
-                    $file->move($destinationPath, $filename);
+                    $file->storeAs('public/uploads/custom', $filename);
 
                     File::create([
                         'id_custom' => $customDesign->id,
@@ -422,13 +414,13 @@ class CustomDesignController extends Controller
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $destinationPath = public_path('storage/uploads/tracking');
 
-        // Pastikan folder tujuan ada
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0777, true);
-        }
+                // Pastikan folder tujuan ada
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
 
-        // Pindahkan file langsung ke public/storage
-        $file->move($destinationPath, $filename);
+                // Pindahkan file langsung ke public/storage
+                $file->move($destinationPath, $filename);
                 $fileNames[] = $filename;
             }
             $data['file_name'] = json_encode($fileNames);

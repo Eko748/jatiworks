@@ -158,15 +158,8 @@ class KatalogController extends Controller
             if ($request->hasFile('file')) {
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $destinationPath = public_path('storage/uploads/katalog');
 
-                    // Pastikan folder tujuan ada
-                    if (!file_exists($destinationPath)) {
-                        mkdir($destinationPath, 0777, true);
-                    }
-
-                    // Pindahkan file langsung ke public/storage
-                    $file->move($destinationPath, $filename);
+                    $file->storeAs('public/uploads/katalog', $filename);
 
                     File::create([
                         'id_katalog' => $katalog->id,

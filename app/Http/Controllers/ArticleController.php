@@ -113,16 +113,10 @@ class ArticleController extends Controller
             if ($request->hasFile('article')) {
                 $file = $request->file('article');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $destinationPath = public_path('storage/uploads/article');
 
-                // Pastikan folder tujuan ada
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
-
-                // Pindahkan file langsung ke public/storage
-                $file->move($destinationPath, $fileName);
+                $file->storeAs('public/uploads/article', $fileName);
             }
+
 
             $now = now();
             $status = ($request->created_at <= $now && $now <= $request->end_date) ? 'Yes' : 'No';
