@@ -98,7 +98,7 @@ class CustomDesignController extends Controller
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
 
-                    $file->storeAs('public/uploads/custom', $filename);
+                    $file->storeAs('uploads/custom', $filename);
 
                     File::create([
                         'id_custom' => $customDesign->id,

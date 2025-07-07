@@ -159,7 +159,7 @@ class KatalogController extends Controller
                 foreach ($request->file('file') as $file) {
                     $filename = time() . '_' . $file->getClientOriginalName();
 
-                    $file->storeAs('public/uploads/katalog', $filename);
+                    $file->storeAs('uploads/katalog', $filename);
 
                     File::create([
                         'id_katalog' => $katalog->id,

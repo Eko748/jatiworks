@@ -114,7 +114,7 @@ class ArticleController extends Controller
                 $file = $request->file('article');
                 $fileName = time() . '_' . $file->getClientOriginalName();
 
-                $file->storeAs('public/uploads/article', $fileName);
+                $file->storeAs('uploads/article', $fileName);
             }
 
 

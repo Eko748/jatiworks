@@ -153,7 +153,7 @@ class POController extends Controller
                 $file = $request->file('file');
                 $fileName = time() . '_' . $file->getClientOriginalName();
 
-                $file->storeAs('public/uploads/po', $fileName);
+                $file->storeAs('uploads/po', $fileName);
             }
 
             $po = Po::create([

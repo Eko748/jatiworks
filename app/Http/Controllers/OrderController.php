@@ -233,7 +233,7 @@ class OrderController extends Controller
                     foreach ($request->file('file') as $file) {
                         $filename = time() . '_' . $file->getClientOriginalName();
 
-                        $file->storeAs('public/uploads/order', $filename);
+                        $file->storeAs('uploads/order', $filename);
 
                         File::create([
                             'id_order'  => $order->id,
