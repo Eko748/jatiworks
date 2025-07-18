@@ -26,6 +26,9 @@
         }
     </style>
 @endsection
+@php
+    $information = \App\Models\Information::first();
+@endphp
 
 @section('content')
     <section class="bg-green-white">
@@ -41,7 +44,7 @@
                             </h3>
                             <div class="row mt-auto">
                                 <div class="d-grid col-md-6 mb-3">
-                                    <a href="#" target="_blank"
+                                    <a href="{{ $information->youtube ?? '#' }}" target="_blank"
                                         class="btn btn-light fw-bold text-old-blue fs-6 py-2 pulse">
                                         <i class="bi bi-play-circle"></i>
                                         What is <span id="land">Jatiworks?</span>
@@ -316,19 +319,19 @@
                     <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
                         <div class="carousel-inner">
                             ${element.images.map((img, i) => `
-                                                                                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                                                                                    <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 300px; object-fit: cover;">
-                                                                                </div>
-                                                                            `).join('')}
+                                                                                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                                                                        <img src="${storageUrlCatalogue}/${img}" class="d-block w-100 card-radius" style="height: 300px; object-fit: cover;">
+                                                                                    </div>
+                                                                                `).join('')}
                         </div>
                         ${element.images.length > 1 ? `
-                                                                            <button class="text-dark carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" style="position: absolute; z-index: 10;">
-                                                                                <i class="fas fa-circle-chevron-left fs-3"></i>
-                                                                            </button>
-                                                                            <button class="text-dark carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" style="position: absolute; z-index: 10;">
-                                                                                <i class="fas fa-circle-chevron-right fs-3"></i>
-                                                                            </button>
-                                                                        ` : ''}
+                                                                                <button class="text-dark carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev" style="position: absolute; z-index: 10;">
+                                                                                    <i class="fas fa-circle-chevron-left fs-3"></i>
+                                                                                </button>
+                                                                                <button class="text-dark carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next" style="position: absolute; z-index: 10;">
+                                                                                    <i class="fas fa-circle-chevron-right fs-3"></i>
+                                                                                </button>
+                                                                            ` : ''}
                     </div>
                 </div>
                 ` : '-';
@@ -484,9 +487,9 @@
                                 ${shortDesc}
                             </p>
                             ${isLongText ? `
-                                        <div class="mt-auto text-end">
-                                            <button class="btn btn-link p-0" id="toggle-${index}" onclick="toggleReadMore(${index})">Read More..</button>
-                                        </div>` : ''}
+                                            <div class="mt-auto text-end">
+                                                <button class="btn btn-link p-0" id="toggle-${index}" onclick="toggleReadMore(${index})">Read More..</button>
+                                            </div>` : ''}
                         </div>
                     </div>
                 </div>`;
